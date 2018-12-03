@@ -12,7 +12,7 @@ import json
 import time
 import re
 
-from enrich.nlp.provider import OpenNLPProvider
+from enrich.nlp.provider import CoreNLPProvider
 from enrich.translate.translator import BingTranslator, ABCDictTranslator, CCCedictTranslator, hsk_dict, subtlex
 from enrich.enricher import enrich_to_json
 from ankrobes import AnkrobesServer
@@ -42,7 +42,7 @@ def text_to_corenlp(request):
     data = request.body.decode("utf-8")
     logger.debug("Received text: {} to transform to model".format(data))
 
-    corenlp = OpenNLPProvider()
+    corenlp = CoreNLPProvider()
 
     response = HttpResponse(json.dumps(corenlp.parse(data), ensure_ascii=False))
     response["Access-Control-Allow-Origin"] = "*"
