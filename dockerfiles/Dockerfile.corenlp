@@ -1,0 +1,22 @@
+# vim:set ft=dockerfile:
+FROM openjdk:11-jre-slim
+
+RUN apt update && apt -y install wget
+
+ARG CORENLP_DATE_VERSION='2018-10-05'
+ENV TIMEOUT=30000
+ENV JAVA_XMX=1g
+ENV PORT=9000
+
+RUN wget "https://nlp.stanford.edu/software/stanford-corenlp-full-${CORENLP_DATE_VERSION}.zip"
+RUN unzip stanford-corenlp-full-${CORENLP_DATE_VERSION}.zip && rm stanford-corenlp-full-${CORENLP_DATE_VERSION}.zip
+
+RUN wget http://nlp.stanford.edu/software/stanford-chinese-corenlp-${CORENLP_DATE_VERSION}-models.jar -O stanford-corenlp-full-${CORENLP_DATE_VERSION}/stanford-chinese-corenlp-${CORENLP_DATE_VERSION}-models.jar
+
+WORKDIR stanford-corenlp-full-${CORENLP_DATE_VERSION}
+
+RUN export CLASSPATH="`find . -name '*.jar'`"
+
+EXPOSE $PORT
+
+CMD java -Xmx${JAVA_XMX} -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port $PORT -timeout ${TIMEOUT} -serverProperties StanfordCoreNLP-chinese.properties
