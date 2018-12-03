@@ -2,7 +2,7 @@
 
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 CACHES = {
     'default': {
@@ -75,7 +75,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../static/')
+STATIC_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../static/')
 LL = 'ERROR'
 
 # Logging
@@ -165,9 +165,9 @@ BING_SUBSCRIPTION_KEY = 'your_subscription_key'
 
 BING_API_HOST = 'api.cognitive.microsofttranslator.com'
 
-OPENNLP_URL = 'http://localhost:9000'
+CORENLP_URL = 'http://localhost:9000'
 # depparse requires something like 2GB of RAM, tokenize,ssplit,pos together only 1GB
-OPENNLP_PARSE_PROPERTIES = '{"annotators":"tokenize,ssplit,pos","outputFormat":"json"}'
+CORENLP_PARSE_PROPERTIES = '{"annotators":"tokenize,ssplit,pos","outputFormat":"json"}'
 
 CCCEDICT_PATH = '/opt/transcrobes/cedict.txt'
 ABCEDICT_PATH = '/opt/transcrobes/abcdict.txt'
