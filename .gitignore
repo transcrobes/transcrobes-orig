@@ -85,8 +85,9 @@ target/
 __pycache__/
 local_settings.py
 
-# Anton
-prod_settings.py
+# Added
+**/settings/prod.py
+**/settings/dev.py
 .env
 db.sqlite3
 /static/
