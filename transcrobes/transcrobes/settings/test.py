@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from .base import *
+import logging
+logging.disable(logging.CRITICAL)
 
 DATABASES = {
     'default': {
