@@ -1,0 +1,26 @@
+image: registry.gitlab.com/transcrobes/transcrobes/tc_tc:v1
+
+services:
+  - name: postgres:11
+    alias: db
+
+variables:
+  POSTGRES_DB: tc_db
+  POSTGRES_USER: tc_user
+  POSTGRES_PASSWORD: tc_pass
+  DJANGO_SETTINGS_MODULE: 'transcrobes.settings.test'
+  PYTHONDONTWRITEBYTECODE: 1
+  GIT_SUBMODULE_STRATEGY: normal
+
+cache:
+  paths:
+  - ~/.cache/pip/
+
+before_script:
+  - pip install -r requirements.dev.txt
+
+test:
+  variables:
+    DATABASE_URL: "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_DB"
+  script:
+  - python transcrobes/manage.py test transcrobes
