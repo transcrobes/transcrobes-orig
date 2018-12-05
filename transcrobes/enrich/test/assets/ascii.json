@@ -1,0 +1,57 @@
+{
+  "sentences": [
+    {
+      "index": 0,
+      "tokens": [
+        {
+          "index": 1,
+          "word": "RCS",
+          "originalText": "RCS",
+          "characterOffsetBegin": 0,
+          "characterOffsetEnd": 3,
+          "pos": "NR"
+        },
+        {
+          "index": 2,
+          "word": "(",
+          "originalText": "(",
+          "characterOffsetBegin": 3,
+          "characterOffsetEnd": 4,
+          "pos": "PU"
+        },
+        {
+          "index": 3,
+          "word": "Rich",
+          "originalText": "Rich",
+          "characterOffsetBegin": 4,
+          "characterOffsetEnd": 8,
+          "pos": "NR"
+        },
+        {
+          "index": 4,
+          "word": "Communication",
+          "originalText": "Communication",
+          "characterOffsetBegin": 9,
+          "characterOffsetEnd": 22,
+          "pos": "NN"
+        },
+        {
+          "index": 5,
+          "word": "Services",
+          "originalText": "Services",
+          "characterOffsetBegin": 23,
+          "characterOffsetEnd": 31,
+          "pos": "NN"
+        },
+        {
+          "index": 6,
+          "word": ")",
+          "originalText": ")",
+          "characterOffsetBegin": 31,
+          "characterOffsetEnd": 32,
+          "pos": "PU"
+        }
+      ]
+    }
+  ]
+}

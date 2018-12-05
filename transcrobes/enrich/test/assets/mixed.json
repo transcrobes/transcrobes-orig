@@ -1,0 +1,137 @@
+{
+  "sentences": [
+    {
+      "index": 0,
+      "tokens": [
+        {
+          "index": 1,
+          "word": "科技",
+          "originalText": "科技",
+          "characterOffsetBegin": 0,
+          "characterOffsetEnd": 2,
+          "pos": "NN"
+        },
+        {
+          "index": 2,
+          "word": ":",
+          "originalText": ":",
+          "characterOffsetBegin": 2,
+          "characterOffsetEnd": 3,
+          "pos": "PU"
+        },
+        {
+          "index": 3,
+          "word": "NHK",
+          "originalText": "NHK",
+          "characterOffsetBegin": 4,
+          "characterOffsetEnd": 7,
+          "pos": "NR"
+        },
+        {
+          "index": 4,
+          "word": "以",
+          "originalText": "以",
+          "characterOffsetBegin": 8,
+          "characterOffsetEnd": 9,
+          "pos": "P"
+        },
+        {
+          "index": 5,
+          "word": "特别版",
+          "originalText": "特别版",
+          "characterOffsetBegin": 9,
+          "characterOffsetEnd": 12,
+          "pos": "NN"
+        },
+        {
+          "index": 6,
+          "word": "《",
+          "originalText": "《",
+          "characterOffsetBegin": 12,
+          "characterOffsetEnd": 13,
+          "pos": "PU"
+        },
+        {
+          "index": 7,
+          "word": "2001",
+          "originalText": "2001",
+          "characterOffsetBegin": 13,
+          "characterOffsetEnd": 17,
+          "pos": "NT"
+        },
+        {
+          "index": 8,
+          "word": "太空",
+          "originalText": "太空",
+          "characterOffsetBegin": 18,
+          "characterOffsetEnd": 20,
+          "pos": "NN"
+        },
+        {
+          "index": 9,
+          "word": "奥德赛",
+          "originalText": "奥德赛",
+          "characterOffsetBegin": 20,
+          "characterOffsetEnd": 23,
+          "pos": "NN"
+        },
+        {
+          "index": 10,
+          "word": "》",
+          "originalText": "》",
+          "characterOffsetBegin": 23,
+          "characterOffsetEnd": 24,
+          "pos": "PU"
+        },
+        {
+          "index": 11,
+          "word": "推出",
+          "originalText": "推出",
+          "characterOffsetBegin": 24,
+          "characterOffsetEnd": 26,
+          "pos": "VV"
+        },
+        {
+          "index": 12,
+          "word": "首",
+          "originalText": "首",
+          "characterOffsetBegin": 26,
+          "characterOffsetEnd": 27,
+          "pos": "OD"
+        },
+        {
+          "index": 13,
+          "word": "个",
+          "originalText": "个",
+          "characterOffsetBegin": 27,
+          "characterOffsetEnd": 28,
+          "pos": "M"
+        },
+        {
+          "index": 14,
+          "word": "8K",
+          "originalText": "8K",
+          "characterOffsetBegin": 29,
+          "characterOffsetEnd": 31,
+          "pos": "JJ"
+        },
+        {
+          "index": 15,
+          "word": "电视",
+          "originalText": "电视",
+          "characterOffsetBegin": 32,
+          "characterOffsetEnd": 34,
+          "pos": "NN"
+        },
+        {
+          "index": 16,
+          "word": "频道",
+          "originalText": "频道",
+          "characterOffsetBegin": 34,
+          "characterOffsetEnd": 36,
+          "pos": "NN"
+        }
+      ]
+    }
+  ]
+}

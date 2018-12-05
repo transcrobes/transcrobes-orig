@@ -1,0 +1,5 @@
+# vim:set ft=dockerfile:
+FROM python:3.6-slim
+
+# Stuff for building pyaudio
+RUN apt update && apt install -y portaudio19-dev gcc

@@ -1,0 +1,6 @@
+[run]
+
+omit =
+    transcrobes/anki-bundled*
+    transcrobes/transcrobes/settings/*
+    transcrobes/*/migrations/*

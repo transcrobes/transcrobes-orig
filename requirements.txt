@@ -6,7 +6,6 @@ decorator==4.3.0
 Django==2.1.3
 idna==2.7
 Markdown==3.0.1
-pkg-resources==0.0.0
 psycopg2-binary==2.7.6.1
 PyAudio==0.2.11
 pytz==2018.7

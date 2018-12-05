@@ -11,7 +11,7 @@ import unicodedata
 
 from django.conf import settings
 
-from enrich.nlp.provider import OpenNLPProvider
+from enrich.nlp.provider import CoreNLPProvider
 from enrich.translate.translator import BingTranslator, CCCedictTranslator, Translator, ABCDictTranslator
 from enrich.translate.translator import hsk_dict, subtlex
 from ankrobes import AnkrobesServer
@@ -183,7 +183,7 @@ def _set_best_guess(sentence, token):
 
 def enrich_to_json(html):
     # TODO: make this OOP with a factory method controlled from the settings
-    model = OpenNLPProvider().parse(html)
+    model = CoreNLPProvider().parse(html)
 
     logging.debug("Attempting to enrich: '{}'".format(html))
     _enrich_model(model)
