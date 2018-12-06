@@ -1,0 +1,13 @@
+# vim:set ft=dockerfile:
+FROM registry.gitlab.com/transcrobes/transcrobes/tc_tc:v1
+
+ARG requirements='requirements.txt'
+
+WORKDIR /app
+COPY . /app
+
+RUN pip install -r $requirements
+
+EXPOSE 8000
+
+CMD ["python", "transcrobes/manage.py", "runserver", "0.0.0.0:8000"]

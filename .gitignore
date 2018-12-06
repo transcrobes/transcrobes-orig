@@ -92,3 +92,5 @@ local_settings.py
 db.sqlite3
 /static/
 /tmp/
+docker-compose.yml
+Dockerfile
