@@ -155,10 +155,6 @@ ALLOWED_HOSTS = ['api.transcrobes.example.com']
 # Enrich app config
 ANKROBES_ENDPOINT = 'https://ankrobes.transcrobes.example.com:5223/%s'
 
-# TODO: Put this in the clients !!!!!
-ANKROBES_USERNAME = 'your_single_user_password'
-ANKROBES_PASSWORD = 'your_password_ankrobes_server_password'
-
 BING_SUBSCRIPTION_KEY = 'your_subscription_key'
 
 # From here the values are sensible and can be kept if desired
