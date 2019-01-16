@@ -21,7 +21,7 @@ DATABASES = {
 
 # MUST be behind ssl proxy
 # FIXME - remove the 'or'
-ALLOWED_HOSTS = ' '.join(os.getenv('TRANSCROBES_PUBLIC_HOSTS').split(',')).split() or ['*']
+ALLOWED_HOSTS = ' '.join((os.getenv('TRANSCROBES_PUBLIC_HOSTS') or '*').split(',')).split()
 
 # Enrich app config
 ANKROBES_ENDPOINT = 'http://{}/%s'.format(os.getenv('TRANSCROBES_ANKROBES_HOST'))
