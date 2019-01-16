@@ -44,5 +44,5 @@ class EnricherTests(TestCase):
 # def _enrich_model(model):
 # def _sanitise_ankrobes_entry(entries):
 # def _set_best_guess(sentence, token):
-# def enrich_to_json(html):
+# def enrich_to_json(html, username, password):
 

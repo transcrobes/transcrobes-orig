@@ -1,4 +1,4 @@
-image: registry.gitlab.com/transcrobes/transcrobes/tc_tc:v1
+image: registry.gitlab.com/transcrobes/transcrobes/tc_tc:v0.0.1
 
 services:
   - name: postgres:11
@@ -8,10 +8,15 @@ variables:
   POSTGRES_DB: tc_db
   POSTGRES_USER: tc_user
   POSTGRES_PASSWORD: tc_pass
-  DJANGO_SETTINGS_MODULE: 'transcrobes.settings.test'
+  POSTGRES_DATABASE: tc_db
+  POSTGRES_HOST: db
+  POSTGRES_PORT: 5432
+  DJANGO_SETTINGS_MODULE: 'transcrobes.settings.container'
+  CORENLP_HOST: corenlp  # TODO: not yet used in tests
+  ANKROBES_HOST: ankrobes  # TODO: not yet used in tests
+  BING_SUBSCRIPTION_KEY: a_great_key  # TODO: not yet used in tests
   PYTHONDONTWRITEBYTECODE: 1
   GIT_SUBMODULE_STRATEGY: normal
-
 cache:
   paths:
   - ~/.cache/pip/

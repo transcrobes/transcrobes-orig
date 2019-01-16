@@ -13,6 +13,7 @@ import json
 import re
 
 from ankrobes import AnkrobesServer
+from utils import get_credentials
 
 
 logger = logging.getLogger(__name__)
@@ -55,9 +56,9 @@ def _push_note_to_ankrobes(request, review_in):
 
         tags = ['chromecrobes'] + (fields['Tags'] if 'Tags' in fields else [])
 
-        # TODO: the settings shouldn't be here, they should probably be done in the class
-        server = AnkrobesServer(settings.ANKROBES_USERNAME, settings.ANKROBES_PASSWORD)
-        server.hostKey(settings.ANKROBES_USERNAME, settings.ANKROBES_PASSWORD)
+        username, password = get_credentials(request)
+        server = AnkrobesServer(username, password)
+        server.hostKey(username, password)
 
         status = server.set_word_known(simplified=simplified, pinyin=pinyin, meanings=[meanings],
                                        tags=tags, review_in=review_in)
@@ -93,9 +94,9 @@ def helloapi(request):
         # TODO: add my own (Hanping compatible???) tags here after stripping the existing entry stuff
         meanings = strip_tags(result).strip()
 
-        # TODO: the settings shouldn't be here, they should probably be done in the class
-        server = AnkrobesServer(settings.ANKROBES_USERNAME, settings.ANKROBES_PASSWORD)
-        server.hostKey(settings.ANKROBES_USERNAME, settings.ANKROBES_PASSWORD)
+        username, password = get_credentials(request)
+        server = AnkrobesServer(username, password)
+        server.hostKey(username, password)
 
         status = server.add_ankrobes_note(simplified, pinyin, [meanings], ['chromecrobes'])
         data = {"status": 'ok' if status else 'ko' }
