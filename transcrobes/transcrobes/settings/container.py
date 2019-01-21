@@ -19,6 +19,8 @@ DATABASES = {
     }
 }
 
+USER_CACHE_TIMEOUT = int(os.getenv('TRANSCROBES_USER_CACHE_TIMEOUT') or 5)
+
 # MUST be behind ssl proxy
 # FIXME - remove the 'or'
 ALLOWED_HOSTS = ' '.join((os.getenv('TRANSCROBES_PUBLIC_HOSTS') or '*').split(',')).split()
@@ -34,7 +36,7 @@ CORENLP_URL = "http://{}".format(os.getenv('TRANSCROBES_CORENLP_HOST'))
 SECRET_KEY = os.getenv('TRANSCROBES_SECRET_KEY') or 'not_a_very_good_secret'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('TRANSCROBES_DEBUG') or False
+DEBUG = str(os.getenv('TRANSCROBES_DEBUG')).lower() == 'true'
 
 CCCEDICT_PATH = os.getenv('TRANSCROBES_CCCEDICT_PATH') or '/opt/transcrobes/cedict.txt'
 ABCEDICT_PATH = os.getenv('TRANSCROBES_ABCEDICT_PATH') or '/opt/transcrobes/abcdict.txt'

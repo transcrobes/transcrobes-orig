@@ -4,13 +4,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
-    }
-}
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -67,6 +60,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+USER_CACHE_TIMEOUT = 5  # seconds
 
 LANGUAGE_CODE = 'en-gb'
 TIME_ZONE = 'UTC'
@@ -147,7 +142,7 @@ DATABASES = {
 SECRET_KEY = 'your_secret_key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # MUST be behind ssl proxy
 ALLOWED_HOSTS = ['api.transcrobes.example.com']
