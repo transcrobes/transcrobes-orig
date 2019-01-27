@@ -50,3 +50,8 @@ HSKDICT_PATH = os.getenv('TRANSCROBES_HSKDICT_PATH') or '/opt/transcrobes/hsk{}.
 # following file adapted from subtlexch131210.zip, basically removed useless cedict translations
 # and fixed incorrect pinyin 'ue:' -> 'u:e'
 SUBLEX_FREQ_PATH = os.getenv('TRANSCROBES_SUBLEX_FREQ_PATH') or '/opt/transcrobes/subtlex-ch.utf8.txt'
+
+# Import the pg-ankisyncd, ankisyncd and anki modules
+# import sys
+# SUBLEX_FREQ_PATH = os.getenv('TRANSCROBES_SUBLEX_FREQ_PATH') or '/opt/transcrobes/subtlex-ch.utf8.txt'
+# sys.path.append("/home/me/myapps")

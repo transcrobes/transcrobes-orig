@@ -15,7 +15,7 @@ import re
 from enrich.nlp.provider import CoreNLPProvider
 from enrich.translate.translator import BingTranslator, ABCDictTranslator, CCCedictTranslator, hsk_dict, subtlex
 from enrich.enricher import enrich_to_json
-from ankrobes import AnkrobesServer
+from notes.ankrobes import AnkrobesServer
 from utils import get_credentials
 
 
@@ -29,8 +29,8 @@ def enrich_json(request):
     logger.debug("Received to enrich json: {}".format(request.body.decode("utf-8")))
     data = {}
     if request.method == 'POST':
-        username, password = get_credentials(request)
-        data = enrich_to_json(request.body.decode("utf-8"), username, password)
+        username, _ = get_credentials(request)
+        data = enrich_to_json(request.body.decode("utf-8"), username)
 
     response = JsonResponse(data)
     response["Access-Control-Allow-Origin"] = "*"
@@ -62,10 +62,9 @@ def word_definitions(request):
         if not has_chinese_chars.match(t["word"]):
             logger.debug("Nothing to translate, exiting: {}".format(w))
             return JsonResponse({})
-        username, password = get_credentials(request)
+        username, _ = get_credentials(request)
         # get existing notes
-        server = AnkrobesServer(username, password)
-        server.hostKey(username, password)
+        server = AnkrobesServer(username)
         notes = server.get_word(w)
 
         online_translator = BingTranslator()

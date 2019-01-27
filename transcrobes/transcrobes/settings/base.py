@@ -172,3 +172,4 @@ HSKDICT_PATH = '/opt/transcrobes/hsk{}.txt'
 # following file adapted from subtlexch131210.zip, basically removed useless cedict translations
 # and fixed incorrect pinyin 'ue:' -> 'u:e'
 SUBLEX_FREQ_PATH = '/opt/transcrobes/subtlex-ch.utf8.txt'
+

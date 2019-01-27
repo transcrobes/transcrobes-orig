@@ -12,7 +12,7 @@ import logging
 import json
 import re
 
-from ankrobes import AnkrobesServer
+from notes.ankrobes import AnkrobesServer
 from utils import get_credentials
 
 

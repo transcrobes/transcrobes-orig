@@ -14,7 +14,7 @@ from django.conf import settings
 from enrich.nlp.provider import CoreNLPProvider
 from enrich.translate.translator import BingTranslator, CCCedictTranslator, Translator, ABCDictTranslator
 from enrich.translate.translator import hsk_dict, subtlex
-from ankrobes import AnkrobesServer
+from notes.ankrobes import AnkrobesServer
 from utils import get_credentials
 
 logger = logging.getLogger(__name__)
@@ -72,9 +72,8 @@ def _add_transliterations(sentence, transliterator):
         t['pinyin'] = pinyin
 
 
-def _enrich_model(model, username, password):
-    server = AnkrobesServer(username, password)
-    server.hostKey(username, password)
+def _enrich_model(model, username):
+    server = AnkrobesServer(username)
 
     online_translator = BingTranslator()
     cedict = CCCedictTranslator()
@@ -181,11 +180,11 @@ def _set_best_guess(sentence, token):
     token["best_guess"] = best_guess  # .split(',')[0].split(';')[0]
 
 
-def enrich_to_json(html, username, password):
+def enrich_to_json(html, username):
     # TODO: make this OOP with a factory method controlled from the settings
     model = CoreNLPProvider().parse(html)
 
     logging.debug("Attempting to enrich: '{}'".format(html))
-    _enrich_model(model, username, password)
+    _enrich_model(model, username)
 
     return model

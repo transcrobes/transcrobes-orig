@@ -16,7 +16,7 @@ variables:
   ANKROBES_HOST: ankrobes  # TODO: not yet used in tests
   BING_SUBSCRIPTION_KEY: a_great_key  # TODO: not yet used in tests
   PYTHONDONTWRITEBYTECODE: 1
-  GIT_SUBMODULE_STRATEGY: normal
+  GIT_SUBMODULE_STRATEGY: recursive
 cache:
   paths:
   - ~/.cache/pip/
@@ -28,4 +28,4 @@ test:
   variables:
     DATABASE_URL: "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_DB"
   script:
-  - python transcrobes/manage.py test transcrobes
+  - ./runtests.sh

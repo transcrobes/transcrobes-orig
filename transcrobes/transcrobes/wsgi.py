@@ -10,12 +10,10 @@ https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/
 """
 
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcrobes.prod_settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcrobes.settings.container')
 import django
 django.setup()
 
-from django.contrib.auth.handlers.modwsgi import check_password
 from django.core.wsgi import get_wsgi_application
-
 
 application = get_wsgi_application()

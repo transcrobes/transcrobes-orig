@@ -6,6 +6,7 @@ import json
 import logging
 import re
 import os
+import sys
 import requests
 
 from django.core.cache import cache
@@ -239,11 +240,16 @@ def load_subt():
 
             if not line.strip(): ignore = 0; continue
 
+
 # See https://gitlab.com/transcrobes/transcrobes/issues/4 for what this should look like
-if os.path.isfile(settings.CCCEDICT_PATH): load_cedict()
-if os.path.isfile(settings.ABCEDICT_PATH): load_abc()
-if os.path.isfile(settings.HSKDICT_PATH.format(1)): load_hsk_dict()
-if os.path.isfile(settings.SUBLEX_FREQ_PATH): load_subt()
+if 'transcrobes.wsgi' in sys.argv or 'runserver' in sys.argv:
+    logger.info('Loading any static dictionary files present')
+    if os.path.isfile(settings.CCCEDICT_PATH): load_cedict()
+    if os.path.isfile(settings.ABCEDICT_PATH): load_abc()
+    if os.path.isfile(settings.HSKDICT_PATH.format(1)): load_hsk_dict()
+    if os.path.isfile(settings.SUBLEX_FREQ_PATH): load_subt()
+else:
+    logger.info('Not running the web application, not loading the static dictionary files')
 
 class Translator(ABC):
     # See https://dkpro.github.io/dkpro-core/releases/1.9.0/docs/tagset-reference.html

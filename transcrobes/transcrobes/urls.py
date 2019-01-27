@@ -9,7 +9,6 @@ urlpatterns = [
     path('notes/', include('notes.urls')),
     path('admin/', admin.site.urls),
 
-    path('auth', views.auth, name='auth'),
     path('authget', views.authget, name='authget'),
     path('hello', views.hello, name='hello'),
 ]

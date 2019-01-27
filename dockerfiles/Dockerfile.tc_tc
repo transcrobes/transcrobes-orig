@@ -1,5 +1,5 @@
 # vim:set ft=dockerfile:
-FROM registry.gitlab.com/transcrobes/transcrobes/tc_pyaudio:v0.0.1
+FROM registry.gitlab.com/transcrobes/transcrobes/tc_pyaudio:v0.0.2
 
 # Set the working directory to /app
 WORKDIR /app
