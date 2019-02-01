@@ -1,8 +1,4 @@
-image: registry.gitlab.com/transcrobes/transcrobes/tc_tc:v0.0.1
-
-services:
-  - name: postgres:11
-    alias: db
+image: python:3.6-slim
 
 variables:
   POSTGRES_DB: tc_db
@@ -17,15 +13,66 @@ variables:
   BING_SUBSCRIPTION_KEY: a_great_key  # TODO: not yet used in tests
   PYTHONDONTWRITEBYTECODE: 1
   GIT_SUBMODULE_STRATEGY: recursive
+  CONTAINER_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_COMMIT_SHORT_SHA}
+  CONTAINER_IMAGE_LATEST: ${CI_REGISTRY}/${CI_PROJECT_PATH}:latest
+  CONTAINER_IMAGE_TAG: ${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_COMMIT_TAG}
+  APP_PATH: /app
+
 cache:
   paths:
-  - ~/.cache/pip/
+    - ~/.cache/pip/
 
-before_script:
-  - pip install -r requirements.dev.txt
+stages:
+  - test
+  - release
 
 test:
+  stage: test
+  services:
+    - name: postgres:11
+      alias: db
+
+  before_script:
+    - apt update && apt install -y portaudio19-dev gcc
+    - pip install -r requirements.dev.txt
+
   variables:
     DATABASE_URL: "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_DB"
+
   script:
-  - ./runtests.sh
+    - ./runtests.sh
+
+release-latest:
+  stage: release
+  image: docker:latest
+  services:
+   - docker:dind
+
+  script:
+    - export DOCKER_HOST=tcp://docker:2375/
+    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+    - docker build --pull -t ${CONTAINER_IMAGE} .
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
+    - docker push ${CONTAINER_IMAGE}
+    - docker push ${CONTAINER_IMAGE_LATEST}
+  only:
+    - master
+  except:
+    - tags
+
+release-tag:
+  stage: release
+  image: docker:latest
+  services:
+   - docker:dind
+  script:
+    - export DOCKER_HOST=tcp://docker:2375/
+    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+    - docker build --pull -t ${CONTAINER_IMAGE} .
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_TAG}
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
+    - docker push ${CONTAINER_IMAGE}
+    - docker push ${CONTAINER_IMAGE_TAG}
+    - docker push ${CONTAINER_IMAGE_LATEST}
+  only:
+    - tags
