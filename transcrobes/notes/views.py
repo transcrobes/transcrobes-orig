@@ -57,8 +57,7 @@ def _push_note_to_ankrobes(request, review_in):
         tags = ['chromecrobes'] + (fields['Tags'] if 'Tags' in fields else [])
 
         username, password = get_credentials(request)
-        server = AnkrobesServer(username, password)
-        server.hostKey(username, password)
+        server = AnkrobesServer(username)
 
         status = server.set_word_known(simplified=simplified, pinyin=pinyin, meanings=[meanings],
                                        tags=tags, review_in=review_in)
@@ -95,8 +94,7 @@ def helloapi(request):
         meanings = strip_tags(result).strip()
 
         username, password = get_credentials(request)
-        server = AnkrobesServer(username, password)
-        server.hostKey(username, password)
+        server = AnkrobesServer(username)
 
         status = server.add_ankrobes_note(simplified, pinyin, [meanings], ['chromecrobes'])
         data = {"status": 'ok' if status else 'ko' }
