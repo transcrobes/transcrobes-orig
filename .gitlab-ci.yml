@@ -16,6 +16,9 @@ variables:
   CONTAINER_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_COMMIT_SHORT_SHA}
   CONTAINER_IMAGE_LATEST: ${CI_REGISTRY}/${CI_PROJECT_PATH}:latest
   CONTAINER_IMAGE_TAG: ${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_COMMIT_TAG}
+  EXT_REG_IMG: ${EXT_REG_REGISTRY}/${EXT_REG_ORGANISATION}/${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}
+  EXT_REG_IMG_LATEST: ${EXT_REG_REGISTRY}/${EXT_REG_ORGANISATION}/${CI_PROJECT_NAME}:latest
+  EXT_REG_IMG_TAG: ${EXT_REG_REGISTRY}/${EXT_REG_ORGANISATION}/${CI_PROJECT_NAME}:${CI_COMMIT_TAG}
   APP_PATH: /app
 
 cache:
@@ -55,6 +58,11 @@ release-latest:
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
     - docker push ${CONTAINER_IMAGE}
     - docker push ${CONTAINER_IMAGE_LATEST}
+    - docker login -u ${EXT_REG_USER} -p ${EXT_REG_PASSWORD} ${EXT_REG_REGISTRY}
+    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG}
+    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG_LATEST}
+    - docker push ${EXT_REG_IMG}
+    - docker push ${EXT_REG_IMG_LATEST}
   only:
     - master
   except:
@@ -74,5 +82,12 @@ release-tag:
     - docker push ${CONTAINER_IMAGE}
     - docker push ${CONTAINER_IMAGE_TAG}
     - docker push ${CONTAINER_IMAGE_LATEST}
+    - docker login -u ${EXT_REG_USER} -p ${EXT_REG_PASSWORD} ${EXT_REG_REGISTRY}
+    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG}
+    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG_LATEST}
+    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG_TAG}
+    - docker push ${EXT_REG_IMG}
+    - docker push ${EXT_REG_IMG_LATEST}
+    - docker push ${EXT_REG_IMG_TAG}
   only:
     - tags
