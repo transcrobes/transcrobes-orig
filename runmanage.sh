@@ -2,4 +2,4 @@
 
 export PYTHONPATH=$PYTHONPATH:transcrobes:pg-ankisyncd:pg-ankisyncd/asd:pg-ankisyncd/asd/anki-bundled
 
-python transcrobes/manage.py test transcrobes
+python transcrobes/manage.py $@
