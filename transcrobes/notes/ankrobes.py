@@ -22,11 +22,6 @@ class AnkrobesServer:
         config = {"db_host" : dbc['HOST'], "db_port" : dbc['PORT'], "db_name" : dbc['NAME'],
                   "db_user" : dbc['USER'], "db_password" : dbc['PASSWORD']}
 
-
-        pconn = psycopg2.connect(dbname=dbc['NAME'], user=dbc['USER'], host=dbc['HOST'],
-                                 password=dbc['PASSWORD'], port=dbc['PORT'],
-                                 options=f'-c search_path={username}')
-
         path = f"fake/{username}/collection.anki2"
         db = panki.PostgresDB(config, path, username)
         col = panki.PostgresCollection(db, True)
@@ -194,6 +189,7 @@ class AnkrobesServer:
             note.addTag(tag)
 
         note.flush()
+        self.col.save()  # FIXME: Find a better way to unlock the db
 
     def _update_note_known(self, note_id, review_in):
         import datetime
@@ -241,3 +237,4 @@ class AnkrobesServer:
             card.due = due
             card.flush()
 
+        self.col.save()  # FIXME: Find a better way to unlock the db
