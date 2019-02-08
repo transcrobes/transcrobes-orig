@@ -28,6 +28,11 @@ class AnkrobesServer:
 
         self.col = col
 
+    def close(self):
+        # Close the DB connection so other threads can lock it for the
+        # user in question
+        self.col.close()
+
     # copied from old
     def is_known(self, token):
         # TODO: This method should take into account the POS but we'll need to implement that in Anki somehow

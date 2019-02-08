@@ -61,6 +61,7 @@ def _push_note_to_ankrobes(request, review_in):
 
         status = server.set_word_known(simplified=simplified, pinyin=pinyin, meanings=[meanings],
                                        tags=tags, review_in=review_in)
+        server.close()
         data = {"status": 'ok' if status else 'ko' }
 
         logger.debug("I got a {} back from ankrobes".format(data))
@@ -97,6 +98,7 @@ def helloapi(request):
         server = AnkrobesServer(username)
 
         status = server.add_ankrobes_note(simplified, pinyin, [meanings], ['chromecrobes'])
+        server.close()
         data = {"status": 'ok' if status else 'ko' }
 
         logging.debug("I got a {} back from ankrobes".format(data))
