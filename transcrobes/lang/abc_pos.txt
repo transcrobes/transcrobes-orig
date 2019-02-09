@@ -1,0 +1,81 @@
+Here is a distillation of
+https://gitlab.com/Wenlin/WenlinTushuguan/blob/master/Help/abbrev.wenlin
+containing only the POS for the Chinese -> English (cidian), from only those
+actually found in the cidian dump
+
+a.m.   aspect marker   tǐ biāojì 体标记
+a.t.   abstruse term   shēn'àocí 深奥词
+ab.   abbreviation   suōxiě 缩写
+adj.   adjective   xíngróngcí 形容词
+adv.   adverb   fùcí 副词
+attr.   attributive   dìngyǔ 定语
+aux.   auxiliary verb   zhùdòngcí 助动词
+b.f.   bound form   niánzhuó císù 粘着词素
+char.   character   zì 字
+cmp.   complement   bụ̌yǔ 补语, jiéguǒ bǔyǔcí 结果补语词
+conj.   conjunction   liáncí 连词
+cons.   construction   jùxíng 句型
+cov.   coverb   jiècí 介词
+f.e.   fixed expression   gùdìng cízǔ 固定词组
+id.   idiomatic saying   xíyǔ 习语
+inf.   infix   zhōngzhuì 中缀
+intj.   interjection   gǎntàn 感叹
+m.   measure   liàngcí 量词
+m.p.   modal particle   yǔqìcí 语气词
+n.   noun   míngcí 名词
+num.   number   shùcí 数词
+on.   onomatopoeia   xiàngshēngcí 象声词
+p.w.   place word   chùsuǒcí 处所词
+pr.   pronoun   dàicí 代词
+pref.   prefix   qiánzhuì 前缀
+r.f.   reduplicated form   chóngdiécí 重叠词
+r.v.   resultative verb/complement   jiéguǒ bǔyǔ 结果补语
+s.p.   subordinating particle   cóngshǔcí 从属词
+s.v.   stative verb   jìngtài dòngcí 静态动词
+suf.   suffix   hòuzhuì 后缀
+v.   verb   dòngcí 动词
+v.m.   verbal measure word   dòngliàngcí 动量词
+v.o.   verb-object   dòng-bīn líhécí 动宾离合词
+v.p.   verb phrase   dòngcí cízǔ 动词词组
+
+
+Here is a distillation of
+https://gitlab.com/Wenlin/WenlinTushuguan/blob/master/Help/abbrev.wenlin
+containing only the POS for the English -> Chinese (yinhang), from only those
+actually found in the yinhang dump
+
+ab.             abbreviation   suōxiě 缩写
+abbr.           or 'abbrev.' in docs - abbreviated   suōxiě de 缩写的
+adj.            adjective   xíngróngcí 形容词
+adv.            adverb   fùcí 副词
+art.            article   guàncí 冠词
+attr.           attributive   dìngyǔ 定语
+aux.            auxiliary verb   zhùdòngcí 助动词
+b.f.            bound form   niánzhuó císù 粘着词素
+c.              erroneous 'n.u./n.c.' entered as 'n.u/c.' countable noun   kẹ̌shǔ míngcí 可数名词
+cmp.            complement   bụ̌yǔ 补语, jiéguǒ bǔyǔcí 结果补语词
+conj.           conjunction   liáncí 连词
+f.e.            fixed expression   gùdìng cízǔ 固定词组
+id.             idiomatic saying   xíyǔ 习语
+intj.           interjection   gǎntàn 感叹
+m.              measure   liàngcí 量词
+n.              noun   míngcí 名词
+n.c             duplicated - countable noun   kẹ̌shǔ míngcí 可数名词
+n.c.            duplicated - countable noun   kẹ̌shǔ míngcí 可数名词
+n.pl.           or 'n.p.' in docs - plural noun   fùshù míngcí 复数名词
+n.sing.         singular noun   dānshù míngcí 单数名词
+n.u.            uncountable noun   bùkẹ̌shǔ míngcí 不可数名词
+num.            number   shùcí 数词
+on.             onomatopoeia   xiàngshēngcí 象声词
+pl.             plural   fùshù 复数
+pr.             pronoun   dàicí 代词
+pref.           prefix   qiánzhuì 前缀
+prep.           almost certainly preposition but not included in docs!!!
+r.f.            reduplicated form   chóngdiécí 重叠词
+suf.            suffix   hòuzhuì 后缀
+u.              erroneous 'n.c./n.u.' entered as 'n.c/u.' uncountable noun   bùkẹ̌shǔ míngcí 不可数名词
+v.              verb   dòngcí 动词
+v.i.            intransitive verb   bùjíwù dòngcí 不及物动词
+v.p.            verb phrase   dòngcí cízǔ 动词词组
+v.t.            transitive verb   jíwù dòngcí 及物动词
+

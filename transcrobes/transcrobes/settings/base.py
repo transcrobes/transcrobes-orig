@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -11,14 +12,27 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
     'enrich',
-    'notes',
+    'ankrobes',
+    'en_zhhans',
+    'zhhans_en',
+    'enrichers',
 ]
 
-# TODO: FIXME: find out why csrf_exempt isn't working on the enrich view and re-enable CSRF!!!!!
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [ 'rest_framework.permissions.IsAuthenticated', ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [ 'rest_framework_simplejwt.authentication.JWTAuthentication',
+                                       'rest_framework.authentication.BasicAuthentication',],
+}
+CORS_ORIGIN_ALLOW_ALL=True  # TODO: think about restricting this
+
+# TODO:
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
 #     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -44,7 +58,13 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'transcrobes.wsgi.application'
+# In order for anki-sync-server to be served this must be the
+# django_wsgi.handler NOT the normal handler
+# Warning, this is ignored/unused when running via gunicorn, so
+# it must be specified directly in the gunicorn wsgi.py file
+WSGI_APPLICATION = 'django_wsgi.handler.APPLICATION'
+# WSGI_APPLICATION = 'transcrobes.wsgi.application'
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -126,7 +146,6 @@ LOGGING = {
     },
 }
 
-# The following values MUST be overriden here or in a prod_settings.py file
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -147,29 +166,130 @@ DEBUG = False
 # MUST be behind ssl proxy
 ALLOWED_HOSTS = ['api.transcrobes.example.com']
 
-# Enrich app config
-ANKROBES_ENDPOINT = 'https://ankrobes.transcrobes.example.com:5223/%s'
-
-BING_SUBSCRIPTION_KEY = 'your_subscription_key'
-
 # From here the values are sensible and can be kept if desired
 
-BING_API_HOST = 'api.cognitive.microsofttranslator.com'
+def ANKISYNCD_CONFIG():
+    # PGANKISYNCD_CONFIG
+    from django.db import connection
+    return {
+        'data_root': '/tmp',  # required but unused
+        'base_url': '/sync/',
+        'base_media_url': '/msync/',
 
-CORENLP_URL = 'http://localhost:9000'
-# depparse requires something like 2GB of RAM, tokenize,ssplit,pos together only 1GB
-CORENLP_PARSE_PROPERTIES = '{"annotators":"tokenize,ssplit,pos","outputFormat":"json"}'
+        'persistence_manager': 'ankrobes.pgankisyncd.PostgresPersistenceManager',
+        'session_manager': 'ankrobes.pgankisyncd.PostgresSessionManager',
+        'user_manager': 'ankrobes.dum.DjangoUserManager',
+        'collection_wrapper': 'ankrobes.pgankisyncd.PostgresCollectionWrapper',
+        'collection_init': 'ankrobes.resources.sql,ankrobes.sql',
 
-CCCEDICT_PATH = '/opt/transcrobes/cedict.txt'
-ABCEDICT_PATH = '/opt/transcrobes/abcdict.txt'
+        'db_host': connection.settings_dict['HOST'],
+        'db_port': connection.settings_dict['PORT'],
+        'db_name': connection.settings_dict['NAME'],
+        'db_user': connection.settings_dict['USER'],
+        'db_password': connection.settings_dict['PASSWORD'],
+    }
 
-# see http://www.hskhsk.com/word-lists.html
-# data from http://data.hskhsk.com/lists/
-# files renamed "HSK Official With Definitions 2012 L?.txt" ->  hsk?.txt
-HSKDICT_PATH = '/opt/transcrobes/hsk{}.txt'
-
-# see https://www.ugent.be/pp/experimentele-psychologie/en/research/documents/subtlexch
-# following file adapted from subtlexch131210.zip, basically removed useless cedict translations
-# and fixed incorrect pinyin 'ue:' -> 'u:e'
-SUBLEX_FREQ_PATH = '/opt/transcrobes/subtlex-ch.utf8.txt'
+LANG_PAIRS = {
+    'zh-Hans:en':
+    {
+        'enrich': {
+            'classname': 'enrichers.zhhans.CoreNLP_ZHHANS_Enricher',
+            'config': { },
+        },
+        'parse': {
+            'classname': 'enrich.parse.HTTPCoreNLPProvider',
+            'config': {
+                'base_url': 'http://localhost:9000',
+                'params': '{"annotators":"lemma","outputFormat":"json"}',
+            },
+        },
+        'word_lemmatizer': {
+            'classname': 'enrich.lemmatize.no_op.NoOpWordLemmatizer',
+            'config': { },
+        },
+        'default': {
+            'classname': 'enrich.translate.bing.BingTranslator',
+            'config': { 'from': 'zh-Hans', 'to': 'en' ,
+                       'api_host': 'api.cognitive.microsofttranslator.com',
+                       'api_key': 'a_super_api_key' },
+            'transliterator': {
+                'classname': 'enrich.transliterate.bing.BingTransliterator',
+                'config': { 'from': 'zh-Hans', 'to': 'en' , 'from_script': 'Hans', 'to_script': 'Latn',
+                           'api_host': 'api.cognitive.microsofttranslator.com',
+                           'api_key': 'a_super_api_key' },
+            },
+        },
+        'secondary': [
+            {
+                'classname': 'zhhans_en.translate.abc.ZHHANS_EN_ABCDictTranslator',
+                'config': { 'path': '/opt/transcrobes/abc_zh_en_dict.txt', 'inmem': True },
+            },
+            {
+                'classname': 'zhhans_en.translate.ccc.ZHHANS_EN_CCCedictTranslator',
+                'config': { 'path': '/opt/transcrobes/cedict.txt', 'inmem': True },
+            },
+        ],
+        'metadata': [
+            {
+                'classname': 'enrichers.zhhans.metadata.hsk.ZH_HSKMetadata',
+                'config': { 'path': '/opt/transcrobes/hsk{}.txt', 'inmem': True },
+            },
+            {
+                'classname': 'enrichers.zhhans.metadata.subtlex.ZH_SubtlexMetadata',
+                'config': { 'path': '/opt/transcrobes/subtlex-ch.utf8.txt', 'inmem': True },
+            },
+        ],
+        'transliterate': {
+            'classname': 'enrich.transliterate.bing.BingTransliterator',
+            'config': { 'from': 'zh-Hans', 'to': 'en' , 'from_script': 'Hans', 'to_script': 'Latn',
+                       'api_host': 'api.cognitive.microsofttranslator.com',
+                       'api_key': 'a_super_api_key' },
+        },
+    },
+    'en:zh-Hans': {
+        'enrich': {
+            'classname': 'enrichers.en.CoreNLP_EN_Enricher',
+            'config': { },
+        },
+        'parse': {
+            'classname': 'enrich.parse.HTTPCoreNLPProvider',
+            'config': {
+                'base_url': 'http://localhost:9001',
+                'params': '{"annotators":"lemma","outputFormat":"json"}',
+            },
+        },
+        'word_lemmatizer': {
+            'classname': 'enrichers.en.SpaCy_EN_WordLemmatizer',
+            'config': {
+                # 'model_name': 'en_core_web_sm',  # Not currently used
+            },
+        },
+        'default': {
+            'classname': 'enrich.translate.bing.BingTranslator',
+            'config': { 'from': 'en', 'to': 'zh-Hans' ,
+                       'api_host': 'api.cognitive.microsofttranslator.com',
+                       'api_key': 'a_super_api_key' },
+            'transliterator': {
+                'classname': 'enrichers.en.transliterate.cmu.CMU_EN_Transliterator',
+                'config': { 'path': '/opt/transcrobes/cmudict-0.7b.txt', 'inmem': True },
+            },
+        },
+        'secondary': [
+            {
+                'classname': 'en_zhhans.translate.abc.EN_ZHHANS_ABCDictTranslator',
+                'config': { 'path': '/opt/transcrobes/abc_en_zh_dict.txt', 'inmem': True },
+            },
+        ],
+        'metadata': [
+            {
+                'classname': 'enrichers.en.metadata.subtlex.EN_SubtlexMetadata',
+                'config': { 'path': '/opt/transcrobes/subtlex-en-us.utf8.txt', 'inmem': True },
+            },
+        ],
+        'transliterate': {
+            'classname': 'enrichers.en.transliterate.cmu.CMU_EN_Transliterator',
+            'config': { 'path': '/opt/transcrobes/cmudict-0.7b.txt', 'inmem': True },
+        },
+    },
+}
 

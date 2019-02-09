@@ -1,3 +1,3 @@
-[submodule "pg-ankisyncd"]
-	path = pg-ankisyncd
-	url = https://gitlab.com/melser.anton/pg-ankisyncd
+[submodule "libs/anki-sync-server"]
+	path = libs/anki-sync-server
+	url = https://github.com/AntonOfTheWoods/anki-sync-server.git

@@ -15,6 +15,7 @@ This is PRE-alpha software with KNOWN DATALOSS BUGS. It works, sorta, if you hol
 
 Installation
 ============
+See
 Come back soon
 
 Configuration
@@ -30,3 +31,14 @@ Please sign all your commits by using `git -s`. In the context of this project t
 
 ## Contributing
 See [the website](https://transcrob.es/page/contribute) for more information. Please also take a look at our [code of conduct](https://transcrob.es/page/code_of_conduct) (or CODE\_OF\_CONDUCT.md in this repo).
+
+## External Open Source code used in/by this repo and licences
+###English-to-IPA
+The portions dealing with English to IPA (via the CMU Pronouncing dictionary, see `transcrobes/lang/enrichers/en/transliterate/cmu/__init__.py`) are taken from https://github.com/mphilli/English-to-IPA, licenced under the MIT Licence, and are Copyright (c) 2018 Michael Phillips.
+
+### Anki
+Anki is included as a git submodule, and is licenced under AGPL v3. See https://github.com/dae/anki for copyright details
+
+### anki-sync-server (@tsudoku remix)
+anki-sync-server is included as a git submodule, and is licenced under AGPL v3. See https://github.com/tsudoko/anki-sync-server for copyright details.
+

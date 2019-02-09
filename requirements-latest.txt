@@ -5,6 +5,7 @@ decorator
 Django
 django-appconf
 django-axes
+django-cors-headers
 django-ipware
 gunicorn
 idna
@@ -15,4 +16,8 @@ pytz
 requests
 Send2Trash
 soupsieve
+spacy
 urllib3
+xmltodict
+djangorestframework-simplejwt
+git+https://github.com/AntonOfTheWoods/django-wsgi.git

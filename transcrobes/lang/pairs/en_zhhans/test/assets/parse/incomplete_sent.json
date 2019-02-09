@@ -1,0 +1,33 @@
+{
+  "doc": {
+    "sentence": {
+      "@id": "24",
+      "word": [
+        {
+          "@wid": "0",
+          "@pos": "UH",
+          "@lemma": "oh",
+          "#text": "Oh"
+        },
+        {
+          "@wid": "1",
+          "@pos": "UH",
+          "@lemma": "hello",
+          "#text": "hello"
+        },
+        {
+          "@wid": "2",
+          "@pos": "EX",
+          "@lemma": "there",
+          "#text": "there"
+        },
+        {
+          "@wid": "3",
+          "@pos": "PRP$",
+          "@lemma": "my",
+          "#text": "my"
+        }
+      ]
+    }
+  }
+}

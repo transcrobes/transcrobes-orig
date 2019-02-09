@@ -1,5 +1,5 @@
 #!/bin/bash
 
-export PYTHONPATH=$PYTHONPATH:transcrobes:pg-ankisyncd:pg-ankisyncd/asd:pg-ankisyncd/asd/anki-bundled
+source set_python_path.sh
 
-gunicorn --workers=$TRANSCROBES_GUNICORN_WORKERS -b $TRANSCROBES_LISTEN_ADDRESS:$TRANSCROBES_LISTEN_PORT transcrobes.wsgi
+gunicorn --timeout $TRANSCROBES_GUNICORN_TIMEOUT --workers=$TRANSCROBES_GUNICORN_WORKERS -b $TRANSCROBES_LISTEN_ADDRESS:$TRANSCROBES_LISTEN_PORT transcrobes.wsgi

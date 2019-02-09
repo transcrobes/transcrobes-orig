@@ -1,5 +1,5 @@
 #!/bin/bash
 
-export PYTHONPATH=$PYTHONPATH:transcrobes:pg-ankisyncd:pg-ankisyncd/asd:pg-ankisyncd/asd/anki-bundled
+source set_python_path.sh
 
 python transcrobes/manage.py adduser "$@"

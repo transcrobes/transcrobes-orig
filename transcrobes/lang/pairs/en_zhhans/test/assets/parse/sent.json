@@ -1,0 +1,57 @@
+{
+  "doc": {
+    "sentence": {
+      "@id": "23",
+      "word": [
+        {
+          "@wid": "0",
+          "@pos": "UH",
+          "@lemma": "oh",
+          "#text": "Oh"
+        },
+        {
+          "@wid": "1",
+          "@pos": "UH",
+          "@lemma": "hello",
+          "#text": "hello"
+        },
+        {
+          "@wid": "2",
+          "@pos": "EX",
+          "@lemma": "there",
+          "#text": "there"
+        },
+        {
+          "@wid": "3",
+          "@pos": "PRP$",
+          "@lemma": "my",
+          "#text": "my"
+        },
+        {
+          "@wid": "4",
+          "@pos": "RB",
+          "@lemma": "dear",
+          "#text": "dear"
+        },
+        {
+          "@wid": "5",
+          "@pos": "JJ",
+          "@lemma": "old",
+          "#text": "old"
+        },
+        {
+          "@wid": "6",
+          "@pos": "NN",
+          "@lemma": "thing",
+          "#text": "thing"
+        },
+        {
+          "@wid": "7",
+          "@pos": ".",
+          "@lemma": ".",
+          "#text": "."
+        }
+      ]
+    }
+  }
+}

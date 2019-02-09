@@ -1,0 +1,153 @@
+{
+  "doc": {
+    "sentence": [
+      {
+        "@id": "20",
+        "word": [
+          {
+            "@wid": "0",
+            "@pos": "UH",
+            "@lemma": "oh",
+            "#text": "Oh"
+          },
+          {
+            "@wid": "1",
+            "@pos": "UH",
+            "@lemma": "hello",
+            "#text": "hello"
+          },
+          {
+            "@wid": "2",
+            "@pos": "EX",
+            "@lemma": "there",
+            "#text": "there"
+          },
+          {
+            "@wid": "3",
+            "@pos": "PRP$",
+            "@lemma": "my",
+            "#text": "my"
+          },
+          {
+            "@wid": "4",
+            "@pos": "RB",
+            "@lemma": "dear",
+            "#text": "dear"
+          },
+          {
+            "@wid": "5",
+            "@pos": "JJ",
+            "@lemma": "old",
+            "#text": "old"
+          },
+          {
+            "@wid": "6",
+            "@pos": "NN",
+            "@lemma": "thing",
+            "#text": "thing"
+          },
+          {
+            "@wid": "7",
+            "@pos": ".",
+            "@lemma": ".",
+            "#text": "."
+          }
+        ]
+      },
+      {
+        "@id": "21",
+        "word": [
+          {
+            "@wid": "0",
+            "@pos": "VBP",
+            "@lemma": "have",
+            "#text": "Have"
+          },
+          {
+            "@wid": "1",
+            "@pos": "PRP",
+            "@lemma": "you",
+            "#text": "you"
+          },
+          {
+            "@wid": "2",
+            "@pos": "VBN",
+            "@lemma": "be",
+            "#text": "been"
+          },
+          {
+            "@wid": "3",
+            "@pos": "VBG",
+            "@lemma": "watch",
+            "#text": "watching"
+          },
+          {
+            "@wid": "4",
+            "@pos": "DT",
+            "@lemma": "the",
+            "#text": "the"
+          },
+          {
+            "@wid": "5",
+            "@pos": "NN",
+            "@lemma": "cricket",
+            "#text": "cricket"
+          },
+          {
+            "@wid": "6",
+            "@pos": ".",
+            "@lemma": "?",
+            "#text": "?"
+          }
+        ]
+      },
+      {
+        "@id": "22",
+        "word": [
+          {
+            "@wid": "0",
+            "@pos": "DT",
+            "@lemma": "the",
+            "#text": "The"
+          },
+          {
+            "@wid": "1",
+            "@pos": "NN",
+            "@lemma": "batting",
+            "#text": "batting"
+          },
+          {
+            "@wid": "2",
+            "@pos": "VBZ",
+            "@lemma": "have",
+            "#text": "has"
+          },
+          {
+            "@wid": "3",
+            "@pos": "VBN",
+            "@lemma": "be",
+            "#text": "been"
+          },
+          {
+            "@wid": "4",
+            "@pos": "RB",
+            "@lemma": "positively",
+            "#text": "positively"
+          },
+          {
+            "@wid": "5",
+            "@pos": "JJ",
+            "@lemma": "dreadful",
+            "#text": "dreadful"
+          },
+          {
+            "@wid": "6",
+            "@pos": ".",
+            "@lemma": "!",
+            "#text": "!"
+          }
+        ]
+      }
+    ]
+  }
+}
