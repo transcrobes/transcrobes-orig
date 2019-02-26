@@ -22,6 +22,10 @@ urlpatterns = [
     # liveness
     path('hello', views.hello, name='hello'),
 
+    # podname
+    path('pod_name', views.pod_name, name='pod_name'),
+    path('pname', views.pod_name, name='pname'),
+
     # ankisyncd
     path('msync/', include('ankrobes.msyncurls')),
     path('sync/', include('ankrobes.syncurls')),
