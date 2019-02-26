@@ -498,6 +498,9 @@ class PostgresMediaManager(MediaManager):
 
     # override MediaManager
     def close(self):
+        if self.col.server:
+            return
+
         # We don't close the DB connection as we are using the parents connection
         # self.db.close()
         self.db = None

@@ -31,6 +31,8 @@ SECRET_KEY = os.getenv('TRANSCROBES_SECRET_KEY', 'not_a_very_good_secret')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.getenv('TRANSCROBES_DEBUG')).lower() == 'true'
 
+ANKROBES_DATA_ROOT = os.getenv('TRANSCROBES_ANKROBES_DATA_ROOT', '/tmp')
+
 # TODO: give the option of doing an import to a configmap mounted file
 # and configuring from there. That will likely be useful when we have
 # proper drop-in language pairs

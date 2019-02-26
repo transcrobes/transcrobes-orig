@@ -166,13 +166,16 @@ DEBUG = False
 # MUST be behind ssl proxy
 ALLOWED_HOSTS = ['api.transcrobes.example.com']
 
+ANKROBES_DATA_ROOT = '/tmp'
+
 # From here the values are sensible and can be kept if desired
 
 def ANKISYNCD_CONFIG():
     # PGANKISYNCD_CONFIG
     from django.db import connection
+    global ANKROBES_DATA_ROOT
     return {
-        'data_root': '/tmp',  # required but unused
+        'data_root': ANKROBES_DATA_ROOT,
         'base_url': '/sync/',
         'base_media_url': '/msync/',
 
