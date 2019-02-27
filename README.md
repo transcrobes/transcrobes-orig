@@ -11,16 +11,15 @@ See https://transcrob.es
 
 Status
 ======
-This is PRE-alpha software with KNOWN DATALOSS BUGS. It works, sorta, if you hold it right. There are not yet any tests and you should not attempt to use this project for anything like "production" until at least tests have been added.
+This is alpha software with some occasional data loss bugs. It works, sorta, if you hold it right. There are not yet any tests and you should not attempt to use this project for anything like "production" until at least tests have been added.
 
 Installation
 ============
-See
-Come back soon
+See https://transcrob.es
 
 Configuration
 =============
-Come back soon
+See https://transcrob.es
 
 Development
 ===========
