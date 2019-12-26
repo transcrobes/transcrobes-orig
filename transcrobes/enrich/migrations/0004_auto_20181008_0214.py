@@ -6,23 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('enrich', '0003_bingapitransliteration'),
+        ("enrich", "0003_bingapitransliteration"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='bingapilookup',
-            name='source_text',
-            field=models.CharField(db_index=True, max_length=2000),
+            model_name="bingapilookup", name="source_text", field=models.CharField(db_index=True, max_length=2000),
         ),
         migrations.AlterField(
-            model_name='bingapitranslation',
-            name='source_text',
-            field=models.CharField(db_index=True, max_length=2000),
+            model_name="bingapitranslation", name="source_text", field=models.CharField(db_index=True, max_length=2000),
         ),
         migrations.AlterField(
-            model_name='bingapitransliteration',
-            name='source_text',
+            model_name="bingapitransliteration",
+            name="source_text",
             field=models.CharField(db_index=True, max_length=2000),
         ),
     ]

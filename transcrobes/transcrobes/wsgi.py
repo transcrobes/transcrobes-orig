@@ -5,9 +5,13 @@ WSGI config for transcrobes project.
 """
 
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcrobes.settings.container')
+
 import django
+from django_wsgi.handler import DjangoApplication
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "transcrobes.settings.container")
+
 django.setup()
 
-from django_wsgi.handler import DjangoApplication
+
 application = DjangoApplication()

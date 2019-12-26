@@ -1,5 +1,10 @@
 #!/bin/bash
 
-source set_python_path.sh
+source runsetup.sh
 
-python transcrobes/manage.py test --settings transcrobes.settings.test $@
+pylint transcrobes/*
+
+# pre-commit also has flake8 linter
+pre-commit run --all-files --verbose
+
+python transcrobes/manage.py test --settings transcrobes.settings.test --verbosity=1 accounts lang enrich data ankrobes.tests.AnkrobesTests

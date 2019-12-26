@@ -7,30 +7,25 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ABCLookup',
+            name="ABCLookup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_text', models.CharField(db_index=True, max_length=2000)),
-                ('response_json', models.CharField(max_length=25000)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("source_text", models.CharField(db_index=True, max_length=2000)),
+                ("response_json", models.CharField(max_length=25000)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='CCCLookup',
+            name="CCCLookup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_text', models.CharField(db_index=True, max_length=2000)),
-                ('response_json', models.CharField(max_length=25000)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("source_text", models.CharField(db_index=True, max_length=2000)),
+                ("response_json", models.CharField(max_length=25000)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
     ]

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import re
-import os
-import sys
 import logging
+import re
 import unicodedata as ud
 
 from enrich.translate import Translator
@@ -84,6 +82,7 @@ class ZHHANS_EN_Translator(Translator):
 
     pass
 
+
 PinyinToneMark = {
     0: "aoeiuv\u00fc",
     1: "\u0101\u014d\u0113\u012b\u016b\u01d6\u01d6",
@@ -91,12 +90,17 @@ PinyinToneMark = {
     3: "\u01ce\u01d2\u011b\u01d0\u01d4\u01da\u01da",
     4: "\u00e0\u00f2\u00e8\u00ec\u00f9\u01dc\u01dc",
 }
-pins = "/aoeiuv\u00fc\u0101\u014d\u0113\u012b\u016b\u01d6\u01d6\u00e1\u00f3\u00e9\u00ed\u00fa\u01d8\u01d8\u01ce\u01d2\u011b\u01d0\u01d4\u01da\u01da\u00e0\u00f2\u00e8\u00ec\u00f9\u01dc\u01dc"
+pins = (
+    "/aoeiuv\u00fc\u0101\u014d\u0113\u012b\u016b\u01d6\u01d6\u00e1\u00f3\u00e9\u00ed\u00fa\u01d8\u01d8\u01ce\u01d2"
+    "\u011b\u01d0\u01d4\u01da\u01da\u00e0\u00f2\u00e8\u00ec\u00f9\u01dc\u01dc"
+)
 
 # super, sub and mid script unicode numbers
-supersubs = re.compile(r'[\u00b2\u00b3\u00b9\u2070-\u2099]+', re.UNICODE)
+supersubs = re.compile(r"[\u00b2\u00b3\u00b9\u2070-\u2099]+", re.UNICODE)
 
-def decode_pinyin(s):
+
+# FIXME: this needs to be thoroughly tested and refactored to be beautiful
+def decode_pinyin(s):  # pylint: disable=R0912  # noqa:C901
     """
     Convert to a standard pinyin form
     """
@@ -104,7 +108,7 @@ def decode_pinyin(s):
     """
     Remove super, mid and subscript numbers. Present in the ABC Dict
     """
-    s = supersubs.sub('', s)
+    s = supersubs.sub("", s)
 
     """
     Remove the "DOT BELOW" and "LINE BELOW". Present in the ABC Dict
@@ -117,34 +121,34 @@ def decode_pinyin(s):
     By converting to NFKD we can isolate the BELOW characters and remove them
     By converting back to NFC, we combine back to get a single char per graph
     """
-    s = ud.normalize('NFC', ud.normalize('NFKD', s).replace('̣','').replace('̠',''))
+    s = ud.normalize("NFC", ud.normalize("NFKD", s).replace("̣", "").replace("̠", ""))
 
     # lowercase because we consider pinyin to be a phonetic representation of a string
     # of Chinese characters, not an alternative writing system (that uses caps for proper nouns)
     s = s.lower()
     r = ""
     t = ""
-    for c in s:
-        if (c >= 'a' and c <= 'z') or c in pins:
+    for c in s:  # pylint: disable=R1702
+        if ("a" <= c <= "z") or c in pins:
             t += c
-        elif c == ':':
-            assert t[-1] == 'u'
+        elif c == ":":
+            assert t[-1] == "u"
             t = t[:-1] + "\u00fc"
         else:
-            if c >= '0' and c <= '5':
+            if "0" <= c <= "5":
                 tone = int(c) % 5
                 if tone != 0:
                     m = re.search("[aoeiuv\u00fc]+", t)
                     if m is None:
                         t += c
                     elif len(m.group(0)) == 1:
-                        t = t[:m.start(0)] + PinyinToneMark[tone][PinyinToneMark[0].index(m.group(0))] + t[m.end(0):]
+                        t = t[: m.start(0)] + PinyinToneMark[tone][PinyinToneMark[0].index(m.group(0))] + t[m.end(0) :]
                     else:
-                        if 'a' in t:
+                        if "a" in t:
                             t = t.replace("a", PinyinToneMark[tone][0])
-                        elif 'o' in t:
+                        elif "o" in t:
                             t = t.replace("o", PinyinToneMark[tone][1])
-                        elif 'e' in t:
+                        elif "e" in t:
                             t = t.replace("e", PinyinToneMark[tone][2])
                         elif t.endswith("ui"):
                             t = t.replace("i", PinyinToneMark[tone][3])
@@ -156,4 +160,3 @@ def decode_pinyin(s):
             t = ""
     r += t
     return r
-

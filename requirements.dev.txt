@@ -1,2 +1,9 @@
 -r requirements-latest.txt
 requests-mock
+coverage[toml]
+python-coveralls
+coveralls
+colorama
+pylint
+flake9   # not required, only for checking for pre-commit
+pre-commit

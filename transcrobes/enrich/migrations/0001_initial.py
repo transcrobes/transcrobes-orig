@@ -7,16 +7,15 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='BingRequest',
+            name="BingRequest",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_text', models.CharField(max_length=200)),
-                ('response_json', models.CharField(max_length=25000)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("source_text", models.CharField(max_length=200)),
+                ("response_json", models.CharField(max_length=25000)),
             ],
         ),
     ]

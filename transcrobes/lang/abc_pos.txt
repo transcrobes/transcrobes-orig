@@ -78,4 +78,3 @@ v.              verb   dòngcí 动词
 v.i.            intransitive verb   bùjíwù dòngcí 不及物动词
 v.p.            verb phrase   dòngcí cízǔ 动词词组
 v.t.            transitive verb   jíwù dòngcí 及物动词
-

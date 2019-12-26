@@ -3,6 +3,7 @@
 from enrich.data import PersistenceProvider
 from enrich.lemmatize import WordLemmatizer
 
+
 class NoOpWordLemmatizer(PersistenceProvider, WordLemmatizer):
     def name(self):
         return "noop"

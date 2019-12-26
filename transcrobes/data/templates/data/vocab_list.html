@@ -1,0 +1,114 @@
+{% extends 'data/base.html' %}
+{% load i18n %}
+
+
+{% block extrajs %}
+<script>
+
+const csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+function updateModel(event, lvocab) {
+    $.ajax({
+        type: 'POST',
+        cache: false,
+        context: $(event.target),
+        xhrFields: {
+            withCredentials: true
+        },
+        async: false,
+        url: '{{ post_ep|safe }}',
+        data: JSON.stringify(lvocab),
+        datatype: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function(data) {
+            console.log('Model updated');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log('jqXHR:'); console.log(jqXHR); console.log('textStatus:'); console.log(textStatus); console.log('errorThrown:'); console.log(errorThrown);
+        }
+    })
+}
+
+    const vocab = {{ vocab|safe }};
+
+    $(".tiptext").mouseover(function() {
+        //console.log('I get this ' + $(this).data("word"));
+        $(this).children(".description").show();
+        vocab[$(this).data("word")][0] = 1
+    }).mouseout(function() {
+        $(this).children(".description").hide();
+    }).click(function() {
+        $(this).toggleClass("selectedword");
+        vocab[$(this).data("word")][1] ^= 1
+    });
+
+    $('#form_submit').click(function(event) {
+        console.log(document.cookie);
+        updateModel(event, vocab);
+        //return false;
+    });
+
+</script>
+{% endblock %}
+
+{% block body %}
+<style>
+article {
+    -webkit-column-width: 150px;
+    -moz-column-width: 150px;
+    column-width: 150px;
+}
+.tiptext {
+    /*background:#ccc;*/
+    border: 1px #333 solid;
+    padding:5px;
+    width:80%;
+    font-size:150%;
+}
+.description {
+    display:none;
+    position:absolute;
+    border:1px solid #000;
+    padding:5px;
+    /*width:400px;
+    height:400px;*/
+    background-color: white;
+    opacity: 1;
+}
+.selectedword {
+    color: red;
+}
+</style>
+<article>
+{% for word in data %}
+    <div class="tiptext" data-word="{{word.Simplified}}">{{word.Simplified}}
+        <div class="description">
+            Pinyin: {{ word.Pinyin }}<br>
+            Meaning: {{ word.Meaning }}
+        </div>
+    </div>
+{% endfor %}
+<div>
+
+{% csrf_token %}
+
+<form action="{% url 'vocab_list' %}">
+    <br>
+    <input id="form_submit" class="btn btn-default btn-lg" type="submit" value="Submit" >
+</form>
+</div>
+
+</article>
+{% endblock %}

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-
-import re
-import os
-import json
 import logging
+import os
+import re
 from collections import defaultdict
 
 from en_zhhans.models import ABCENLookup
@@ -57,42 +55,42 @@ v.t.            transitive verb   jíwù dòngcí 及物动词
 """
 
 EN_TB_POS_TO_ABC_POS = {
-    'CC'  :  'conj.',          # Coordinating conjunction
-    'CD'  :  'num.',          # Cardinal number
-    'DT'  :  'other',          # Determiner
-    'EX'  :  'other',          # Existential _there_
-    'FW'  :  'other',          # Foreign word
-    'IN'  :  'prep.',          # Preposition or subordinating conjunction
-    'JJ'  :  'adj.',          # Adjective
-    'JJR' :  'adj.',          # Adjective, comparative
-    'JJS' :  'adj.',          # Adjective, superlative
-    'LS'  :  'other',          # List item marker
-    'MD'  :  'other',          # Modal
-    'NN'  :  'n.sing.',          # Noun, singular or mass
-    'NNS' :  'n.pl.',          # Noun, plural
-    'NNP' :  'n.sing.',          # Proper noun, singular
-    'NNPS':  'n.pl.',          # Proper noun, plural
-    'PDT' :  'other',          # Predeterminer
-    'POS' :  'other',          # Possessive ending
-    'PRP' :  'pr.',          # Personal pronoun
-    'PRP$':  'pr.',          # Possessive pronoun
-    'RB'  :  'adv.',          # Adverb
-    'RBR' :  'adv.',          # Adverb, comparitive
-    'RBS' :  'adv.',          # Adverb, superlative
-    'RP'  :  'other',          # Particle
-    'SYM' :  'other',          # Symbol
-    'TO'  :  'prep.',          # _to_
-    'UH'  :  'intj.',          # Interjection
-    'VB'  :  'v.',          # Verb, base form
-    'VBD' :  'v.',          # Verb, past tense
-    'VBG' :  'v.',          # Verb, gerund or present participle
-    'VBN' :  'v.',          # Verb, past participle
-    'VBP' :  'v.',          # Verb, non-3rd person singular present
-    'VBZ' :  'v.',          # Verb, 3rd person singular present
-    'WDT' :  'other',          # Wh-determiner
-    'WP'  :  'pr.',          # Wh-pronoun
-    'WP$' :  'pr.',          # Possessive wh-pronoun
-    'WRB' :  'adv.',          # Wh-adverb
+    "CC": "conj.",  # Coordinating conjunction
+    "CD": "num.",  # Cardinal number
+    "DT": "other",  # Determiner
+    "EX": "other",  # Existential _there_
+    "FW": "other",  # Foreign word
+    "IN": "prep.",  # Preposition or subordinating conjunction
+    "JJ": "adj.",  # Adjective
+    "JJR": "adj.",  # Adjective, comparative
+    "JJS": "adj.",  # Adjective, superlative
+    "LS": "other",  # List item marker
+    "MD": "other",  # Modal
+    "NN": "n.sing.",  # Noun, singular or mass
+    "NNS": "n.pl.",  # Noun, plural
+    "NNP": "n.sing.",  # Proper noun, singular
+    "NNPS": "n.pl.",  # Proper noun, plural
+    "PDT": "other",  # Predeterminer
+    "POS": "other",  # Possessive ending
+    "PRP": "pr.",  # Personal pronoun
+    "PRP$": "pr.",  # Possessive pronoun
+    "RB": "adv.",  # Adverb
+    "RBR": "adv.",  # Adverb, comparitive
+    "RBS": "adv.",  # Adverb, superlative
+    "RP": "other",  # Particle
+    "SYM": "other",  # Symbol
+    "TO": "prep.",  # _to_
+    "UH": "intj.",  # Interjection
+    "VB": "v.",  # Verb, base form
+    "VBD": "v.",  # Verb, past tense
+    "VBG": "v.",  # Verb, gerund or present participle
+    "VBN": "v.",  # Verb, past participle
+    "VBP": "v.",  # Verb, non-3rd person singular present
+    "VBZ": "v.",  # Verb, 3rd person singular present
+    "WDT": "other",  # Wh-determiner
+    "WP": "pr.",  # Wh-pronoun
+    "WP$": "pr.",  # Possessive wh-pronoun
+    "WRB": "adv.",  # Wh-adverb
 }
 
 
@@ -123,127 +121,124 @@ class EN_ZHHANS_ABCDictTranslator(PersistenceProvider, Translator):
 
     """
 
-    p = re.compile('^(\d*)(\w+)(\S*)\s+(.+)$')
+    p = re.compile(r"^(\d*)(\w+)(\S*)\s+(.+)$")
     model_type = ABCENLookup
 
     # override Metadata
     @staticmethod
     def name():
-        return 'second'
+        return "second"
 
     def _load(self):
         merged_dict = defaultdict(list)
 
-        if os.path.exists(self._config['path']):
+        if os.path.exists(self._config["path"]):
             dico = self._preload()
             self._remove_infl_of(dico)
             self._remove_subof(dico)
 
-            for k, v in dico.items():
-                merged_dict[v[0]['hw'].encode('ascii', 'ignore').decode('utf-8')].append(v[0])
+            for _k, v in dico.items():
+                merged_dict[v[0]["hw"].encode("ascii", "ignore").decode("utf-8")].append(v[0])
 
         return merged_dict
 
-
-    def _preload(self):
-        cur_pos = ''
-        cur_en = ''
-        ignore = 0
+    # FIXME: this would ideally be split but it is hard to see how without making it less clear
+    def _preload(self):  # pylint: disable=R0912  # noqa:C901
+        cur_pos = ""
         entry = None
 
         dico = {}  # reset if we have already loaded
-        with open(self._config['path'], 'r') as data_file:
+        with open(self._config["path"], "r") as data_file:
             for line in data_file:
                 # ignore non-useful lines
-                if not line.strip(): ignore = 0; continue
+                if not line.strip():
+                    continue
 
-                if line.startswith('.hw   '):
+                if line.startswith(".hw   "):
                     uid = line[6:].strip()
                     if entry:  # flush the previous entry
-                        if entry['ser'] in dico:
-                            dico[entry['ser']].append(entry)
+                        if entry["ser"] in dico:
+                            dico[entry["ser"]].append(entry)
                         else:
-                            dico[entry['ser']] = [entry]
+                            dico[entry["ser"]] = [entry]
 
-                    entry = {'hw': uid, 'definitions': [], 'els': []}
-                    cur_pos = ''
-                    cur_en = 'gen'
+                    entry = {"hw": uid, "definitions": [], "els": []}
+                    cur_pos = ""
                     continue
 
                 m = self.p.match(line)
 
-                if m.group(2) in ['rem']: continue  # comments
+                if m.group(2) in ["rem"]:
+                    continue  # comments
 
-                if m.group(2) in ['ser', 'ref', 'ipa'] and not m.group(1):
+                if m.group(2) in ["ser", "ref", "ipa"] and not m.group(1):
                     entry[m.group(2)] = m.group(4)
-                elif m.group(2) == 'gr' and not m.group(1):  # entry-level grade
+                elif m.group(2) == "gr" and not m.group(1):  # entry-level grade
                     entry[m.group(2)] = m.group(4)
-                elif m.group(2) in ['ps']:
+                elif m.group(2) in ["ps"]:
                     cur_pos = m.group(4)
-                    entry['els'].append([m.group(1), m.group(2), m.group(4)])
-                elif m.group(2) in ['en']:
-                    cur_en = m.group(4)
-                    entry['els'].append([m.group(1), m.group(2), m.group(4)])
+                    entry["els"].append([m.group(1), m.group(2), m.group(4)])
+                elif m.group(2) in ["en"]:
+                    entry["els"].append([m.group(1), m.group(2), m.group(4)])
                 else:
-                    entry['els'].append([m.group(1), m.group(2), m.group(4)])
-                    if m.group(2) in ['df']:
-                        entry['definitions'].append([m.group(1), cur_pos, m.group(4)])
+                    entry["els"].append([m.group(1), m.group(2), m.group(4)])
+                    if m.group(2) in ["df"]:
+                        entry["definitions"].append([m.group(1), cur_pos, m.group(4)])
 
             if entry:  # flush the last entry
-                if entry['ser'] in dico:
-                    dico[entry['ser']].append(entry)
+                if entry["ser"] in dico:
+                    dico[entry["ser"]].append(entry)
                 else:
-                    dico[entry['ser']] = [entry]
+                    dico[entry["ser"]] = [entry]
 
         return dico
 
-    def _remove_infl_of(self, dico):
-        i = 0
-        bad = 0
+    @staticmethod
+    def _remove_infl_of(dico):
         wdico = dico.copy()
         reg = re.compile(r".* of .*\[([0-9]+)\].*")
-        for k, v in wdico.items():
-            for ls in v[0]['els']:
-                if ls[1] == 'infl':
+        for k, v in wdico.items():  # pylint: disable=R1702
+            for ls in v[0]["els"]:
+                if ls[1] == "infl":
                     m = reg.match(ls[2])
                     if m and m.group(1):
-                        if 'infls' not in dico[m.group(1)][0]:
-                            dico[m.group(1)][0]['infls'] = []
+                        if "infls" not in dico[m.group(1)][0]:
+                            dico[m.group(1)][0]["infls"] = []
                         if k in dico:
-                            if len(v[0]['definitions']) == 0:
-                                dico[m.group(1)][0]['infls'].append(dico.pop(k))
+                            if len(v[0]["definitions"]) == 0:
+                                dico[m.group(1)][0]["infls"].append(dico.pop(k))
 
-    def _remove_subof(self, dico):
-        i = 0
+    @staticmethod
+    def _remove_subof(dico):
         wdico = dico.copy()
         reg = re.compile(r".*\[([0-9]+)\].*")
-        for k, v in wdico.items():
-            for ls in v[0]['els']:
-                if ls[1] == 'subof':
+        for k, v in wdico.items():  # pylint: disable=R1702
+            for ls in v[0]["els"]:
+                if ls[1] == "subof":
                     m = reg.match(ls[2])
                     if m and m.group(1):
                         if m.group(1) not in dico:
                             continue
-                        if 'subs' not in dico[m.group(1)][0]:
-                            dico[m.group(1)][0]['subs'] = []
+                        if "subs" not in dico[m.group(1)][0]:
+                            dico[m.group(1)][0]["subs"] = []
                         if k in dico:
-                            if len(v[0]['definitions']) == 0 or len(v[0]['hw'].split()) > 0:
-                                dico[m.group(1)][0]['subs'].append(dico.pop(k))
-
+                            if len(v[0]["definitions"]) == 0 or len(v[0]["hw"].split()) > 0:
+                                dico[m.group(1)][0]["subs"].append(dico.pop(k))
 
     # TODO: fix the POS correspondences
     # override Translator
     def get_standardised_defs(self, token):
         std_format = {}
-        entry = self._get_def(token['lemma'])
+        entry = self._get_def(token["lemma"])
         if entry:
-            logger.debug("'{}' is in abcendict cache".format(token["lemma"]))
+            logger.debug("'%s' is in abcendict cache", token["lemma"])
             for abc in entry:
-                logger.debug("Iterating on '{}''s different definitions in abcendict cache".format(token["lemma"]))
-                for defin in abc['definitions']:
+                logger.debug("Iterating on '%s''s different definitions in abcendict cache", token["lemma"])
+                for defin in abc["definitions"]:
                     token_pos = EN_TB_POS_TO_ABC_POS[token["pos"]]
 
-                    if not defin[1] in std_format: std_format[defin[1]] = []
+                    if not defin[1] in std_format:
+                        std_format[defin[1]] = []
 
                     if token_pos == defin[1]:
                         confidence = 0.01
@@ -255,16 +250,15 @@ class EN_ZHHANS_ABCDictTranslator(PersistenceProvider, Translator):
                         "opos": defin[1],
                         "normalizedTarget": defin[2],
                         "confidence": confidence,
-                        "trans_provider": 'ABCENDICT'
+                        "trans_provider": "ABCENDICT",
                     }
-                    defie["pinyin"] = abc.get("ipa", 'unknown')
+                    defie["pinyin"] = abc.get("ipa", "unknown")
                     std_format[defin[1]].append(defie)
 
-        logger.debug("Finishing looking up '{}' in abcendict".format(token["lemma"]))
+        logger.debug("Finishing looking up '%s' in abcendict", token["lemma"])
         return std_format
 
     # override Translator
     def get_standardised_fallback_defs(self, token):
         # TODO: do something better than this!
         return self.get_standardised_defs(token)
-

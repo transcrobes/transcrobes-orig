@@ -1,0 +1,20 @@
+<!-- templates/home.html-->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+
+  <!--<p><a href="/survey/1">Tell the system what you already know (again)</a></p>-->
+  <p><a href="{% url 'experiment-detail' %}">Get started reading!</a></p>
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in. Please log in or send and email to anton.melser@my.cityu.edu.hk for an account</p>
+  <a href="{% url 'login' %}">login</a>
+  <!--<p><a href="{% url 'signup' %}">sign up</a></p>-->
+
+{% endif %}
+{% endblock %}

@@ -6,14 +6,10 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('zhhans_en', '0002_hsklookup_subtlexlookup'),
+        ("zhhans_en", "0002_hsklookup_subtlexlookup"),
     ]
 
     operations = [
-        migrations.DeleteModel(
-            name='HSKLookup',
-        ),
-        migrations.DeleteModel(
-            name='SubtlexLookup',
-        ),
+        migrations.DeleteModel(name="HSKLookup",),
+        migrations.DeleteModel(name="SubtlexLookup",),
     ]

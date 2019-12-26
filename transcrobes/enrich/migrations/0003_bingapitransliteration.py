@@ -6,19 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('enrich', '0002_auto_20180910_0724'),
+        ("enrich", "0002_auto_20180910_0724"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BingAPITransliteration',
+            name="BingAPITransliteration",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_text', models.CharField(max_length=200)),
-                ('response_json', models.CharField(max_length=25000)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("source_text", models.CharField(max_length=200)),
+                ("response_json", models.CharField(max_length=25000)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
     ]

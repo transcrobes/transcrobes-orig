@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-
-import os
 import logging
+import os
 from collections import defaultdict
-
-from django.conf import settings
 
 from enrich.data import PersistenceProvider
 from enrich.metadata import Metadata
@@ -22,30 +19,32 @@ https://www.ugent.be/pp/experimentele-psychologie/en/research/documents/subtlexu
 """
 
 EN_SUBTLEX_POS_ABBREVS = {
-    'Adjective'     : 'a',
-    'Adverb'        : 'adv',
-    'Article'       : 'art',
-    'Conjunction'   : 'con',
-    'Determiner'    : 'd',
-    'Ex'            : 'e',
-    'Interjection'  : 'i',
-    'Letter'        : 'l',
-    '#N/A'          : '#na',
-    'Name'          : 'na',
-    'Not'           : 'no',
-    'Noun'          : 'n',
-    'Number'        : 'num',
-    'Preposition'   : 'prp',
-    'Pronoun'       : 'pr',
-    'To'            : 'to',
-    'Unclassified'  : 'u',
-    'Verb'          : 'v',
+    "Adjective": "a",
+    "Adverb": "adv",
+    "Article": "art",
+    "Conjunction": "con",
+    "Determiner": "d",
+    "Ex": "e",
+    "Interjection": "i",
+    "Letter": "l",
+    "#N/A": "#na",
+    "Name": "na",
+    "Not": "no",
+    "Noun": "n",
+    "Number": "num",
+    "Preposition": "prp",
+    "Pronoun": "pr",
+    "To": "to",
+    "Unclassified": "u",
+    "Verb": "v",
 }
 
-class EN_SubtlexMetadata(PersistenceProvider, Metadata):
+
+class EN_SubtlexMetadata(PersistenceProvider, Metadata):  # pylint: disable=C0103
     model_type = EN_SubtlexLookup
 
-    def _encode_pos(self, s):
+    @staticmethod
+    def _encode_pos(s):
         """
         To present to users we abbreviate the POS in the file. There is some rubbish but whatever
 
@@ -69,11 +68,13 @@ class EN_SubtlexMetadata(PersistenceProvider, Metadata):
           260 Unclassified  u
         23545 Verb          v
         """
-        return '.'.join([ EN_SUBTLEX_POS_ABBREVS[x.strip()] for x in s.split('.') ])
+        return ".".join([EN_SUBTLEX_POS_ABBREVS[x.strip()] for x in s.split(".")])
 
     def _load(self):
         # see https://www.ugent.be/pp/experimentele-psychologie/en/research/documents/subtlexus/overview.htm
-        # Word                  - This starts with a capital when the word more often starts with an uppercase letter than with a lowercase letter.
+        #
+        # Word                  - This starts with a capital when the word more often starts with an uppercase
+        #                         letter than with a lowercase letter.
         # FREQcount
         # CDcount
         # FREQlow
@@ -92,22 +93,25 @@ class EN_SubtlexMetadata(PersistenceProvider, Metadata):
         dico = defaultdict(list)
         logger.info("Starting population of EN US subtlex")
 
-        if os.path.exists(self._config['path']):
-            with open(self._config['path'], 'r') as data_file:
-                next(data_file) # skip the header line
+        if os.path.exists(self._config["path"]):
+            with open(self._config["path"], "r") as data_file:
+                next(data_file)  # skip the header line
                 for line in data_file:
-                    l = line.strip().split("\t")
-                    w = l[0].lower()  # TODO: we are losing info here probably
-                    dico[w].append({
-                        # TODO: should a translit be put here?
-                        "zipf": l[14][0:4],  # Zipf value
-                        "wcpm": l[5],  # word count per million
-                        "wcdp": l[7],  # % of film subtitles that had the char at least once
-                        "pos": self._encode_pos(l[12]),  # all POS found, most frequent first
-                        "pos_freq": l[13],  # nb of occurences by POS
-                    })
+                    li = line.strip().split("\t")
+                    w = li[0].lower()  # TODO: we are losing info here probably
+                    dico[w].append(
+                        {
+                            # TODO: should a translit be put here?
+                            "zipf": li[14][0:4],  # Zipf value
+                            "wcpm": li[5],  # word count per million
+                            "wcdp": li[7],  # % of film subtitles that had the char at least once
+                            "pos": self._encode_pos(li[12]),  # all POS found, most frequent first
+                            "pos_freq": li[13],  # nb of occurences by POS
+                        }
+                    )
 
-                    if not line.strip(): ignore = 0; continue
+                    if not line.strip():
+                        continue
 
         logger.info(f"Finished populating EN US subtlex, there are {len(list(dico.keys()))} entries")
 
@@ -116,7 +120,7 @@ class EN_SubtlexMetadata(PersistenceProvider, Metadata):
     # override Metadata
     @staticmethod
     def name():
-        return 'freq'
+        return "freq"
 
     # override Metadata
     def meta_for_word(self, lword):
@@ -126,11 +130,7 @@ class EN_SubtlexMetadata(PersistenceProvider, Metadata):
     def metas_as_string(self, lword):
         entries = self.entry(lword)
         if not entries:
-            return { 'name': self.name(), 'metas': '' }
-        else:
-            e = entries[0]
-            return {
-                'name': self.name(),
-                'metas': f"{e['zipf']}, {e['wcpm']}, {e['wcdp']}, {e['pos']}, {e['pos_freq']}"
-            }
+            return {"name": self.name(), "metas": ""}
 
+        e = entries[0]
+        return {"name": self.name(), "metas": f"{e['zipf']}, {e['wcpm']}, {e['wcdp']}, {e['pos']}, {e['pos_freq']}"}

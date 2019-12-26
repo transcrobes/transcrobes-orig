@@ -1,0 +1,19 @@
+{% extends 'survey/base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Grammar questionnaire completed" %}{% endblock title %}
+
+{% block body %}
+<h1>{% trans "Grammar questionnaire completed"%}</h1>
+<p>
+    <div class="alert alert-success">
+       {% trans "Thanks! Your answers have been saved" %}
+    </div>
+    <div class="alert alert-info">
+      <a href="/survey/1/">{% trans "You can always come back and change them." %}</a>
+    </div>
+    <div class="alert alert-info">
+      {% trans "You can now get started " %} <a href="/data/reading/">{% trans "reading appropriate texts" %}</a>
+    </div>
+</p>
+{% endblock %}

@@ -1,0 +1,92 @@
+[tool.coverage.run]
+omit = [
+    "transcrobes/transcrobes/settings/*",
+    "transcrobes/*/migrations/*",
+]
+
+[tool.pylint.master]
+init-hook = "import imp, os; from pylint.config import find_default_config_files; imp.load_source('import_hook', os.path.join(os.path.dirname(next(find_default_config_files())), 'import_hook.py'))"
+
+[tool.pylint.messages_control]
+# I0011 Warning locally suppressed using disable-msg
+disable = """
+    invalid-name,
+    logging-fstring-interpolation,
+    fixme,
+    I0011,
+    missing-docstring,
+    C0330,
+    too-few-public-methods,
+    too-many-arguments,
+    C0326,
+    pointless-string-statement,
+    no-member,
+    R0901,
+    R0801,
+"""
+
+ignore = """,
+    migrations,
+"""
+
+[tool.pylint.basic]
+# Good variable names which should always be accepted, separated by a comma.
+good-names = "i,j,k,ex,_,f,e,s,w,li,t"
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.isort]
+multi_line_output = 3
+line_length = 120
+known_third_party = "requests_mock,django,mock,pandas,pysankey,pytz,setuptools,yaml,django_wsgi,rest_framework,rest_framework_simplejwt,ankisyncd"
+known_first_party = "transcrobes,ankrobes,enrich,lang,data,en_zhhans,enrichers,zhhans_en,utils"
+# project = "transcrobes"
+include_trailing_comma = "True"
+force_grid_wrap = 0
+use_parentheses = "True"
+
+[tool.flake8]
+ignore = "E226,E266"
+exclude = """,
+    tmp,
+    libs,
+    .git,
+    __pycache__,
+    build,
+    dist,
+    transcrobes/data/experiments.py,
+    transcrobes/data/views.py
+"""
+max-line-length = 120
+max-complexity = 10
+extend-ignore = "E203,W503"
+
+[tool.black]
+line-length = 120
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    # Add additional patterns here:
+    | .ropeproject
+    | tmp
+    | libs
+    | static
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''

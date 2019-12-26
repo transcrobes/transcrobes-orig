@@ -1,54 +1,59 @@
 # -*- coding: utf-8 -*-
+"""
+isort:skip_file
+"""
 
-import os
-import re
-import sys
 import abc
-import time
-import copy
-import pkgutil
-import logging
-import tempfile
 import datetime
+import logging
+import os
+import pkgutil
+import re
+import tempfile
+import time
 from pathlib import Path
 from sqlite3 import dbapi2 as sqlite
+
+from django.conf import settings
 
 import psycopg2
 import psycopg2.extras
 
-from django.conf import settings
-
+# fmt: off
+# pylint: disable=C0413,C0411
 # See https://www.sqlite.org/datatype3.html
-# All Anki's numeric column types are `INT`, meaning that their "affinity"
-# will always be `INT`. This *appears* to mean that the return values of all functions, like
-# `sum(left/1000)...` will be interpreted as `int` by the sql driver, and get an `int` object.
-# psycopg2 tries to be intelligent and returns `Decimal`, meaning many things
+# All Anki's numeric column types are `INT`, meaning that their "affinity" will always be `INT`. This *appears* to
+# mean that the return values of all functions, like `sum(left/1000)...` will be interpreted as `int` by the sql
+# driver, and get an `int` object. psycopg2 tries to be intelligent and returns `Decimal`, meaning many things
 # that expect `int` (such as serialising `dict`) will fail. Here we tell
 # psycopg2 to use `int` and keep compatibility with up-upstream
 DEC2INT = psycopg2.extensions.new_type(
-        psycopg2.extensions.DECIMAL.values,
-        'DEC2INT',
-        lambda value, curs: int(value) if value is not None else None)
+    psycopg2.extensions.DECIMAL.values, "DEC2INT", lambda value, curs: int(value) if value is not None else None
+)
 psycopg2.extensions.register_type(DEC2INT)
 
-from anki.consts import SCHEMA_VERSION
-import anki.db as ankidb
-from anki.models import ModelManager
-from anki.media import MediaManager
-from anki.decks import DeckManager
-from anki.tags import TagManager
-from anki.collection import _Collection
-import anki.storage
-from anki.utils import intTime, json
-from anki.stdmodels import addBasicModel, addClozeModel, addForwardReverse, \
-    addForwardOptionalReverse, addBasicTypingModel
-
-# from ankisyncd import config as conf
-from ankisyncd.persistence import PersistenceManager
-from ankisyncd.sessions import SqliteSessionManager, SimpleSessionManager
-from ankisyncd.persistence import PersistenceManager
-from ankisyncd.collection import CollectionManager, CollectionWrapper
-from ankisyncd.users import SqliteUserManager, SimpleUserManager
+import anki.db as ankidb  # noqa:E402
+import anki.storage  # noqa:E402
+from anki.collection import _Collection  # noqa:E402
+from anki.consts import SCHEMA_VERSION  # noqa:E402
+from anki.decks import DeckManager  # noqa:E402
+from anki.models import ModelManager  # noqa:E402
+from anki.stdmodels import (  # noqa:E402
+    addBasicModel,
+    addBasicTypingModel,
+    addClozeModel,
+    addForwardOptionalReverse,
+    addForwardReverse,
+)
+from anki.tags import TagManager  # noqa:E402
+from ankisyncd.collection import CollectionWrapper  # noqa:E402
+from ankisyncd.full_sync import FullSyncManager  # noqa:E402
+from ankisyncd.media import ServerMediaManager  # noqa:E402
+from ankisyncd.sessions import SimpleSessionManager, SqliteSessionManager  # noqa:E402
+from ankisyncd.users import SimpleUserManager, SqliteUserManager  # noqa:E402
+# fmt: on
+# pylint: enable=C0413,C0411
+# pylint: disable=C0103  # this is because of reimplementing Anki, which has bad naming
 
 
 # This class is the source of truth for the Anki data model. It is used
@@ -72,117 +77,180 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;"""
 
-    CREATE_SCHEMA = 'CREATE SCHEMA {schema_name};'
+    # FIXME: how to make this less alarashy?
+    CREATE_TRIGGERS = """
+CREATE OR REPLACE FUNCTION {schema_name}.update_word_insert_cards()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+    update notes set word =
+        case
+            when exists(
+                select 1 from json_each((SELECT decks FROM col)::json) a
+                    INNER JOIN cards c on c.did = a.key::bigint
+                    INNER JOIN notes n on c.nid = n.id
+                    where n.id =
+                        case when NEW is null then OLD.nid
+                        ELSE NEW.nid END
+                    and json_extract_path_text(a.value, 'name') = 'transcrobes')
+        then (select distinct regexp_replace(substring(ns.flds from 0 for position(chr(31) in ns.flds)),
+            '<[^>]*>','', 'g') from notes ns where ns.id = case when NEW is null then OLD.nid ELSE NEW.nid END)
+        else null
+        end
+        where notes.id = case when NEW is null then OLD.nid ELSE NEW.nid END;
+    RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE;
+
+CREATE OR REPLACE FUNCTION {schema_name}.update_word_update_notes()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+    IF NEW.flds <> OLD.flds THEN
+         update notes set word =
+            case when (select distinct json_extract_path_text(a.value, 'name')
+                from json_each((SELECT decks FROM col)::json) a
+                    INNER JOIN cards c on c.did = a.key::bigint
+                    INNER JOIN notes n on c.nid = n.id where n.id = NEW.id) = 'transcrobes'
+            then regexp_replace(substring(NEW.flds from 0 for position(chr(31) in NEW.flds)), '<[^>]*>','', 'g')
+            else null
+            end
+            where notes.id = NEW.id;
+    END IF;
+
+    RETURN NEW;
+END;
+$BODY$
+LANGUAGE plpgsql VOLATILE;
+
+CREATE TRIGGER update_word_update_notes_tr
+ AFTER UPDATE OF flds
+ ON {schema_name}.notes
+ FOR EACH ROW EXECUTE PROCEDURE {schema_name}.update_word_update_notes();
+
+CREATE TRIGGER update_word_insert_cards_tr
+ AFTER INSERT OR DELETE OR UPDATE OF did
+ ON {schema_name}.cards
+ FOR EACH ROW EXECUTE PROCEDURE {schema_name}.update_word_insert_cards();
+    """
+
+    CREATE_SCHEMA = "CREATE SCHEMA {schema_name};"
     VERSION = 11
-    COLLECTION_PARENT_DB = 'collection'
-    MEDIA_PARENT_DB = 'media'
+    COLLECTION_PARENT_DB = "collection"
+    MEDIA_PARENT_DB = "media"
 
     # is_pk gives a primary key constraint and an identity sequence, currently
     # only supports single
     MODEL = {
-        'notes':
-        { 'fields' : [
-            { 'name': 'id', 'type': 'bigint', 'is_pk': True },
-            { 'name': 'guid', 'type': 'text' },
-            { 'name': 'mid', 'type': 'bigint' },
-            { 'name': 'mod', 'type': 'bigint' },
-            { 'name': 'usn', 'type': 'bigint' },
-            { 'name': 'tags', 'type': 'text' },
-            { 'name': 'flds', 'type': 'text' },
-            { 'name': 'sfld', 'type': 'text' },  # WARNING! This is an `integer` in sqlite but contains text...
-            { 'name': 'csum', 'type': 'text' },
-            { 'name': 'flags', 'type': 'bigint' },
-            { 'name': 'data', 'type': 'text' },
-        ], 'indexes': [
-            { 'name': 'ix_notes_csum', 'fields': ['csum'] },
-            { 'name': 'ix_notes_usn', 'fields': ['usn'] },
-        ], 'parent': COLLECTION_PARENT_DB,
+        "notes": {
+            "fields": [
+                {"name": "id", "type": "bigint", "is_pk": True},
+                {"name": "guid", "type": "text"},
+                {"name": "mid", "type": "bigint"},
+                {"name": "mod", "type": "bigint"},
+                {"name": "usn", "type": "bigint"},
+                {"name": "tags", "type": "text"},
+                {"name": "flds", "type": "text"},
+                {"name": "sfld", "type": "text"},  # WARNING! This is an `integer` in sqlite but contains text...
+                {"name": "csum", "type": "text"},
+                {"name": "flags", "type": "bigint"},
+                {"name": "data", "type": "text"},
+                # this is added by Transcrobes to have an efficient index
+                {"name": "word", "type": "text", "nullable": True, "is_tc": True},
+            ],
+            "indexes": [
+                {"name": "ix_notes_csum", "fields": ["csum"]},
+                {"name": "ix_notes_usn", "fields": ["usn"]},
+                {"name": "ix_notes_word", "fields": ["word"]},
+            ],
+            "parent": COLLECTION_PARENT_DB,
         },
-        'cards':
-        { 'fields' : [
-            { 'name': 'id', 'type': 'bigint', 'is_pk': True },
-            { 'name': 'nid', 'type': 'bigint' },
-            { 'name': 'did', 'type': 'bigint' },
-            { 'name': 'ord', 'type': 'bigint' },
-            { 'name': 'mod', 'type': 'bigint' },
-            { 'name': 'usn', 'type': 'bigint' },
-            { 'name': 'type', 'type': 'bigint' },
-            { 'name': 'queue', 'type': 'bigint' },
-            { 'name': 'due', 'type': 'bigint' },
-            { 'name': 'ivl', 'type': 'bigint' },
-            { 'name': 'factor', 'type': 'bigint' },
-            { 'name': 'reps', 'type': 'bigint' },
-            { 'name': 'lapses', 'type': 'bigint' },
-            { 'name': '"left"', 'type': 'bigint' },
-            { 'name': 'odue', 'type': 'bigint' },
-            { 'name': 'odid', 'type': 'bigint' },
-            { 'name': 'flags', 'type': 'bigint' },
-            { 'name': 'data', 'type': 'text' },
-        ], 'indexes': [
-            { 'name': 'ix_cards_nid', 'fields': ['nid'] },
-            { 'name': 'ix_cards_sched', 'fields': ['did', 'queue', 'due'] },
-            { 'name': 'ix_cards_usn', 'fields': ['usn'] },
-        ], 'parent': COLLECTION_PARENT_DB,
+        "cards": {
+            "fields": [
+                {"name": "id", "type": "bigint", "is_pk": True},
+                {"name": "nid", "type": "bigint"},
+                {"name": "did", "type": "bigint"},
+                {"name": "ord", "type": "bigint"},
+                {"name": "mod", "type": "bigint"},
+                {"name": "usn", "type": "bigint"},
+                {"name": "type", "type": "bigint"},
+                {"name": "queue", "type": "bigint"},
+                {"name": "due", "type": "bigint"},
+                {"name": "ivl", "type": "bigint"},
+                {"name": "factor", "type": "bigint"},
+                {"name": "reps", "type": "bigint"},
+                {"name": "lapses", "type": "bigint"},
+                {"name": '"left"', "type": "bigint"},
+                {"name": "odue", "type": "bigint"},
+                {"name": "odid", "type": "bigint"},
+                {"name": "flags", "type": "bigint"},
+                {"name": "data", "type": "text"},
+            ],
+            "indexes": [
+                {"name": "ix_cards_nid", "fields": ["nid"]},
+                {"name": "ix_cards_sched", "fields": ["did", "queue", "due"]},
+                {"name": "ix_cards_usn", "fields": ["usn"]},
+            ],
+            "parent": COLLECTION_PARENT_DB,
         },
-        'col':
-        { 'fields' : [
-            { 'name': 'id', 'type': 'bigint', 'is_pk': True },
-            { 'name': 'crt', 'type': 'bigint' },
-            { 'name': 'mod', 'type': 'bigint' },
-            { 'name': 'scm', 'type': 'bigint' },
-            { 'name': 'ver', 'type': 'bigint' },
-            { 'name': 'dty', 'type': 'bigint' },
-            { 'name': 'usn', 'type': 'bigint' },
-            { 'name': 'ls', 'type': 'bigint' },
-            { 'name': 'conf', 'type': 'text' },
-            { 'name': 'models', 'type': 'text' },
-            { 'name': 'decks', 'type': 'text' },
-            { 'name': 'dconf', 'type': 'text' },
-            { 'name': 'tags', 'type': 'text' },
-        ], 'indexes': [
-        ], 'parent': COLLECTION_PARENT_DB,
+        "col": {
+            "fields": [
+                {"name": "id", "type": "bigint", "is_pk": True},
+                {"name": "crt", "type": "bigint"},
+                {"name": "mod", "type": "bigint"},
+                {"name": "scm", "type": "bigint"},
+                {"name": "ver", "type": "bigint"},
+                {"name": "dty", "type": "bigint"},
+                {"name": "usn", "type": "bigint"},
+                {"name": "ls", "type": "bigint"},
+                {"name": "conf", "type": "text"},
+                {"name": "models", "type": "text"},
+                {"name": "decks", "type": "text"},
+                {"name": "dconf", "type": "text"},
+                {"name": "tags", "type": "text"},
+            ],
+            "indexes": [],
+            "parent": COLLECTION_PARENT_DB,
         },
-        'graves':
-        { 'fields' : [
-            { 'name': 'usn', 'type': 'bigint' },
-            { 'name': 'oid', 'type': 'bigint' },
-            { 'name': 'type', 'type': 'bigint' },
-        ], 'indexes': [
-        ], 'parent': COLLECTION_PARENT_DB,
+        "graves": {
+            "fields": [
+                {"name": "usn", "type": "bigint"},
+                {"name": "oid", "type": "bigint"},
+                {"name": "type", "type": "bigint"},
+            ],
+            "indexes": [],
+            "parent": COLLECTION_PARENT_DB,
         },
-        'revlog':
-        { 'fields' : [
-            { 'name': 'id', 'type': 'bigint', 'is_pk': True },
-            { 'name': 'cid', 'type': 'bigint' },
-            { 'name': 'usn', 'type': 'bigint' },
-            { 'name': 'ease', 'type': 'bigint' },
-            { 'name': 'ivl', 'type': 'bigint' },
-            { 'name': 'lastivl', 'type': 'bigint' },
-            { 'name': 'factor', 'type': 'bigint' },
-            { 'name': 'time', 'type': 'bigint' },
-            { 'name': 'type', 'type': 'bigint' },
-        ], 'indexes': [
-            { 'name': 'ix_revlog_cid', 'fields': ['cid'] },
-            { 'name': 'ix_revlog_usn', 'fields': ['usn'] },
-        ], 'parent': COLLECTION_PARENT_DB,
+        "revlog": {
+            "fields": [
+                {"name": "id", "type": "bigint", "is_pk": True},
+                {"name": "cid", "type": "bigint"},
+                {"name": "usn", "type": "bigint"},
+                {"name": "ease", "type": "bigint"},
+                {"name": "ivl", "type": "bigint"},
+                {"name": "lastivl", "type": "bigint"},
+                {"name": "factor", "type": "bigint"},
+                {"name": "time", "type": "bigint"},
+                {"name": "type", "type": "bigint"},
+            ],
+            "indexes": [{"name": "ix_revlog_cid", "fields": ["cid"]}, {"name": "ix_revlog_usn", "fields": ["usn"]}],
+            "parent": COLLECTION_PARENT_DB,
         },
-        'media':
-        { 'fields' : [
-            { 'name': 'fname', 'type': 'text', 'is_pk': True },
-            { 'name': 'csum', 'type': 'text', 'nullable': True },
-            { 'name': 'mtime', 'type': 'bigint' },
-            { 'name': 'dirty', 'type': 'bigint' },
-         ], 'indexes': [
-            { 'name': 'ix_media_dirty', 'fields': ['dirty'] },
-        ], 'parent': MEDIA_PARENT_DB,
+        "media": {
+            "fields": [
+                {"name": "fname", "type": "text", "is_pk": True},
+                {"name": "csum", "type": "text", "nullable": True},
+                {"name": "usn", "type": "bigint"},
+            ],
+            "indexes": [{"name": "ix_media_usn", "fields": ["usn"]}],
+            "parent": MEDIA_PARENT_DB,
         },
-        'meta':
-        { 'fields' : [
-            { 'name': 'dirmod', 'type': 'bigint' },
-            { 'name': 'lastusn', 'type': 'bigint' },
-         ], 'indexes': [
-         ], 'parent': MEDIA_PARENT_DB,
-            'initsql': 'insert into {schema_name}.meta values (0, 0);'
+        "meta": {
+            "fields": [{"name": "dirmod", "type": "bigint"}, {"name": "lastusn", "type": "bigint"}],
+            "indexes": [],
+            "parent": MEDIA_PARENT_DB,
+            "initsql": "insert into {schema_name}.meta values (0, 0);",
         },
     }
 
@@ -191,10 +259,14 @@ SET default_with_oids = false;"""
         sql = AnkiDataModel.MODEL_SETUP + AnkiDataModel.CREATE_SCHEMA.format(schema_name=schema_name)
 
         for table_name, defin in AnkiDataModel.MODEL.items():
-            tsql = f"CREATE TABLE {schema_name}.{table_name} (" + \
-                ",".join([f"{f['name']} {f['type']} {'' if f.get('nullable') else 'NOT'} NULL" for f in defin['fields']]) + \
-                ");"
-            identity = [ x['name'] for x in defin['fields'] if 'is_pk' in x and x['type'] == 'bigint' ]
+            tsql = (
+                f"CREATE TABLE {schema_name}.{table_name} ("
+                + ",".join(
+                    [f"{f['name']} {f['type']} {'' if f.get('nullable') else 'NOT'} NULL" for f in defin["fields"]]
+                )
+                + ");"
+            )
+            identity = [x["name"] for x in defin["fields"] if "is_pk" in x and x["type"] == "bigint"]
             if identity:
                 tsql += f"""
                 ALTER TABLE {schema_name}.{table_name}
@@ -207,19 +279,21 @@ SET default_with_oids = false;"""
                         CACHE 1
                     );"""
 
-            pk = [ x['name'] for x in defin['fields'] if 'is_pk' in x ]
+            pk = [x["name"] for x in defin["fields"] if "is_pk" in x]
             if pk:
                 tsql += f"""
                 ALTER TABLE ONLY {schema_name}.{table_name}
                     ADD CONSTRAINT {table_name}_pkey PRIMARY KEY ({pk[0]});"""
 
-            for i in defin['indexes']:
-                tsql += f"CREATE INDEX {i['name']} ON {schema_name}.{table_name} USING btree (" + \
-                ",".join([f for f in i['fields']]) + \
-                ");"
+            for i in defin["indexes"]:
+                tsql += (
+                    f"CREATE INDEX {i['name']} ON {schema_name}.{table_name} USING btree ("
+                    + ",".join(i["fields"])
+                    + ");"
+                )
 
-            if 'initsql' in defin:
-                tsql += defin['initsql'].replace('{schema_name}', schema_name)  # dynamic replace rather than fstring
+            if "initsql" in defin:
+                tsql += defin["initsql"].replace("{schema_name}", schema_name)  # dynamic replace rather than fstring
 
             sql += tsql
         sql += f"SELECT {AnkiDataModel.VERSION};"
@@ -229,34 +303,45 @@ SET default_with_oids = false;"""
     @staticmethod
     def insert_on_conflict_update(table_name):
 
-        identity = [ x['name'] for x in AnkiDataModel.MODEL[table_name]['fields'] if 'is_pk' in x ]
-        fstr = ', '.join(['%s'] * len(AnkiDataModel.MODEL[table_name]['fields']))
-        return f"INSERT INTO {table_name} (" + \
-            ",".join([f"{f['name']}" for f in AnkiDataModel.MODEL[table_name]['fields']]) + \
-            f") VALUES ({fstr}) " + \
-            f"ON CONFLICT ({identity[0]}) DO UPDATE SET " + \
-            ",".join([f"{f['name']} = EXCLUDED.{f['name']}" for f in AnkiDataModel.MODEL[table_name]['fields'] if 'is_pk' not in f])
+        identity = [x["name"] for x in AnkiDataModel.MODEL[table_name]["fields"] if "is_pk" in x]
+        fstr = ", ".join(["%s"] * len([x for x in AnkiDataModel.MODEL[table_name]["fields"] if "is_tc" not in x]))
 
+        return (
+            f"INSERT INTO {table_name} ("
+            + ",".join([f"{f['name']}" for f in AnkiDataModel.MODEL[table_name]["fields"] if "is_tc" not in f])
+            + f") VALUES ({fstr}) "
+            + f"ON CONFLICT ({identity[0]}) DO UPDATE SET "
+            + ",".join(
+                [
+                    f"{f['name']} = EXCLUDED.{f['name']}"
+                    for f in AnkiDataModel.MODEL[table_name]["fields"]
+                    if "is_pk" not in f and "is_tc" not in f
+                ]
+            )
+        )
 
     @staticmethod
     def insert_on_conflict_nothing(table_name):
 
-        identity = [ x['name'] for x in AnkiDataModel.MODEL[table_name]['fields'] if 'is_pk' in x ]
-        fstr = ', '.join(['%s'] * len(AnkiDataModel.MODEL[table_name]['fields']))
+        identity = [x["name"] for x in AnkiDataModel.MODEL[table_name]["fields"] if "is_pk" in x]
+        fstr = ", ".join(["%s"] * len([x for x in AnkiDataModel.MODEL[table_name]["fields"] if "is_tc" not in x]))
 
-        return f"INSERT INTO {table_name} (" + \
-            ",".join([f"{f['name']}" for f in AnkiDataModel.MODEL[table_name]['fields']]) + \
-            f") VALUES ({fstr}) " + \
-            f"ON CONFLICT ({identity[0]}) DO NOTHING "
+        return (
+            f"INSERT INTO {table_name} ("
+            + ",".join([f"{f['name']}" for f in AnkiDataModel.MODEL[table_name]["fields"] if "is_tc" not in f])
+            + f") VALUES ({fstr}) "
+            + f"ON CONFLICT ({identity[0]}) DO NOTHING "
+        )
 
 
 def username_from_dbpath(path):
     return os.path.basename(os.path.dirname(path))
 
+
 class PostgresSqliteAdaptor(metaclass=abc.ABCMeta):
-    ADMIN_SCHEMA = 'assadmin'
-    INSERT_OR_IGNORE = re.compile('\s*insert or ignore into (\w+) ', re.IGNORECASE)
-    INSERT_OR_REPLACE = re.compile('\s*insert or replace into (\w+) ', re.IGNORECASE)
+    ADMIN_SCHEMA = "assadmin"
+    INSERT_OR_IGNORE = re.compile(r"\s*insert or ignore into (\w+) ", re.IGNORECASE)
+    INSERT_OR_REPLACE = re.compile(r"\s*insert or replace into (\w+) ", re.IGNORECASE)
 
     @abc.abstractmethod
     def _schema_name(self):
@@ -273,39 +358,39 @@ class PostgresSqliteAdaptor(metaclass=abc.ABCMeta):
         # I still haven't worked out how to do multiline searches without using `search()`...
         tmp = " ".join(sql.split())
 
-        logging.debug(f'Converting SQL : {sql}')
+        logging.debug(f"Converting SQL : {sql}")
         # Complete replacements
         insert_or_ignore = PostgresSqliteAdaptor.INSERT_OR_IGNORE.match(tmp)
         if insert_or_ignore and insert_or_ignore.group(1):  # captures the table name
-            logging.debug('Found insert or ignore, generating SQL')
+            logging.debug("Found insert or ignore, generating SQL")
             return AnkiDataModel.insert_on_conflict_nothing(insert_or_ignore.group(1))
 
         insert_or_replace = PostgresSqliteAdaptor.INSERT_OR_REPLACE.match(tmp)
         if insert_or_replace and insert_or_replace.group(1):  # captures the table name
-            logging.debug('Found insert or update, generating SQL')
+            logging.debug("Found insert or update, generating SQL")
             return AnkiDataModel.insert_on_conflict_update(insert_or_replace.group(1))
 
         # Change bits of the query
-        tmp = sql.replace('?', '%s')  # use posgres style params
+        tmp = sql.replace("?", "%s")  # use posgres style params
 
         tmp = re.sub(r"count\(\)", "count(0)", tmp, flags=re.I)  # use proper count syntax
         tmp = re.sub(r" id in \(\)", " id in (0)", tmp, flags=re.I)  # use equivalent syntax - ids can't be 0
 
         # Add name for subqueries as postgres requires this for select from subquery
         # if ' as subq' has already been added, don't add again
-        if re.search(r'select.*from\s*\(.*select.*from.*\)', tmp, re.I | re.S) and ' as subq' not in tmp:
-            tmp = tmp + ' as subq '
+        if re.search(r"select.*from\s*\(.*select.*from.*\)", tmp, re.I | re.S) and " as subq" not in tmp:
+            tmp = tmp + " as subq "
 
         # replace instances of the column `left` with postgres-compliant `"left"`
         # there may be more of these but this is conservative and won't ever
         # match a `left join`. At Anki v2.8 there is only one `left join`, which is
         # written as `left outer join` but that may change so here we are defensive
         tmp = re.sub("(?i), left,", ', "left",', tmp)
-        tmp = re.sub("(?i) sum\(\s*left\s*/\s*1000\s*\)", ' sum("left"/1000)', tmp)
+        tmp = re.sub(r"(?i) sum\(\s*left\s*/\s*1000\s*\)", ' sum("left"/1000)', tmp)
         tmp = re.sub("(?i)select left from ", 'select "left" from ', tmp)
         tmp = re.sub("(?i)left            integer not null", '"left"            integer not null', tmp)
 
-        logging.debug(f'SQL converted to : {tmp}')
+        logging.debug(f"SQL converted to : {tmp}")
         return tmp
 
     def fs(self, sql):
@@ -314,10 +399,14 @@ class PostgresSqliteAdaptor(metaclass=abc.ABCMeta):
     def _conn(self, schema_name=None):
         if not schema_name:
             schema_name = self._schema_name()
-        return psycopg2.connect(connection_factory=EfficientConnection, dbname=self._config()['db_name'],
-                                user=self._config()['db_user'], host=self._config()['db_host'],
-                                password=self._config()['db_password'],
-                                options=f'-c search_path={schema_name}')
+        return psycopg2.connect(
+            connection_factory=EfficientConnection,
+            dbname=self._config()["db_name"],
+            user=self._config()["db_user"],
+            host=self._config()["db_host"],
+            password=self._config()["db_password"],
+            options=f"-c search_path={schema_name}",
+        )
 
     def _create_schema(self, schema_name=None, conn=None):
         schema_name = schema_name or self._schema_name()
@@ -325,19 +414,24 @@ class PostgresSqliteAdaptor(metaclass=abc.ABCMeta):
 
         with lconn.cursor() as cur:
             dsn_params = lconn.get_dsn_parameters()  # should we use self._config() to get these values?
-            logging.info(f"Creating {schema_name} schema on db {dsn_params['dbname']} on host "
-                         f"{dsn_params['host']}.")
+            logging.info(
+                f"Creating {schema_name} schema on db {dsn_params['dbname']} on host " f"{dsn_params['host']}."
+            )
             cur.execute(f"CREATE SCHEMA IF NOT EXISTS {schema_name}")
             conn.commit()
 
-        if not conn: lconn.close()  # close the connection if we created a new one
+        if not conn:
+            lconn.close()  # close the connection if we created a new one
 
     def _db_table_exists(self, table_name, conn=None):
         lconn = conn or self._conn()
 
         with lconn.cursor() as cursor:
-            param = (self._schema_name(), table_name,)
-            sql = f"""SELECT 1
+            param = (
+                self._schema_name(),
+                table_name,
+            )
+            sql = """SELECT 1
                         FROM   information_schema.tables
                         WHERE  table_schema = %s
                         AND    table_name = %s"""
@@ -345,18 +439,22 @@ class PostgresSqliteAdaptor(metaclass=abc.ABCMeta):
             cursor.execute(sql, param)
             exists = cursor.fetchone()
 
-        if not conn: lconn.close()  # close the connection if we created a new one
+        if not conn:
+            lconn.close()  # close the connection if we created a new one
         return bool(exists)
 
 
 class PostgresCollectionWrapper(PostgresSqliteAdaptor, CollectionWrapper):
     # override CollectionWrapper
-    def __init__(self, _config, path, setup_new_collection=None):
+    def __init__(self, _config, path, setup_new_collection=None):  # pylint: disable=W0231,W0221
         self._conf = settings.ANKISYNCD_CONFIG()
         self.path = os.path.realpath(path)
         self._username = username_from_dbpath(self.path)
         self.setup_new_collection = setup_new_collection
         self._CollectionWrapper__col = None  # Pure nastiness :(
+
+        # FIXME: do we need this? why? since when?
+        self.username = self._username
 
     # override CollectionWrapper
     def open(self):
@@ -365,7 +463,7 @@ class PostgresCollectionWrapper(PostgresSqliteAdaptor, CollectionWrapper):
             if self._schema_exists(self._username):
                 self._CollectionWrapper__col = self._get_collection()
             else:
-                self._CollectionWrapper__col = self._CollectionWrapper__create_collection()  # more nastiness :(
+                self._CollectionWrapper__col = self._CollectionWrapper__create_collection()  # pylint: disable=E1101
 
     # override PostgresSqliteAdaptor
     def _schema_name(self):
@@ -382,8 +480,7 @@ class PostgresCollectionWrapper(PostgresSqliteAdaptor, CollectionWrapper):
                 res = cur.fetchone()
         return res
 
-
-    def _get_collection(self, lock=True, log=False):
+    def _get_collection(self, lock=True, log=False):  # pylint: disable=W0221
         # The logic here adapted from anki.storage.Collection()
         # def Collection(path, lock=True, server=False, log=False):
 
@@ -399,7 +496,7 @@ class PostgresCollectionWrapper(PostgresSqliteAdaptor, CollectionWrapper):
         # the server logic and we are reduced to fudging in lots of places
         is_server = False
 
-        "Open a new or existing collection. Path must be unicode."
+        # "Open a new or existing collection. Path must be unicode."
         # TODO: the path is still used in many places, for example, for getting
         # the username. We should eventually try and remove it but that will
         # require total test coverage.
@@ -419,22 +516,35 @@ class PostgresCollectionWrapper(PostgresSqliteAdaptor, CollectionWrapper):
         # connect
         db = PostgresDB(self._conf, path, username)
         # db.setAutocommit(True)
-        pm = PostgresPersistenceManager(self._conf)
+        pm = PostgresFullSyncManager(self._conf)
         if create:
             ver = pm.create_pg_schema(username)
             # create the tables because they already exist
-            db.execute(AnkiDataModel.insert_on_conflict_nothing('col'),
-                       1,0,0,anki.storage.intTime(1000),
-                        anki.storage.SCHEMA_VERSION,0,0,0,'','{}','','','{}')
+            db.execute(
+                AnkiDataModel.insert_on_conflict_nothing("col"),
+                1,
+                0,
+                0,
+                anki.storage.intTime(1000),
+                anki.storage.SCHEMA_VERSION,
+                0,
+                0,
+                0,
+                "",
+                "{}",
+                "",
+                "",
+                "{}",
+            )
 
-            anki.storage._addColVars(db, *anki.storage._getColVars(db))
+            anki.storage._addColVars(db, *anki.storage._getColVars(db))  # pylint: disable=W0212
         else:
-            ver = anki.storage._upgradeSchema(db)
+            ver = anki.storage._upgradeSchema(db)  # pylint: disable=W0212
         # db.setAutocommit(False)
         # add db to col and do any remaining upgrades
         col = PostgresCollection(db, is_server, log)
         if ver < SCHEMA_VERSION:
-            anki.storage._upgrade(col, ver)
+            anki.storage._upgrade(col, ver)  # pylint: disable=W0212
         elif ver > SCHEMA_VERSION:
             raise Exception("This database requires a newer version of Anki Sync Server.")
         elif create:
@@ -449,7 +559,7 @@ class PostgresCollectionWrapper(PostgresSqliteAdaptor, CollectionWrapper):
             col.save()
             if "collection_init" in self._conf:
                 col.close()
-                package, sqlfile = self._conf["collection_init"].split(',')
+                package, sqlfile = self._conf["collection_init"].split(",")
                 # print('the package is {package}, the sqlfile is {sqlfile}')
                 sql = pkgutil.get_data(package, sqlfile).decode("utf-8")
 
@@ -464,22 +574,20 @@ class PostgresCollectionWrapper(PostgresSqliteAdaptor, CollectionWrapper):
         if not self._schema_exists(self._username):
             return  # TODO: nothing to do, or maybe raise an Exception?
 
-        pm = PostgresPersistenceManager(self._conf)
+        pm = PostgresFullSyncManager(self._conf)
         pm.delete_pg_schema(self._username)
 
-class PostgresMediaManager(MediaManager):
+
+class PostgresMediaManager(ServerMediaManager):
+    def __init__(self, col):  # pylint: disable=W0231
+        self._dir = re.sub(r"(?i)\.(anki2)$", ".media", col.path)
+        self.col = col
+        self.connect()
+        self.db = None
 
     # override MediaManager
     def connect(self):
-        if self.col.server:
-            return
-        path = self.dir()+".db2"
-        create = not os.path.exists(path)
-        os.chdir(self._dir)
         self.db = self.col.db  # we can just reuse the existing connection as the tables are in the user schema
-        # if create:
-        #     self._initDB()
-        # self.maybeUpgrade()
 
     # override MediaManager
     def _initDB(self):
@@ -494,23 +602,12 @@ class PostgresMediaManager(MediaManager):
         is never created. It is wrapped in a try/except so won't actually raise an error for
         the user so I'm going to assume it is just cruft that was never cleaned
         """
-        pass
 
     # override MediaManager
     def close(self):
-        if self.col.server:
-            return
-
         # We don't close the DB connection as we are using the parents connection
         # self.db.close()
         self.db = None
-        # change cwd back to old location
-        if self._oldcwd:
-            try:
-                os.chdir(self._oldcwd)
-            except:
-                # may have been deleted
-                pass
 
     # override MediaManager
     def _deleteDB(self):
@@ -525,10 +622,10 @@ class PostgresMediaManager(MediaManager):
         self._deleteDB()  # because we have no file to delete, this is the same
 
 
-class PostgresCollection(_Collection):
+class PostgresCollection(_Collection):  # pylint: disable=R0902
 
     # override _Collection
-    def __init__(self, db, server=False, log=False):
+    def __init__(self, db, server=False, log=False):  # pylint: disable=W0231
         self._debugLog = log
         self.db = db
         self.path = db._path
@@ -537,7 +634,7 @@ class PostgresCollection(_Collection):
         self.server = server
         self._lastSave = time.time()
         self.clearUndo()
-        self.media = PostgresMediaManager(self, server)
+        self.media = PostgresMediaManager(self)
         self.models = ModelManager(self)
         self.decks = DeckManager(self)
         self.tags = TagManager(self)
@@ -550,13 +647,12 @@ class PostgresCollection(_Collection):
             self.crt = int(time.mktime(d.timetuple()))
         self._loadScheduler()
         if not self.conf.get("newBury", False):
-            self.conf['newBury'] = True
+            self.conf["newBury"] = True
             self.setMod()
 
     # override _Collection
     def reopen(self):
         "Reconnect to DB (after changing threads, etc)."
-
         if not self.db:
             self.db = PostgresDB(settings.ANKISYNCD_CONFIG(), self.path, username_from_dbpath(self.path))
             self.media.connect()
@@ -573,7 +669,7 @@ class PostgresDB(PostgresSqliteAdaptor, ankidb.DB):
         return self._conf
 
     # override
-    def __init__(self, _config, path, username, timeout=1):
+    def __init__(self, _config, path, username, timeout=1):  # pylint: disable=W0231
         self._conf = settings.ANKISYNCD_CONFIG()
         self._username = username
         self._db = self._conn()
@@ -590,6 +686,7 @@ class PostgresDB(PostgresSqliteAdaptor, ankidb.DB):
         # FIXME: behaviour is different between sqlite and psycopg2
         pass
 
+
 # Because Anki is "efficient" :-(
 # https://docs.python.org/3/library/sqlite3.html#using-sqlite3-efficiently
 # std connection with sqlite3's execute/executemany/executescript extensions for psycopg2
@@ -603,7 +700,6 @@ class EfficientConnection(psycopg2.extensions.connection):
         if "pragma " in sql:
             cur.execute("select 'ok'")
             return cur
-        # print(self.get_dsn_parameters())
         if ka:
             # execute("...where id = :id", id=5)
             cur.execute(PostgresSqliteAdaptor.sqlite_sql_to_postgres(sql), ka)
@@ -612,12 +708,12 @@ class EfficientConnection(psycopg2.extensions.connection):
             cur.execute(PostgresSqliteAdaptor.sqlite_sql_to_postgres(sql), *a)
         return cur
 
-    def executemany(self, sql, l):
+    def executemany(self, sql, li):
         # This is a nonstandard shortcut that creates a cursor object by calling the cursor() method,
         # calls the cursor’s executemany() method with the parameters given, and returns the cursor.
         cur = self.cursor()
 
-        cur.executemany(PostgresSqliteAdaptor.sqlite_sql_to_postgres(sql), l)
+        cur.executemany(PostgresSqliteAdaptor.sqlite_sql_to_postgres(sql), li)
         return cur
 
     def executescript(self, sql):
@@ -628,7 +724,7 @@ class EfficientConnection(psycopg2.extensions.connection):
         return cur
 
 
-class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
+class PostgresFullSyncManager(PostgresSqliteAdaptor, FullSyncManager):
     # TODO, maybe make this from config or an envvar
     pg_select_cursor_size = 10000  # this has no effect on memory and less than 1k significantly increases the time
     pg_insert_cursor_size = 10000  # this has no effect on memory and less than 1k significantly increases the time
@@ -642,7 +738,7 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
         return self._conf
 
     def __init__(self, _config):
-        PersistenceManager.__init__(self)
+        FullSyncManager.__init__(self)
         self._conf = settings.ANKISYNCD_CONFIG()
         self._username = None  # How should we manage this?
 
@@ -651,18 +747,16 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
         try:
             with anki.db.DB(db_path) as test_db:
                 if test_db.scalar("pragma integrity_check") != "ok":
-                    raise HTTPBadRequest("Integrity check failed for uploaded "
-                                         "collection database file.")
-        except sqlite.Error as e:
-            raise HTTPBadRequest("Uploaded collection database file is "
-                                 "corrupt.")
+                    raise Exception("Integrity check failed for uploaded " "collection database file.")
+        except sqlite.Error:
+            raise Exception("Uploaded collection database file is " "corrupt.")
 
     def upload(self, col, data, session):
         # from sqlite to postgres
         self._username = session.name
 
         # write data to a tempfile
-        with tempfile.NamedTemporaryFile(suffix='.anki2', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".anki2", delete=False) as f:
             temp_db_path = f.name
             f.write(data)
 
@@ -671,7 +765,7 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
         self._check_sqlite3_db(temp_db_path)
 
         # create new schema in pg db that we'll fill with the new data
-        timestamp = str(time.time()).replace('.', '_')
+        timestamp = str(time.time()).replace(".", "_")
         tmp_schema_name = f"{self._username}_{timestamp}"
         self.create_pg_schema(tmp_schema_name)
 
@@ -684,7 +778,8 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
             pg_conn.autocommit = False
             with pg_conn.cursor() as to_pg_cursor:
                 for table, props in AnkiDataModel.MODEL.items():
-                    if props['parent'] != AnkiDataModel.COLLECTION_PARENT_DB: continue
+                    if props["parent"] != AnkiDataModel.COLLECTION_PARENT_DB:
+                        continue
 
                     start_sqlite_cursor = sqlite_conn.cursor()
                     start_sqlite_cursor.execute(f"SELECT * FROM {table}")
@@ -692,7 +787,7 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
                         current_data = start_sqlite_cursor.fetchmany(self.pg_insert_cursor_size)
                         if not current_data:
                             break
-                        psycopg2.extras.execute_values (
+                        psycopg2.extras.execute_values(
                             to_pg_cursor, f"INSERT INTO {tmp_schema_name}.{table} VALUES %s", current_data
                         )
                     start_sqlite_cursor.close()
@@ -716,45 +811,43 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
         self._username = session.name
         col.close()
 
-        # try:
-
         download_db = self._create_empty_sqlite3_db()
         # should maybe create a global transaction here?
         # same issue as https://github.com/tsudoko/anki-sync-server/issues/6
         with sqlite.connect(download_db) as sqlite_conn, self._conn() as pg_conn:
             for table, props in AnkiDataModel.MODEL.items():
-                if props['parent'] != AnkiDataModel.COLLECTION_PARENT_DB: continue
+                if props["parent"] != AnkiDataModel.COLLECTION_PARENT_DB:
+                    continue
 
                 with pg_conn.cursor() as from_pg_cursor:
                     to_sqlite_cursor = sqlite_conn.cursor()  # can't use `with` with an sqlite3 cursor
-                    from_pg_cursor.execute(f"SELECT * FROM {self._username}.{table}")
+                    cols = ",".join([x["name"] for x in props["fields"] if "is_tc" not in x])
+                    from_pg_cursor.execute(f"SELECT {cols} FROM {self._username}.{table}")
                     while True:
                         current_data = from_pg_cursor.fetchmany(self.pg_select_cursor_size)
                         if not current_data:
                             break
-                        cols = ','.join(['?'] * len(current_data[0]))
+                        cols = ",".join(["?"] * len(current_data[0]))
                         # TODO: executemany has terrible performance but whatever
-                        to_sqlite_cursor.executemany(f"INSERT INTO {table} VALUES ({cols})",
-                                                     current_data)
+                        to_sqlite_cursor.executemany(f"INSERT INTO {table} VALUES ({cols})", current_data)
 
                     to_sqlite_cursor.close()
 
         self._check_sqlite3_db(download_db)
-        data = open(download_db, 'rb').read()
+        data = open(download_db, "rb").read()
         os.remove(download_db)
 
-        # finally:
         col.reopen()
         col.load()
 
         return data
 
-
     # using anki's own methods for empty db creation
-    def _create_empty_sqlite3_db(self):
+    @staticmethod
+    def _create_empty_sqlite3_db():
         # we need to get a tmp filename where the file doesn't exist, or we can't use anki.storage.Collection
         # to create it
-        tmp = tempfile.mktemp(suffix='.anki2')
+        tmp = tempfile.mktemp(suffix=".anki2")
         anki.storage.Collection(tmp).close()  # will create and close cleanly
         # clean up the rows added in up-upstream db initialisation and leave only the schema
         with sqlite.connect(tmp) as conn:
@@ -769,12 +862,13 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
             with conn.cursor() as cur:
                 cur.execute(AnkiDataModel.generate_schema_sql(schema_name))
                 res = cur.fetchone()
+                cur.execute(AnkiDataModel.CREATE_TRIGGERS.replace("{schema_name}", schema_name))
                 return res[0]
 
     def delete_pg_schema(self, schema_name):
         with self._conn() as conn:
             with conn.cursor() as cur:
-                cur.execute(f'DROP SCHEMA {schema_name} CASCADE')
+                cur.execute(f"DROP SCHEMA {schema_name} CASCADE")
 
     # FIXME: there shouldn't be any sql scripts, it should all be done via classes, like
     # in up-upstream
@@ -785,7 +879,7 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
 
         with self._conn() as conn:
             with conn.cursor() as cur:
-                cur.execute(sql.replace('{schema_name}', schema_name) if schema_name else sql)
+                cur.execute(sql.replace("{schema_name}", schema_name) if schema_name else sql)
                 res = cur.fetchone()
                 conn.commit()
                 return res[0]
@@ -793,7 +887,7 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
     def execute_sql(self, sql, schema_name=None):
         with self._conn() as conn:
             with conn.cursor() as cur:
-                repl = sql.replace('{schema_name}', schema_name)
+                repl = sql.replace("{schema_name}", schema_name)
                 cur.execute(repl if schema_name else sql)
                 res = cur.fetchone()
                 conn.commit()
@@ -804,7 +898,8 @@ class PostgresPersistenceManager(PostgresSqliteAdaptor, PersistenceManager):
 class PostgresSessionManager(PostgresSqliteAdaptor, SqliteSessionManager):
     """Stores sessions in a Postgres database to prevent the user from being logged out
     everytime the SyncApp is restarted."""
-    TABLENAME = 'session'
+
+    TABLENAME = "session"
 
     # override PostgresSqliteAdaptor
     def _schema_name(self):
@@ -814,21 +909,23 @@ class PostgresSessionManager(PostgresSqliteAdaptor, SqliteSessionManager):
     def _config(self):
         return self._conf
 
-    def __init__(self, config):
-        SimpleSessionManager.__init__(self)
+    def __init__(self, _config):  # pylint: disable=W0231
+        SimpleSessionManager.__init__(self)  # pylint: disable=W0233
         self._conf = settings.ANKISYNCD_CONFIG()
 
     # multiple inheritance joys! This overrides PostgresSqliteAdaptor._conn() which overrides
     # SqliteSessionManager._conn() :-)
-    def _conn(self):
+    def _conn(self):  # pylint: disable=W0221
         conn = PostgresSqliteAdaptor._conn(self)
         with conn.cursor() as cursor:
             exists = self._db_table_exists(self.TABLENAME, conn)
             if not exists:
                 self._create_schema(conn=conn)
                 # FIXME: how is tablename defined???
-                cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.TABLENAME} (hkey VARCHAR PRIMARY KEY,"
-                               "skey VARCHAR, username VARCHAR, path VARCHAR)")
+                cursor.execute(
+                    f"CREATE TABLE IF NOT EXISTS {self.TABLENAME} (hkey VARCHAR PRIMARY KEY,"
+                    "skey VARCHAR, username VARCHAR, path VARCHAR)"
+                )
                 conn.commit()
         return conn
 
@@ -843,25 +940,29 @@ class PostgresSessionManager(PostgresSqliteAdaptor, SqliteSessionManager):
         with self._conn() as conn:
             with conn.cursor() as cursor:
 
-                cursor.execute(self.fs("""INSERT INTO session (hkey, skey, username, path) VALUES (?, ?, ?, ?)
+                cursor.execute(
+                    self.fs(
+                        """INSERT INTO session (hkey, skey, username, path) VALUES (?, ?, ?, ?)
                                             ON CONFLICT (hkey)
                                             DO UPDATE SET
                                             (skey, username, path)
                                                 = (EXCLUDED.skey, EXCLUDED.username, EXCLUDED.path)
-                                       """),
-                    (hkey, session.skey, session.name, session.path))
+                                       """
+                    ),
+                    (hkey, session.skey, session.name, session.path),
+                )
 
             conn.commit()
 
 
 # To avoid the Diamond of Death, make sure PostgresSqliteAdaptor comes first :-)
 class PostgresUserManager(PostgresSqliteAdaptor, SqliteUserManager):
-    TABLENAME = 'auth'
+    TABLENAME = "auth"
 
-    def __init__(self, config):
+    def __init__(self, _config):  # pylint: disable=W0231
         self._conf = settings.ANKISYNCD_CONFIG()
-        SimpleUserManager.__init__(self, self._conf["data_root"])
-        self.auth_db_path = ''  # this is used in a log message in SqliteUserManager...
+        SimpleUserManager.__init__(self, self._conf["data_root"])  # pylint: disable=W0233
+        self.auth_db_path = ""  # this is used in a log message in SqliteUserManager...
 
     # override PostgresSqliteAdaptor
     def _config(self):
@@ -876,20 +977,22 @@ class PostgresUserManager(PostgresSqliteAdaptor, SqliteUserManager):
         return bool(self._db_table_exists(self.TABLENAME))
 
     # override SqliteUserManager
-    def create_auth_db(self, conn=None):
+    def create_auth_db(self, conn=None):  # pylint: disable=W0221
         # this is done automatically in the connection
         pass
 
     # multiple inheritance joys! This overrides PostgresSqliteAdaptor._conn() which overrides
     # SqliteUserManager._conn() :-)
-    def _conn(self):
+    def _conn(self):  # pylint: disable=W0221
         conn = PostgresSqliteAdaptor._conn(self)
         with conn.cursor() as cursor:
             exists = self._db_table_exists(self.TABLENAME, conn)
             if not exists:
                 self._create_schema(conn=conn)
-                cursor.execute(self.fs(f"CREATE TABLE IF NOT EXISTS {self.TABLENAME} "
-                          f"(username VARCHAR PRIMARY KEY, hash VARCHAR)"))
+                cursor.execute(
+                    self.fs(
+                        f"CREATE TABLE IF NOT EXISTS {self.TABLENAME} " f"(username VARCHAR PRIMARY KEY, hash VARCHAR)"
+                    )
+                )
                 conn.commit()
         return conn
-

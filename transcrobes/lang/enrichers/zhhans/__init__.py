@@ -4,6 +4,15 @@
 This file contains the conversion tables between CoreNLP POS tags (taken from the
 Penn Chinese Treebank) and the various supported dictionaries for zh-Hans
 """
+import collections
+import logging
+import re
+import unicodedata
+
+from enrich import Enricher
+from zhhans_en.translate.abc import ZH_TB_POS_TO_ABC_POS
+
+logger = logging.getLogger(__name__)
 
 """
 see http://www.cs.brandeis.edu/~clp/ctb/posguide.3rd.ch.pdf
@@ -61,18 +70,6 @@ Verb: VA, VC, VE, VV
 2.11.8 Punctuation: PU
 """
 
-import re
-import json
-import logging
-import unicodedata
-import collections
-
-from ankrobes import Ankrobes
-from enrich import data, Enricher
-from zhhans_en.translate.abc import ZH_TB_POS_TO_ABC_POS  # FIXME: shouldn't have a lang-specific ref here!
-
-logger = logging.getLogger(__name__)
-
 """
 Bing/Simple POS
 Tag name  Description
@@ -91,68 +88,70 @@ OTHER Other
 # TODO: This was a little arbitrary...
 # Chinese Penn Treebank to Bing
 ZH_TB_POS_TO_SIMPLE_POS = {
-    'AD'  :  'ADV',       # adverb
-    'AS'  :  'OTHER',     # aspect marker
-    'BA'  :  'OTHER',     # in ba-construction ,
-    'CC'  :  'CONJ',      # coordinating conjunction
-    'CD'  :  'DET',       # cardinal number
-    'CS'  :  'CONJ',      # subordinating conjunction
-    'DEC' :  'OTHER',     # in a relative-clause
-    'DEG' :  'OTHER',     # associative
-    'DER' :  'OTHER',     # in V-de const. and V-de-R
-    'DEV' :  'OTHER',     # before VP
-    'DT'  :  'DET',       # determiner
-    'ETC' :  'OTHER',     # for words , ,
-    'FW'  :  'OTHER',     # foreign words
-    'IJ'  :  'OTHER',     # interjection
-    'JJ'  :  'ADJ',       # other noun-modifier ,
-    'LB'  :  'OTHER',     # in long bei-const ,
-    'LC'  :  'OTHER',     # localizer
-    'M'   :  'OTHER',     # measure word
-    'MSP' :  'OTHER',     # other particle
-    'NN'  :  'NOUN',      # common noun
-    'NR'  :  'NOUN',      # proper noun
-    'NT'  :  'NOUN',      # temporal noun
-    'OD'  :  'DET',       # ordinal number
-    'ON'  :  'OTHER',     # onomatopoeia ,
-    'P'   :  'PREP',      # preposition excl. and
-    'PN'  :  'PRON',      # pronoun
-    'PU'  :  'OTHER',     # punctuation
-    'SB'  :  'OTHER',     # in short bei-const ,
-    'SP'  :  'OTHER',     # sentence-final particle
-    'VA'  :  'ADJ',       # predicative adjective
-    'VC'  :  'VERB',
-    'VE'  :  'VERB',      # as the main verb
-    'VV'  :  'VERB',      # other verb
+    "AD": "ADV",  # adverb
+    "AS": "OTHER",  # aspect marker
+    "BA": "OTHER",  # in ba-construction ,
+    "CC": "CONJ",  # coordinating conjunction
+    "CD": "DET",  # cardinal number
+    "CS": "CONJ",  # subordinating conjunction
+    "DEC": "OTHER",  # in a relative-clause
+    "DEG": "OTHER",  # associative
+    "DER": "OTHER",  # in V-de const. and V-de-R
+    "DEV": "OTHER",  # before VP
+    "DT": "DET",  # determiner
+    "ETC": "OTHER",  # for words , ,
+    "FW": "OTHER",  # foreign words
+    "IJ": "OTHER",  # interjection
+    "JJ": "ADJ",  # other noun-modifier ,
+    "LB": "OTHER",  # in long bei-const ,
+    "LC": "OTHER",  # localizer
+    "M": "OTHER",  # measure word
+    "MSP": "OTHER",  # other particle
+    "NN": "NOUN",  # common noun
+    "NR": "NOUN",  # proper noun
+    "NT": "NOUN",  # temporal noun
+    "OD": "DET",  # ordinal number
+    "ON": "OTHER",  # onomatopoeia ,
+    "P": "PREP",  # preposition excl. and
+    "PN": "PRON",  # pronoun
+    "PU": "OTHER",  # punctuation
+    "SB": "OTHER",  # in short bei-const ,
+    "SP": "OTHER",  # sentence-final particle
+    "VA": "ADJ",  # predicative adjective
+    "VC": "VERB",
+    "VE": "VERB",  # as the main verb
+    "VV": "VERB",  # other verb
     # Others added since then
-    'URL' :  'OTHER',
+    "URL": "OTHER",
 }
 
 
 class CoreNLP_ZHHANS_Enricher(Enricher):
 
-    _has_lang_chars = re.compile('[\u4e00-\u9fa5]+')
+    _has_lang_chars = re.compile(".*[\u4e00-\u9fa5]+.*")
 
     def get_simple_pos(self, token):
         return ZH_TB_POS_TO_SIMPLE_POS[token["pos"]]
 
     def needs_enriching(self, token):
-        if token['pos'] in ['PU', 'OD', 'CD', 'NT', 'URL']:
-            logger.debug("'{}' has POS '{}' so not adding to translatables".format(token['word'], token['pos']))
+        # FIXME: this was previously the following, trying to change and see whether it's bad...
+        # if token['pos'] in ['PU', 'OD', 'CD', 'NT', 'URL']:
+        if token["pos"] in ["PU", "URL"]:
+            logger.debug("'%s' has POS '%s' so not adding to translatables", token["word"], token["pos"])
             return False
 
         # TODO: decide whether to continue removing if doesn't contain any Chinese chars?
         # Sometimes yes, sometimes no!
-        if not self._has_lang_chars.match(token['word']):
-            logger.debug("Nothing to translate, exiting: {}".format(token['word']))
+        if not self._has_lang_chars.match(token["word"]):
+            logger.debug("Nothing to translate, exiting: %s", token["word"])
             return False
 
         return True
 
     # override Enricher
     def _cleaned_sentence(self, sentence):
-        out_string = ''
-        for t in sentence['tokens']:
+        out_string = ""
+        for t in sentence["tokens"]:
             if self.is_clean(t):
                 out_string += f'{t["originalText"]}'
 
@@ -162,13 +161,14 @@ class CoreNLP_ZHHANS_Enricher(Enricher):
     def _get_transliteratable_sentence(self, tokens):
         t_sent = ""
         for t in tokens:
-            w = t['originalText']
+            w = t["originalText"]
             t_sent += w if self._has_lang_chars.match(w) else " {}".format(w)
         return t_sent
 
     # override Enricher
-    def _add_transliterations(self, sentence, transliterator):
-        tokens = sentence['tokens']
+    # FIXME: make less complex to get rid of C901
+    def _add_transliterations(self, sentence, transliterator):  # noqa:C901
+        tokens = sentence["tokens"]
         clean_text = self._get_transliteratable_sentence(tokens)
         trans = transliterator.transliterate(clean_text)
 
@@ -176,42 +176,55 @@ class CoreNLP_ZHHANS_Enricher(Enricher):
 
         i = 0
         while i < len(trans):
-            char_added = False
-            if not unicodedata.category(trans[i]).startswith('L') or not unicodedata.category(trans[i-1]).startswith('L'):
+            if not unicodedata.category(trans[i]).startswith("L") or not unicodedata.category(trans[i - 1]).startswith(
+                "L"
+            ):
                 clean_trans += " "
             clean_trans += trans[i]
             i += 1
 
         # ensure we have one and only one space between all word tokens
-        clean_trans = " ".join(list(filter(None, clean_trans.split(' '))))
+        clean_trans = " ".join(list(filter(None, clean_trans.split(" "))))
 
-        deq = collections.deque(clean_trans.split(' '))
+        deq = collections.deque(clean_trans.split(" "))
 
         for t in tokens:
-            w = t['originalText']
+            w = t["originalText"]
             pinyin = []
             i = 0
             nc = ""
-            if w == '…':  # TODO: pure nastiness - this gets translit'ed as '...'
-                t['pinyin'] = deq.popleft() + deq.popleft() + deq.popleft()
+
+            # originally
+            # if w == '…':  # TODO: pure nastiness - this gets translit'ed as '...'
+            #     t['pinyin'] = deq.popleft() + deq.popleft() + deq.popleft()
+            #     continue
+            if not w.replace("…", ""):  # only contains the ...
+                print("starting to replace")
+                t["pinyin"] = deq.popleft()
+                while deq and deq[0] == ".":
+                    print(deq)
+                    t["pinyin"] += deq.popleft()
                 continue
 
             while i < len(w):
-                if unicodedata.category(w[i]) == ('Lo'):  # it's a Chinese char
+                if unicodedata.category(w[i]) == ("Lo"):  # it's a Chinese char
                     pinyin.append(deq.popleft())
                 else:
                     if not nc:
                         nc = deq.popleft()
                     if w[i] != nc[0]:
-                        raise Exception("{} should equal {} for '{}' and tokens '{}' with original {}".format(
-                            w[i], nc, clean_trans, tokens, clean_text))
+                        raise Exception(
+                            "{} should equal {} for '{}' and tokens '{}' with original {}".format(
+                                w[i], nc, clean_trans, tokens, clean_text
+                            )
+                        )
                     pinyin.append(w[i])
                     if len(nc) > 1:
                         nc = nc[1:]
                     else:
                         nc = ""
                 i += 1
-            t['pinyin'] = pinyin
+            t["pinyin"] = pinyin
 
     # override Enricher
     def _set_best_guess(self, sentence, token):
@@ -231,10 +244,12 @@ class CoreNLP_ZHHANS_Enricher(Enricher):
                 if not defs:
                     continue
                 all_defs += defs
-                if ZH_TB_POS_TO_SIMPLE_POS[token["pos"]] == def_pos or \
-                        ZH_TB_POS_TO_ABC_POS[token["pos"]] == def_pos:
+                if def_pos in (  # pylint: disable=R1723
+                    ZH_TB_POS_TO_SIMPLE_POS[token["pos"]],
+                    ZH_TB_POS_TO_ABC_POS[token["pos"]],
+                ):
                     # get the most confident for the right POs
-                    sorted_defs = sorted(defs, key = lambda i: i['confidence'], reverse=True)
+                    sorted_defs = sorted(defs, key=lambda i: i["confidence"], reverse=True)
                     best_guess = sorted_defs[0]
                     break
                 elif def_pos == "OTHER":
@@ -244,17 +259,19 @@ class CoreNLP_ZHHANS_Enricher(Enricher):
 
         if not best_guess and len(others) > 0:
             # it's bad
-            logger.debug("No best_guess found for '{}', using the best 'other' POS defs {}".format(token["word"], others))
+            logger.debug("No best_guess found for '%s', using the best 'other' POS defs %s", token["word"], others)
 
-            best_guess = sorted(others, key = lambda i: i['confidence'], reverse=True)[0]
+            best_guess = sorted(others, key=lambda i: i["confidence"], reverse=True)[0]
 
         if not best_guess and len(all_defs) > 0:
             # it's really bad
-            best_guess = sorted(all_defs, key = lambda i: i['confidence'], reverse=True)[0]
-            logger.debug("""No best_guess found with the correct POS or OTHER for '{}',
-                         using the highest confidence with the wrong POS all_defs {}""".format(
-                             token["word"], all_defs))
+            best_guess = sorted(all_defs, key=lambda i: i["confidence"], reverse=True)[0]
+            logger.debug(
+                """No best_guess found with the correct POS or OTHER for '%s',
+                using the highest confidence with the wrong POS all_defs %s""",
+                token["word"],
+                all_defs,
+            )
 
-        logger.debug("Setting best_guess for '{}' POS {} to best_guess {}".format(token["word"], token["pos"], best_guess))
+        logger.debug("Setting best_guess for '%s' POS %s to best_guess %s", token["word"], token["pos"], best_guess)
         token["best_guess"] = best_guess  # .split(',')[0].split(';')[0]
-

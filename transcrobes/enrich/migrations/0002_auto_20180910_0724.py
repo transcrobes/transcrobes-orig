@@ -6,23 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('enrich', '0001_initial'),
+        ("enrich", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BingAPITranslation',
+            name="BingAPITranslation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_text', models.CharField(max_length=200)),
-                ('response_json', models.CharField(max_length=25000)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("source_text", models.CharField(max_length=200)),
+                ("response_json", models.CharField(max_length=25000)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
-        migrations.RenameModel(
-            old_name='BingRequest',
-            new_name='BingAPILookup',
-        ),
+        migrations.RenameModel(old_name="BingRequest", new_name="BingAPILookup",),
     ]

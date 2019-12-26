@@ -40,4 +40,3 @@ Anki is included as a git submodule, and is licenced under AGPL v3. See https://
 
 ### anki-sync-server (@tsudoku remix)
 anki-sync-server is included as a git submodule, and is licenced under AGPL v3. See https://github.com/tsudoko/anki-sync-server for copyright details.
-

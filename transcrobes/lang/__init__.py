@@ -1,4 +1,3 @@
-
 """
 This file contains constants and explanations/discussion on POS conversions from the different
 supported input POS tagsets
@@ -27,4 +26,3 @@ PRON  Pronouns
 VERB  Verbs
 OTHER Other
 """
-

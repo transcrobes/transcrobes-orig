@@ -2,7 +2,9 @@
 
 from abc import ABC, abstractmethod
 
+
 class Translator(ABC):
+    @staticmethod
     @abstractmethod
     def name():
         pass
@@ -14,4 +16,3 @@ class Translator(ABC):
     @abstractmethod
     def get_standardised_fallback_defs(self, token):
         pass
-

@@ -6,45 +6,36 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('enrichers', '0001_initial'),
+        ("enrichers", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='EN_SubtlexLookup',
+            name="EN_SubtlexLookup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_text', models.CharField(db_index=True, max_length=2000)),
-                ('response_json', models.CharField(max_length=25000)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("source_text", models.CharField(db_index=True, max_length=2000)),
+                ("response_json", models.CharField(max_length=25000)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='ZH_HSKLookup',
+            name="ZH_HSKLookup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_text', models.CharField(db_index=True, max_length=2000)),
-                ('response_json', models.CharField(max_length=25000)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("source_text", models.CharField(db_index=True, max_length=2000)),
+                ("response_json", models.CharField(max_length=25000)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.CreateModel(
-            name='ZH_SubtlexLookup',
+            name="ZH_SubtlexLookup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('source_text', models.CharField(db_index=True, max_length=2000)),
-                ('response_json', models.CharField(max_length=25000)),
+                ("id", models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("source_text", models.CharField(db_index=True, max_length=2000)),
+                ("response_json", models.CharField(max_length=25000)),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
-        migrations.RenameModel(
-            old_name='CMULookup',
-            new_name='EN_CMULookup',
-        ),
+        migrations.RenameModel(old_name="CMULookup", new_name="EN_CMULookup"),
     ]

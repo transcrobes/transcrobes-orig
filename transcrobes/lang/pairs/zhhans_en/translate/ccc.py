@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-
-import re
-import os
 import logging
-
-from django.conf import settings
+import os
+import re
 
 from enrich.data import PersistenceProvider
 from enrich.translate import Translator
@@ -13,6 +10,7 @@ from zhhans_en.models import CCCLookup
 from zhhans_en.translate import decode_pinyin
 
 logger = logging.getLogger(__name__)
+
 
 class ZHHANS_EN_CCCedictTranslator(PersistenceProvider, Translator):
     model_type = CCCLookup
@@ -25,11 +23,11 @@ class ZHHANS_EN_CCCedictTranslator(PersistenceProvider, Translator):
         """
         logger.info("Populating cedict")
         dico = {}
-        if os.path.exists(self._config['path']):
-            with open(self._config['path'], 'r') as data_file:
+        if os.path.exists(self._config["path"]):
+            with open(self._config["path"], "r") as data_file:
                 for line in data_file:
                     line = line.strip()
-                    if line.startswith('#'):
+                    if line.startswith("#"):
                         continue
                     regex = r"^(\S+)\s+(\S+)\s+(\[[^]]+\])\s+(\/.*\/)$"
 
@@ -40,21 +38,19 @@ class ZHHANS_EN_CCCedictTranslator(PersistenceProvider, Translator):
                         dico[match.group(2)] = []
 
                     dico[match.group(2)].append(
-                        {
-                            "pinyin": match.group(3),
-                            "definitions": match.group(4).strip('/').split('/')
-                        }
+                        {"pinyin": match.group(3), "definitions": match.group(4).strip("/").split("/")}
                     )
 
-        logger.info("Finished populating cedict, there are {} entries".format(len(list(dico.keys()))))
+        logger.info("Finished populating cedict, there are %s entries", len(list(dico.keys())))
         return dico
 
     # override Translator
     @staticmethod
     def name():
-        return 'third'
+        return "third"
 
-    def _decode_pinyin(self, s):
+    @staticmethod
+    def _decode_pinyin(s):
         # TODO: don't use the generic method here
         return decode_pinyin(s)
 
@@ -62,26 +58,29 @@ class ZHHANS_EN_CCCedictTranslator(PersistenceProvider, Translator):
     # override Translator
     def get_standardised_defs(self, token):
         std_format = {}
-        cccl = self._get_def(token['lemma'])
+        cccl = self._get_def(token["lemma"])
         if cccl:
-            logger.debug("'{}' is in cccedict cache".format(token['lemma']))
+            logger.debug("'%s' is in cccedict cache", token["lemma"])
             for cc in cccl:
-                logger.debug("Iterating on '{}''s different forms in cccedict cache".format(token['lemma']))
-                for defin in cc['definitions']:
-                    logger.debug("Iterating on '{}''s different definitions in cccedict cache".format(
-                        token['lemma']))
-                    logger.debug("Checking for POS hint for '{}' in cccedict".format(token['lemma']))
+                logger.debug("Iterating on '%s''s different forms in cccedict cache", token["lemma"])
+                for defin in cc["definitions"]:
+                    logger.debug("Iterating on '%s''s different definitions in cccedict cache", token["lemma"])
+                    logger.debug("Checking for POS hint for '%s' in cccedict", token["lemma"])
                     token_pos = ZH_TB_POS_TO_SIMPLE_POS[token["pos"]]
 
-                    if defin.startswith('to '): defin_pos = 'VERB'
-                    elif defin.startswith('a '): defin_pos = 'NOUN'
-                    else: defin_pos = 'OTHER'
+                    if defin.startswith("to "):
+                        defin_pos = "VERB"
+                    elif defin.startswith("a "):
+                        defin_pos = "NOUN"
+                    else:
+                        defin_pos = "OTHER"
 
-                    if not defin_pos in std_format: std_format[defin_pos] = []
+                    if defin_pos not in std_format:
+                        std_format[defin_pos] = []
 
                     confidence = 0
 
-                    if (token_pos == 'VERB' and defin_pos == 'VERB') or (token_pos == 'NOUN' and defin_pos == 'NOUN'):
+                    if (token_pos == "VERB" and defin_pos == "VERB") or (token_pos == "NOUN" and defin_pos == "NOUN"):
                         confidence = 0.01
 
                     defie = {
@@ -89,16 +88,15 @@ class ZHHANS_EN_CCCedictTranslator(PersistenceProvider, Translator):
                         "opos": defin_pos,
                         "normalizedTarget": defin,
                         "confidence": confidence,
-                        "trans_provider": 'CEDICT'
+                        "trans_provider": "CEDICT",
                     }
                     defie["pinyin"] = self._decode_pinyin(cc["pinyin"])
                     std_format[defin_pos].append(defie)
 
-        logger.debug("Finishing looking up '{}' in cccedict".format(token['lemma']))
+        logger.debug("Finishing looking up '%s' in cccedict", token["lemma"])
         return std_format
 
     # override Translator
     def get_standardised_fallback_defs(self, token):
         # TODO: do something better than this!
         return self.get_standardised_defs(token)
-

@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 
-import os
-import re
-import json
 import logging
+import re
+import time
 
 from django.conf import settings
 from django.utils.html import strip_tags
 
-import ankrobes.pgankisyncd
+from ankrobes import pgankisyncd
 
 logger = logging.getLogger(__name__)
 
+
 class InvalidNoteFields(Exception):
     pass
+
 
 class Ankrobes:
     ##
@@ -24,9 +25,9 @@ class Ankrobes:
     def sanitise_ankrobes_entry(entries):
         # we don't need the HTML here - we'll put the proper html back in later
         for entry in entries:
-            entry['Simplified'] = re.sub("(?:<[^>]+>)*", '', entry['Simplified'], flags=re.MULTILINE)
-            entry['Pinyin'] = re.sub("(?:<[^>]+>)*", '', entry['Pinyin'], flags=re.MULTILINE)
-            entry['Meaning'] = re.sub("(?:<[^>]+>)*", '', entry['Meaning'], flags=re.MULTILINE)
+            entry["Simplified"] = re.sub("(?:<[^>]+>)*", "", entry["Simplified"], flags=re.MULTILINE)
+            entry["Pinyin"] = re.sub("(?:<[^>]+>)*", "", entry["Pinyin"], flags=re.MULTILINE)
+            entry["Meaning"] = re.sub("(?:<[^>]+>)*", "", entry["Meaning"], flags=re.MULTILINE)
         return entries
 
     ##
@@ -51,7 +52,7 @@ class Ankrobes:
         """Context manager __enter__"""
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, _type, value, traceback):
         """Context manager __exit__"""
         self.col.close()
 
@@ -77,24 +78,26 @@ class Ankrobes:
         # user in question
         self.col.close()
 
-    def clean_inputs(self, fields):
-        simplified = fields['Simplified']
+    @staticmethod
+    def clean_inputs(fields):
+        simplified = fields["Simplified"]
         # TODO: make sure we have only one pinyin format - either 'là' or 'la4', not both!
-        pinyin = fields['Pinyin'].strip(' ()')
+        pinyin = fields["Pinyin"].strip(" ()")
 
         # TODO: this should support multiple meanings
         regex = r"(?:<style>.*</style>)"  # While using ODH - they force including css at the start of meanings...
-        result = re.sub(regex, '', fields['Meaning'], 0, re.MULTILINE | re.DOTALL)
+        result = re.sub(regex, "", fields["Meaning"], 0, re.MULTILINE | re.DOTALL)
         # TODO: add my own (Hanping compatible???) tags here after stripping the existing entry stuff
         meanings = [strip_tags(result).strip()]
 
-        tags = ['chromecrobes'] + (fields['Tags'] if 'Tags' in fields else [])
+        tags = sorted(list(set(["chromecrobes"] + (fields["Tags"] if "Tags" in fields else []))))
 
-        return { 'simplified': simplified,
-                'pinyin': pinyin,
-                'meanings': meanings,
-                'tags': tags,
-                }
+        return {
+            "simplified": simplified,
+            "pinyin": pinyin,
+            "meanings": meanings,
+            "tags": tags,
+        }
 
     # copied from old
     # FIXME: Unused, delete me!
@@ -107,7 +110,8 @@ class Ankrobes:
     #     return self._word_known(token['word'])
 
     # returns 0 if not known, the id of the note if you do
-    def _word_known_from_types(self, card_types):
+    @staticmethod
+    def _word_known_from_types(card_types):
 
         known = 0
 
@@ -120,44 +124,47 @@ class Ankrobes:
         return known
 
     # returns 0 if not known, the id of the note if it is
-    def _word_known(self, word, deck_name='transcrobes'):
+    def _word_known(self, word, deck_name="transcrobes"):
         card_types = self._card_types(word, deck_name)
 
         return self._word_known_from_types(card_types)
 
-    def get_word(self, word, deck_name='transcrobes'):
+    def get_word(self, word, deck_name="transcrobes"):
         card_types = self._card_types(word, deck_name)
-        if card_types: # is in anki
-            json_notes = []
-            for note_id, card_states in card_types.items():
-                note = self.col.getNote(id=note_id)
-
-                is_known = 0 if 0 in list(card_states.keys()) and len(list(card_states.keys())) == 1 else 1
-
-                json_note = {
-                    'Simplified': note.fields[0],
-                    'Pinyin': note.fields[1],
-                    'Meaning': note.fields[2],
-                    'Is_Known': is_known,
-                    'Tags': note.tags,
-                }
-                json_notes.append(json_note)
-
-            return json_notes
-        else:
+        if not card_types:  # is not in anki
             # NOT for here
             return {}
 
-    def _search_regex(self, word):
+        json_notes = []
+        for note_id, card_states in card_types.items():
+            note = self.col.getNote(id=note_id)
+
+            # FIXME: why "if 0 in list(card_states.keys())" and not just "if 0 in card_states"???
+            # am I that bad or is there a reason ???!!!???
+            is_known = 0 if 0 in list(card_states.keys()) and len(list(card_states.keys())) == 1 else 1
+
+            json_note = {
+                "Simplified": note.fields[0],
+                "Pinyin": note.fields[1],
+                "Meaning": note.fields[2],
+                "Is_Known": is_known,
+                "Tags": note.tags,
+            }
+            json_notes.append(json_note)
+
+        return json_notes
+
+    @staticmethod
+    def _search_regex(word):
         # construct a regexp that will match words mixed in with html
-        regexp = '^(?:<[^>]+>)*'
+        regexp = "^(?:<[^>]+>)*"
         for i in word:
             regexp += "{}(?:<[^>]+>)*".format(i)
-        regexp += '$'
+        regexp += "$"
         return regexp
 
-    def _cards(self, word, deck_name='transcrobes'):
-        logging.debug("Looking for card ids for word '{}'".format(word))
+    def _cards(self, word, deck_name="transcrobes"):
+        logging.debug("Looking for card ids for word '%s'", word)
 
         regexp = self._search_regex(word)
 
@@ -183,8 +190,8 @@ class Ankrobes:
 
         return card_ids
 
-    def _card_types(self, word, deck_name='transcrobes'):
-        logging.debug("Looking for card types for word '{}'".format(word))
+    def _card_types(self, word, deck_name="transcrobes"):
+        logging.debug("Looking for card types for word '%s'", word)
 
         # construct a regexp that will match words mixed in with html
         regexp = self._search_regex(word)
@@ -211,24 +218,22 @@ class Ankrobes:
 
         return card_types
 
-    def _add_note(self, data, deck_name='transcrobes', review_in=0):
-        from anki.notes import Note
+    def _add_note(self, data, deck_name="transcrobes", review_in=0):
 
-        model = self.col.models.byName(data['model'])
+        model = self.col.models.byName(data["model"])
         self.col.models.setCurrent(model)
 
         # Creates or reuses deck with name passed using `deck_name`
         did = self.col.decks.id(deck_name)
-        deck = self.col.decks.get(did)
 
         note = self.col.newNote()
         myid = note.id
-        note.model()['did'] = did
+        note.model()["did"] = did
 
-        for name, value in data['fields'].items():
+        for name, value in data["fields"].items():
             note[name] = value
 
-        for tag in data['tags']:
+        for tag in data["tags"]:
             if tag.strip():
                 note.addTag(tag)
 
@@ -240,36 +245,30 @@ class Ankrobes:
         # We can't use the "proper" client code anymore since the sync code now only really supports clients
         # and we are half-client, half-server with the add_notes
         # required since a83e68412d176b8c91419888a5b6220fe8d5b2e6
-        minUsn = self.col._usn
 
         if review_in > 0:
             self._update_note_known(note.id, review_in)
 
         return note.id
 
-
     # TODO: This should be more intelligent
-    def add_ankrobes_note(self, simplified, pinyin, meanings, tags=[], review_in=0):
+    def add_ankrobes_note(self, simplified, pinyin, meanings, tags=[], review_in=0):  # pylint: disable=W0102
         if not simplified or not pinyin or not meanings:
-            raise InvalidNoteFields('You must supply a value for simplified, pinyin and meanings')
+            raise InvalidNoteFields("You must supply a value for simplified, pinyin and meanings")
 
-        if not 'ankrobes' in tags:
-            tags.append('ankrobes')
+        if "ankrobes" not in tags:
+            tags.append("ankrobes")
         data = {
-            'model': 'transcrobes',
-            'fields': {
-                'Simplified': simplified,
-                'Pinyin': pinyin,
-                'Meaning': "¤".join(meanings),
-            },
-            'tags': tags,
+            "model": "transcrobes",
+            "fields": {"Simplified": simplified, "Pinyin": pinyin, "Meaning": "¤".join(meanings)},
+            "tags": tags,
         }
 
-        return self._add_note(data, deck_name='transcrobes', review_in=review_in)
+        return self._add_note(data, deck_name="transcrobes", review_in=review_in)
 
-    def set_word_known(self, simplified, pinyin, meanings=[], tags=[], review_in=1):
+    def set_word_known(self, simplified, pinyin, meanings=[], tags=[], review_in=1):  # pylint: disable=W0102
         if not simplified or not pinyin or not meanings:
-            raise InvalidNoteFields('You must supply a value for simplified, pinyin and meanings')
+            raise InvalidNoteFields("You must supply a value for simplified, pinyin and meanings")
 
         card_types = self._card_types(simplified)
         if not card_types:
@@ -282,14 +281,14 @@ class Ankrobes:
 
         return {"result": "Ok"}
 
-    def _update_note(self, note_id, simplified, pinyin, meanings, tags, review_in=-1):
+    def _update_note(self, note_id, simplified, pinyin, meanings, tags, _review_in=-1):
         # FIXME: not using review_in yet
 
         note = self.col.getNote(id=note_id)
 
-        note['Simplified'] = simplified
-        note['Pinyin'] = pinyin
-        note['Meaning'] = "¤".join(meanings)
+        note["Simplified"] = simplified
+        note["Pinyin"] = pinyin
+        note["Meaning"] = "¤".join(meanings)
 
         for tag in tags:
             note.addTag(tag)
@@ -298,9 +297,6 @@ class Ankrobes:
         self.col.save()  # FIXME: Find a better way to unlock the db
 
     def _update_note_known(self, note_id, review_in):
-        import datetime
-        import time
-
         note = self.col.getNote(id=note_id)
 
         # see https://github.com/ankidroid/Anki-Android/wiki/Database-Structure

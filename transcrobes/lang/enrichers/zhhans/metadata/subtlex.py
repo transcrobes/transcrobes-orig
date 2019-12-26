@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-
-import os
 import logging
+import os
 from collections import defaultdict
-
-from django.conf import settings
 
 from enrich.data import PersistenceProvider
 from enrich.metadata import Metadata
@@ -19,10 +16,12 @@ following file adapted from subtlexch131210.zip, basically removed useless cedic
 and fixed incorrect pinyin 'ue:' -> 'u:e'
 """
 
+
 class ZH_SubtlexMetadata(PersistenceProvider, Metadata):
     model_type = ZH_SubtlexLookup
 
-    def _decode_pinyin(self, s):
+    @staticmethod
+    def _decode_pinyin(s):
         # FIXME: don't use the generic decode_pinyin
         return decode_pinyin(s)
 
@@ -92,21 +91,24 @@ class ZH_SubtlexMetadata(PersistenceProvider, Metadata):
         dico = defaultdict(list)
         logger.info("Starting population of ZH subtlex")
 
-        if os.path.exists(self._config['path']):
-            with open(self._config['path'], 'r') as data_file:
-                next(data_file) # skip the header line
+        if os.path.exists(self._config["path"]):
+            with open(self._config["path"], "r") as data_file:
+                next(data_file)  # skip the header line
                 for line in data_file:
-                    l = line.strip().split("\t")
-                    w = l[0]
-                    dico[w].append({
-                        "pinyin": decode_pinyin(l[2]),  # can be several, separated by /
-                        "wcpm": l[5],  # word count per million
-                        "wcdp": l[8],  # % of film subtitles that had the char at least once
-                        "pos": l[12],  # all POS found, most frequent first
-                        "pos_freq": l[13],  # nb of occurences by POS
-                    })
+                    li = line.strip().split("\t")
+                    w = li[0]
+                    dico[w].append(
+                        {
+                            "pinyin": decode_pinyin(li[2]),  # can be several, separated by /
+                            "wcpm": li[5],  # word count per million
+                            "wcdp": li[8],  # % of film subtitles that had the char at least once
+                            "pos": li[12],  # all POS found, most frequent first
+                            "pos_freq": li[13],  # nb of occurences by POS
+                        }
+                    )
 
-                    if not line.strip(): ignore = 0; continue
+                    if not line.strip():
+                        continue
 
         logger.info(f"Finished populating ZH subtlex, there are {len(list(dico.keys()))} entries")
 
@@ -115,7 +117,7 @@ class ZH_SubtlexMetadata(PersistenceProvider, Metadata):
     # override Metadata
     @staticmethod
     def name():
-        return 'freq'
+        return "freq"
 
     # override Metadata
     def meta_for_word(self, lword):
@@ -125,11 +127,10 @@ class ZH_SubtlexMetadata(PersistenceProvider, Metadata):
     def metas_as_string(self, lword):
         entries = self.entry(lword)
         if not entries:
-            return { 'name': self.name(), 'metas': '' }
-        else:
-            e = entries[0]
-            return {
-                'name': self.name(),
-                'metas': f"{e['pinyin']}, {e['wcpm']}, {e['wcdp']}, {e['pos']}, {e['pos_freq']}"
-            }
+            return {"name": self.name(), "metas": ""}
 
+        e = entries[0]
+        return {
+            "name": self.name(),
+            "metas": f"{e['pinyin']}, {e['wcpm']}, {e['wcdp']}, {e['pos']}, {e['pos_freq']}",
+        }

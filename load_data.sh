@@ -1,5 +1,5 @@
 #!/bin/bash
 
-source set_python_path.sh
+source runsetup.sh
 
 python transcrobes/manage.py load_data "$@"
