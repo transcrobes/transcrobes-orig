@@ -1,0 +1,203 @@
+Word	Length	Pinyin	Pinyin.Input	WCount	W.million	log10W	W-CD	W-CD%	log10CD	Dominant.PoS	Dominant.PoS.Freq	All.PoS	All.PoS.Freq
+表演	2	biao3 yan3	biaoyan	6658	198.47	3.8233	1590	25.47	3.2014	vn	3998	.vn.v.	.3998.2660.
+正在	2	zheng4 zai4	zhengzai	6653	198.32	3.823	3382	54.17	3.5292	d	6653	.d.	.6653.
+无	1	mo2/wu2	wu	6648	198.17	3.8227	3277	52.49	3.5155	v	6648	.v.	.6648.
+已	1	yi3	yi	6636	197.81	3.8219	2968	47.54	3.4725	d	6636	.d.	.6636.
+笑	1	xiao4	xiao	6628	197.58	3.8214	2831	45.35	3.4519	v	6607	.v.vn.	.6607.21.
+选	1	xuan3	xuan	6619	197.31	3.8208	2424	38.83	3.3845	v	6601	.v.g.	.6601.18.
+感到	2	gan3 dao4	gandao	6612	197.1	3.8203	3147	50.41	3.4979	v	6612	.v.	.6612.
+那边	2	na4 bian5	nabian	6572	195.91	3.8177	3177	50.89	3.502	r	6572	.r.	.6572.
+远	1	yuan3	yuan	6570	195.85	3.8176	3459	55.41	3.539	a	4678	.a.ad.	.4678.1892.
+儿	1	er2	er	6569	195.82	3.8175	2551	40.86	3.4067	g	5235	.g.k.n.	.5235.1144.190.
+故事	2	gu4 shi5	gushi	6551	195.28	3.8163	2656	42.54	3.4242	n	6551	.n.	.6551.
+疯	1	feng1	feng	6550	195.25	3.8162	3180	50.94	3.5024	v	6550	.v.	.6550.
+换	1	huan4	huan	6541	194.98	3.8156	3315	53.1	3.5205	v	6541	.v.	.6541.
+结婚	2	jie2 hun1	jiehun	6535	194.8	3.8152	2278	36.49	3.3576	v	6014	.v.vn.	.6014.521.
+猜	1	cai1	cai	6521	194.39	3.8143	3308	52.99	3.5196	v	6521	.v.	.6521.
+咱们	2	zan2 men5	zanmen	6519	194.33	3.8142	1551	24.84	3.1906	r	6519	.r.	.6519.
+床	1	chuang2	chuang	6505	193.91	3.8132	2771	44.39	3.4426	n	6493	.n.q.	.6493.12.
+处理	2	chu3 li3	chuli	6498	193.7	3.8128	3179	50.92	3.5023	v	6086	.v.vn.	.6086.412.
+妻子	2	qi1 zi5	qizi	6494	193.58	3.8125	2401	38.46	3.3804	n	6494	.n.	.6494.
+进行	2	jin4 xing2	jinxing	6485	193.31	3.8119	3024	48.44	3.4806	v	6460	.v.vn.	.6460.25.
+内	1	nei4	nei	6436	191.85	3.8086	2999	48.04	3.477	f	6436	.f.	.6436.
+是否	2	shi4 fou3	shifou	6434	191.79	3.8085	2955	47.33	3.4706	v	6434	.v.	.6434.
+段	1	duan4	duan	6430	191.67	3.8082	3234	51.8	3.5097	q	6366	.q.g.	.6366.64.
+令	1	ling2/ling3/ling4	ling	6425	191.53	3.8079	2819	45.15	3.4501	v	6423	.v.g.	.6423.2.
+刚刚	2	gang1 gang5	ganggang	6422	191.44	3.8077	3251	52.07	3.512	d	6422	.d.	.6422.
+案子	2	an4 zi5	anzi	6413	191.17	3.8071	1576	25.24	3.1976	n	6413	.n.	.6413.
+行动	2	xing2 dong4	xingdong	6405	190.93	3.8065	2468	39.53	3.3923	vn	5312	.vn.v.	.5312.1093.
+第二	2	di4 er4	dier	6379	190.15	3.8048	3336	53.44	3.5232	m	6379	.m.	.6379.
+努力	2	nu3 li4	nuli	6360	189.59	3.8035	3031	48.55	3.4816	ad	2424	.ad.an.a.	.2424.2298.1638.
+害怕	2	hai4 pa4	haipa	6346	189.17	3.8025	3009	48.2	3.4784	v	6336	.v.vn.	.6336.10.
+酒	1	jiu3	jiu	6338	188.93	3.802	2594	41.55	3.414	n	6338	.n.	.6338.
+发	1	fa1/fa4	fa	6323	188.48	3.8009	3166	50.71	3.5005	v	6126	.v.q.	.6126.197.
+调查	2	diao4 cha2	diaocha	6319	188.37	3.8006	2193	35.13	3.341	v	4183	.v.vn.	.4183.2136.
+失去	2	shi1 qu4	shiqu	6314	188.22	3.8003	3133	50.18	3.496	v	6314	.v.	.6314.
+歌	1	ge1	ge	6309	188.07	3.8	1505	24.11	3.1775	n	6285	.n.g.	.6285.24.
+成功	2	cheng2 gong1	chenggong	6305	187.95	3.7997	2972	47.61	3.473	a	4597	.a.an.ad.	.4597.1204.504.
+唱	1	chang4	chang	6300	187.8	3.7993	1430	22.91	3.1553	v	6300	.v.	.6300.
+考虑	2	kao3 lu:4	kaolv	6295	187.65	3.799	3146	50.39	3.4978	v	6197	.v.vn.	.6197.98.
+刚才	2	gang1 cai2	gangcai	6280	187.2	3.798	3161	50.63	3.4998	t	6280	.t.	.6280.
+约会	2	yue1 hui4	yuehui	6267	186.82	3.7971	2150	34.44	3.3324	v	4341	.v.n.vn.	.4341.1675.251.
+节目	2	jie2 mu4	jiemu	6253	186.4	3.7961	1486	23.8	3.172	n	6253	.n.	.6253.
+通过	2	tong1 guo4	tongguo	6216	185.29	3.7935	2799	44.83	3.447	p	4364	.p.v.vn.	.4364.1851.1.
+之间	2	zhi1 jian1	zhijian	6212	185.18	3.7932	3260	52.22	3.5132	f	6212	.f.	.6212.
+别的	2	bie2 de5	biede	6210	185.12	3.7931	3270	52.38	3.5145	r	6210	.r.	.6210.
+学	1	xue2	xue	6209	185.09	3.793	3023	48.42	3.4804	v	6202	.v.g.	.6202.7.
+开心	2	kai1 xin1	kaixin	6202	184.88	3.7925	2804	44.91	3.4478	a	6193	.a.v.an.	.6193.6.3.
+母亲	2	mu3 qin1	muqin	6195	184.67	3.792	2364	37.87	3.3736	n	6195	.n.	.6195.
+辆	1	liang4	liang	6190	184.52	3.7917	2379	38.11	3.3764	q	6190	.q.	.6190.
+主意	2	zhu3 yi5	zhuyi	6144	183.15	3.7885	3207	51.37	3.5061	n	6144	.n.	.6144.
+探	1	tan4	tan	6140	183.03	3.7882	1491	23.88	3.1735	v	6136	.v.vn.	.6136.4.
+并进	2	bing4 jin4	bingjin	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+幻化	2	huan4 hua1/hua4	huanhua	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+幻景	2	huan4 jing3	huanjing	4	0.12	0.6021	3	0.05	0.4771	n	4	.n.	.4.
+幽门	2	you1 men2	youmen	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+广泛性	3	an1/guang3 fan2/fan4 xing4	guangfanxing	4	0.12	0.6021	3	0.05	0.4771	n	4	.n.	.4.
+广角镜头	4	guang3 jiao3 jing4 tou2	guangjiaojingtou	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+庄稼汉	3	zhuang1 jia5 han4	zhuangjiahan	4	0.12	0.6021	3	0.05	0.4771	n	4	.n.	.4.
+库斯热	3	ku4 si1 re4	kusire	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+库西	2	ku4 xi1	kuxi	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+库里	2	ku4 li3	kuli	4	0.12	0.6021	4	0.06	0.6021	nr	4	.nr.	.4.
+应募	2	ying1/ying4 mu4	yingmu	4	0.12	0.6021	1	0.02	0	v	4	.v.	.4.
+应承	2	ying1/ying4 cheng2	yingcheng	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+底火	2	de5/di3 huo3	dihuo	4	0.12	0.6021	3	0.05	0.4771	n	4	.n.	.4.
+底边	2	di3 bian1	dibian	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+座上客	3	zuo4 shang3/shang4 ke4	zuoshangke	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+座落	2	zuo4 luo4	zuoluo	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+庶民	2	shu4 min2	shumin	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+康利	2	kang1 li4	kangli	4	0.12	0.6021	3	0.05	0.4771	nr	4	.nr.	.4.
+康善敏	3	kang1 shan4 min3	kangshanmin	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+康塔	2	kang1 da5/ta3	kangta	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+康庄大道	4	kang1 zhuang1 da4 dao4	kangzhuangdadao	4	0.12	0.6021	4	0.06	0.6021	l	4	.l.	.4.
+康拉	2	kang1 la1/la2/la3/la4	kangla	4	0.12	0.6021	2	0.03	0.301	nr	4	.nr.	.4.
+康桑	2	kang1 sang1	kangsang	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+康灵	2	kang1 ling2	kangling	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+康科德	3	Kang1 ke1 de2	kangkede	4	0.12	0.6021	2	0.03	0.301	nr	4	.nr.	.4.
+康维	2	kang1 wei2	kangwei	4	0.12	0.6021	4	0.06	0.6021	nr	4	.nr.	.4.
+康胜	2	kang1 sheng1/sheng4	kangsheng	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+延时	2	yan2 shi2	yanshi	4	0.12	0.6021	3	0.05	0.4771	nr	4	.nr.	.4.
+建起	2	jian4 qi3	jianqi	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+开发部	3	kai1 fa1/fa4 bu4	kaifabu	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+开屏	2	kai1 ping2	kaiping	4	0.12	0.6021	2	0.03	0.301	v	4	.v.	.4.
+开山	2	kai1 shan1	kaishan	4	0.12	0.6021	4	0.06	0.6021	v	3	.v.vn.	.3.1.
+开市	2	kai1 shi4	kaishi	4	0.12	0.6021	3	0.05	0.4771	v	4	.v.	.4.
+开绿灯	3	kai1 lu:4 deng1	kailvdeng	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+开行	2	kai1 hang2/hang4/heng2/xing2	kaixing	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+异同	2	yi4 tong2/tong4	yitong	4	0.12	0.6021	2	0.03	0.301	n	4	.n.	.4.
+弃儿	2	qi4 er2	qier	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+弄堂	2	long4/nong4 tang2	longtang	4	0.12	0.6021	2	0.03	0.301	n	4	.n.	.4.
+引力场	3	yin3 li4 chang3	yinlichang	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+引咎辞职	4	yin3 jiu4 ci2 zhi2	yinjiucizhi	4	0.12	0.6021	3	0.05	0.4771	v	4	.v.	.4.
+引文	2	yin3 wen2	yinwen	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+引申	2	yin3 shen1	yinshen	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+引航	2	yin3 hang2	yinhang	4	0.12	0.6021	4	0.06	0.6021	v	3	.v.vn.	.3.1.
+引证	2	yin3 zheng4	yinzheng	4	0.12	0.6021	3	0.05	0.4771	v	4	.v.	.4.
+弗兰克·卡登	6	fu2 lan2 ke4 #ka3/qia3 deng1	fulanke*kadeng	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗兰克·哈克特	7	fu2 lan2 ke4 #ha1/ha3/ha4 ke4 te4	fulanke*hakete	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗兰克·默多克	7	fu2 lan2 ke4 #mo4 duo1 ke4	fulanke*moduoke	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗兰斯	3	fu2 lan2 si1	fulansi	4	0.12	0.6021	2	0.03	0.301	nr	4	.nr.	.4.
+弗兰海夫	4	fu2 lan2 hai3 fu1/fu2	fulanhaifu	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗利山	3	fu2 li4 shan1	fulishan	4	0.12	0.6021	3	0.05	0.4771	nr	4	.nr.	.4.
+弗拉曼科	4	fu2 la1/la2/la3/la4 man4 ke1	fulamanke	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗拉维奥	4	fu2 la1/la2/la3/la4 wei2 ao4	fulaweiao	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗拉迪米尔·奈斯基	9	fu2 la1/la2/la3/la4 di2 mi3 er3 #nai4 si1 ji1	fuladimier*naisiji	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗朗兹	3	fu2 lang3 ci2/zi1	fulangzi	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗朗西丝卡·布鲁尼	9	fu2 lang3 xi1 si1 ka3/qia3 #bu4 lu3 ni2	fulangxisika*buluni	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗朗西斯科·戈雅	8	fu2 lang3 xi1 si1 ke1 #ge1 ya1/ya3	fulangxisike*geya	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗朗辛	3	fu2 lang3 xin1	fulangxin	4	0.12	0.6021	2	0.03	0.301	nr	4	.nr.	.4.
+弗洛莫	3	fu2 luo4 mo4	fuluomo	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗瑞	2	fu2 rui4	furui	4	0.12	0.6021	3	0.05	0.4771	nr	4	.nr.	.4.
+弗莱蒂·赫斯特	7	fu2 lai2 di4 #he4 si1 te4	fulaidi*hesite	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗西斯	3	fu2 xi1 si1	fuxisi	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗里	2	fu2 li3	fuli	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗里克	3	fu2 li3 ke4	fulike	4	0.12	0.6021	3	0.05	0.4771	nr	4	.nr.	.4.
+弗里兰	3	fu2 li3 lan2	fulilan	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗里德	3	fu2 li3 de2	fulide	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗里敦	3	Fu2 li3 dun1	fulidun	4	0.12	0.6021	1	0.02	0	ns	4	.ns.	.4.
+弗雷娜	3	fu2 lei2 na4/nuo2	fuleina	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗雷德·苏莫斯	7	fu2 lei2 de2 #su1 mo4 si1	fuleide*sumosi	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弗雷德里克·道格拉斯	10	fu2 lei2 de2 li3 ke4 #dao4 ge1/ge2 la1/la2/la3/la4 si1	fuleidelike*daogelasi	4	0.12	0.6021	2	0.03	0.301	nr	4	.nr.	.4.
+弛缓	2	chi2 huan3	chihuan	4	0.12	0.6021	4	0.06	0.6021	a	4	.a.	.4.
+弟媳	2	di4 xi2	dixi	4	0.12	0.6021	3	0.05	0.4771	n	4	.n.	.4.
+张狂	2	zhang1 kuang2	zhangkuang	4	0.12	0.6021	4	0.06	0.6021	a	4	.a.	.4.
+张真	2	zhang1 zhen1	zhangzhen	4	0.12	0.6021	3	0.05	0.4771	nr	4	.nr.	.4.
+张石祖	3	zhang1 dan4/shi2 zu3	zhangshizu	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+张藏宝	3	zhang1 cang2/zang4 bao3	zhangcangbao	4	0.12	0.6021	3	0.05	0.4771	nr	4	.nr.	.4.
+张韩星	3	zhang1 han2 xing1	zhanghanxing	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+弯子	2	wan1 zi3	wanzi	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+强加于人	4	jiang4/qiang2/qiang3 jia1 yu2 ren2	qiangjiayuren	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+强尼·楚拉夫	6	jiang4/qiang2/qiang3 ni2 #chu3 la1/la2/la3/la4 fu1/fu2	qiangni*chulafu	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+强尼·马丁	5	jiang4/qiang2/qiang3 ni2 #ma3 ding1/zheng1	qiangni*mading	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+强尼巴特利	5	jiang4/qiang2/qiang3 ni2 ba1 te4 li4	qiangnibateli	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+强身	2	jiang4/qiang2/qiang3 shen1	qiangshen	4	0.12	0.6021	3	0.05	0.4771	v	4	.v.	.4.
+归隐	2	gui1 yin3	guiyin	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+当家作主	4	dang1/dang4 jia1/jia5/jie5 zuo1/zuo2/zuo4 zhu3	dangjiazuozhu	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+形影	2	xing2 ying3	xingying	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+形迹	2	xing2 ji4	xingji	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+彭斯	2	peng2 si1	pengsi	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+彼得·埃文斯	6	bi3 de2/de5/dei3 #ai1 wen2 si1	bide*aiwensi	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+彼得·帕	4	bi3 de2/de5/dei3 #pa4	bide*pa	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+彼得卡拉汉	5	bi3 de2/de5/dei3 ka3/qia3 la1/la2/la3/la4 han4	bidekalahan	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+彼时	2	bi3 shi2	bishi	4	0.12	0.6021	4	0.06	0.6021	t	4	.t.	.4.
+彼特戴顿	4	bi3 te4 dai4 du2/dun4	bitedaidun	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+彼蒂	2	bi3 di4	bidi	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+待产	2	dai1/dai4 chan3	daichan	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+徇私	2	xun4 si1	xunsi	4	0.12	0.6021	4	0.06	0.6021	v	4	.v.	.4.
+律令	2	lu:4 ling2/ling3/ling4	lvling	4	0.12	0.6021	4	0.06	0.6021	n	4	.n.	.4.
+徐延	2	xu2 yan2	xuyan	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+徐静	2	xu2 jing4	xujing	4	0.12	0.6021	1	0.02	0	nr	4	.nr.	.4.
+得意门生	4	de2/de5/dei3 yi4 men2 sheng1	deyimensheng	4	0.12	0.6021	4	0.06	0.6021	n	3	.n.l.	.3.1.
+徙	1	xi3	xi	4	0.12	0.6021	2	0.03	0.301	g	4	.g.	.4.
+黄赫石	3	huang2 he4 dan4/shi2	huangheshi	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黄连	2	huang2 lian2	huanglian	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黄道吉日	4	huang2 dao4 ji2 ri4	huangdaojiri	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黄金国	3	huang2 jin1 guo2	huangjinguo	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黄金海岸	4	huang2 jin1 hai3 an4	huangjinhaian	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黄金芝	3	huang2 jin1 zhi1	huangjinzhi	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黄雪	2	huang2 xue3	huangxue	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黄鸟	2	huang2 diao3/niao3	huangniao	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黄鹂	2	huang2 li2	huangli	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黄鼬	2	huang2 you4	huangyou	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黎东国	3	li2 dong1 guo2	lidongguo	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黎兹	2	li2 ci2/zi1	lizi	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黎嘉云	3	li2 jia1 yun2	lijiayun	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黎塔	2	li2 da5/ta3	lita	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黎文凤	3	li2 wen2 feng4	liwenfeng	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黎格	2	li2 ge1/ge2	lige	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黎民	2	li2 min2	limin	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黎蒙	2	li2 meng1/meng2/meng3	limeng	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黎薇	2	li2 wei1	liwei	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黏度	2	nian2 du4	niandu	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黏胶	2	nian1 jiao1	nianjiao	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黑乔先	3	hei1 qiao2 xian1	heiqiaoxian	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑克瑞	3	hei1 ke4 rui4	heikerui	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑兹尔	3	hei1 ci2/zi1 er3	heizier	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑咕隆咚	4	hei1 gu1 long1/long2 dong1	heigulongdong	1	0.03	0	1	0.02	0	z	1	.z.	.1.
+黑土	2	hei1 tu3	heitu	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黑墨水	3	hei1 mo4 shui3	heimoshui	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黑孜	2	hei1 zi1	heizi	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑忽忽	3	hei1 hu1 hu1	heihuhu	1	0.03	0	1	0.02	0	z	1	.z.	.1.
+黑文	2	hei1 wen2	heiwen	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑文会	3	hei1 wen2 hui4/kuai4	heiwenhui	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑斯廷	3	hei1 si1 ting2	heisiting	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑斯浩夫	4	hei1 si1 hao4 fu1/fu2	heisihaofu	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑梅	2	hei1 mei2	heimei	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑棋	2	hei1 qi2	heiqi	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黑毛羊	3	hei1 mao2 yang2	heimaoyang	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑泽进	3	hei1 ze2 jin4	heizejin	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑溪	2	hei1 xi1	heixi	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑灵干	3	hei1 ling2 gan1/gan4	heilinggan	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑热病	3	hei1 re4 bing4	heirebing	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黑玉	2	hei1 yu4	heiyu	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑盟	2	hei1 meng2/ming2	heimeng	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑石	2	hei1 dan4/shi2	heishi	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑石土	3	hei1 dan4/shi2 tu3	heishitu	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑石洞	3	hei1 dan4/shi2 dong4	heishidong	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑美人	3	hei1 mei3 ren2	heimeiren	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑耀石	3	hei1 yao4 dan4/shi2	heiyaoshi	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑色金属	4	hei1 se4 jin1 shu3	heisejinshu	1	0.03	0	1	0.02	0	l	1	.l.	.1.
+黑蒙蒙	3	hei1 meng1/meng2/meng3 meng1/meng2/meng3	heimengmeng	1	0.03	0	1	0.02	0	z	1	.z.	.1.
+黑贝雷	3	hei1 bei4 lei2	heibeilei	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.
+黑货	2	hei1 huo4	heihuo	1	0.03	0	1	0.02	0	n	1	.n.	.1.
+黑进显	3	hei1 jin4 xian3	heijinxian	1	0.03	0	1	0.02	0	nr	1	.nr.	.1.

@@ -1,3 +1,0 @@
-[submodule "libs/anki-sync-server"]
-	path = libs/anki-sync-server
-	url = https://github.com/AntonOfTheWoods/anki-sync-server.git

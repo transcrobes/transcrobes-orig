@@ -1,0 +1,189 @@
+interactions:
+- request:
+    body: "[{\"Text\": \"\u4E00\u62E5\u800C\u4E0A\"}]"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '26'
+      Content-type:
+      - application/json
+      Ocp-Apim-Subscription-Key:
+      - a_very_secret_key
+      User-Agent:
+      - python-requests/2.24.0
+      X-ClientTraceId:
+      - 74af7231-5129-422c-82f8-cac088889183
+    method: POST
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+  response:
+    body:
+      string: '[{"translations":[{"text":"Swarmed.","to":"en","alignment":{"proj":"0:3-0:7"}}]}]'
+    headers:
+      Access-Control-Expose-Headers:
+      - X-RequestId
+      - X-Metered-Usage
+      Content-Length:
+      - '81'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 12 Sep 2020 02:54:21 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-MT-System:
+      - Microsoft
+      X-Metered-Usage:
+      - '4'
+      X-RequestId:
+      - TRAN.TYO1.0015.0912T0254.75E83D
+    status:
+      code: 200
+      message: OK
+- request:
+    body: "[{\"Text\": \"\u6D3B\u4EBA\"}]"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-type:
+      - application/json
+      Ocp-Apim-Subscription-Key:
+      - a_very_secret_key
+      User-Agent:
+      - python-requests/2.24.0
+      X-ClientTraceId:
+      - eab6abab-17e5-4924-80b1-039c4f10593e
+    method: POST
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+  response:
+    body:
+      string: '[{"translations":[{"text":"Living.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
+    headers:
+      Access-Control-Expose-Headers:
+      - X-RequestId
+      - X-Metered-Usage
+      Content-Length:
+      - '80'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 12 Sep 2020 02:54:21 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-MT-System:
+      - Microsoft
+      X-Metered-Usage:
+      - '2'
+      X-RequestId:
+      - TRAN.TYO1.0014.0912T0254.6E8ACE
+    status:
+      code: 200
+      message: OK
+- request:
+    body: "[{\"Text\": \"\u9F99\u95E8\u77F3\u7A9F\"}]"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '26'
+      Content-type:
+      - application/json
+      Ocp-Apim-Subscription-Key:
+      - a_very_secret_key
+      User-Agent:
+      - python-requests/2.24.0
+      X-ClientTraceId:
+      - 8af8ecf8-f24e-4518-aff7-5a4eb822aa65
+    method: POST
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+  response:
+    body:
+      string: '[{"translations":[{"text":"Longmen Grotto.","to":"en","alignment":{"proj":"0:0-0:6
+        3:3-8:14"}}]}]'
+    headers:
+      Access-Control-Expose-Headers:
+      - X-RequestId
+      - X-Metered-Usage
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 12 Sep 2020 02:54:22 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-MT-System:
+      - Microsoft
+      X-Metered-Usage:
+      - '4'
+      X-RequestId:
+      - TRAN.TYO1.0017.0912T0254.6F12C7
+    status:
+      code: 200
+      message: OK
+- request:
+    body: "[{\"Text\": \"\u9F99\u95E8\u77F3\u7A9F\"}]"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '26'
+      Content-type:
+      - application/json
+      Ocp-Apim-Subscription-Key:
+      - a_very_secret_key
+      User-Agent:
+      - python-requests/2.24.0
+      X-ClientTraceId:
+      - 59a2c521-c113-4bb2-b710-2156f1140a86
+    method: POST
+    uri: https://api.cognitive.microsofttranslator.com/transliterate?api-version=3.0&from=zh-Hans&to=en&language=zh-Hans&fromScript=Hans&toScript=Latn
+  response:
+    body:
+      string: "[{\"text\":\"l\xF3ng m\xE9n sh\xED k\u016B\",\"script\":\"Latn\"}]"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-RequestId
+      - X-Metered-Usage
+      Content-Length:
+      - '48'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Sat, 12 Sep 2020 02:54:22 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Metered-Usage:
+      - '4'
+      X-RequestId:
+      - TLIT.TYO1.0018.0912T0254.65FB24
+    status:
+      code: 200
+      message: OK
+version: 1

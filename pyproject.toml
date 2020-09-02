@@ -1,14 +1,49 @@
+[tool.poetry]
+name = "Transcrobes"
+version = "0.0.9"
+description = "Learn a language doing stuff you love"
+authors = ["Anton Melser <anton@transcrob.es>"]
+license = "AGPL-3.0-or-later"
+
+[tool.poetry.dependencies]
+python = "~3.8"
+django = "^3.1"
+djangorestframework = "^3.11.1"
+gunicorn = "^20.0.4"
+psycopg2-binary = "^2.8.5"
+django-k8s = "^0.2.9"
+django-cors-headers = "^3.5.0"
+djangorestframework-simplejwt = "^4.4.0"
+asgiref = "^3.2.10"
+djankiserv = {path = "../../djankiserv"}
+xmltodict = "^0.12.0"
+django-survey-and-report = "^1.3.24"
+pandas = "^1.1.1"
+pysankey = "^0.0.1"
+
+[tool.poetry.dev-dependencies]
+requests-mock = "^1.8.0"
+coverage = {extras = ["toml"], version = "^5.2.1"}
+python-coveralls = "^2.9.3"
+coveralls = "^2.1.2"
+colorama = "^0.4.3"
+pylint = "^2.6.0"
+flake9 = "^3.8.3"
+pre-commit = "^2.7.1"
+ipdb = "^0.13.3"
+ipython = "^7.18.1"
+vcrpy = "^4.1.0"
+vcrpy-unittest = "^0.1.7"
+
 [tool.coverage.run]
 omit = [
-    "transcrobes/transcrobes/settings/*",
-    "transcrobes/*/migrations/*",
+    "*manage.py",
 ]
-
-[tool.pylint.master]
-init-hook = "import imp, os; from pylint.config import find_default_config_files; imp.load_source('import_hook', os.path.join(os.path.dirname(next(find_default_config_files())), 'import_hook.py'))"
 
 [tool.pylint.messages_control]
 # I0011 Warning locally suppressed using disable-msg
+# disabling wrong-import-order because isort is run in pre-commit, pylint ignores [tool.isort] in this file
+# and I can't work out how to get pylint to consider 'known-first-party'
 disable = """
     invalid-name,
     logging-fstring-interpolation,
@@ -23,6 +58,7 @@ disable = """
     no-member,
     R0901,
     R0801,
+    wrong-import-order,
 """
 
 ignore = """,
@@ -90,3 +126,6 @@ exclude = '''
                      # the root of the project
 )
 '''
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

@@ -7,7 +7,7 @@ variables:
   POSTGRES_DATABASE: tc_db
   POSTGRES_HOST: db
   POSTGRES_PORT: 5432
-  DJANGO_SETTINGS_MODULE: 'transcrobes.settings.container'
+  DJANGO_SETTINGS_MODULE: 'transcrobes.settings'
   CORENLP_HOST: corenlp  # TODO: not yet used in tests
   ANKROBES_HOST: ankrobes  # TODO: not yet used in tests
   BING_SUBSCRIPTION_KEY: a_great_key  # TODO: not yet used in tests

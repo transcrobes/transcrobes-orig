@@ -1,0 +1,58 @@
+{
+  "1": {
+    "collapsed": false,
+    "conf": 1,
+    "desc": "",
+    "dyn": 0,
+    "extendNew": 0,
+    "extendRev": 0,
+    "id": 1,
+    "lrnToday": [
+      0,
+      0
+    ],
+    "mod": 0,
+    "name": "Default",
+    "newToday": [
+      0,
+      0
+    ],
+    "revToday": [
+      0,
+      0
+    ],
+    "timeToday": [
+      0,
+      0
+    ],
+    "usn": 0
+  },
+  "1599207910774": {
+    "collapsed": false,
+    "conf": 1,
+    "desc": "",
+    "dyn": 0,
+    "extendNew": 0,
+    "extendRev": 0,
+    "id": 1599207910774,
+    "lrnToday": [
+      0,
+      0
+    ],
+    "mod": 1599282457,
+    "name": "transcrobes",
+    "newToday": [
+      0,
+      0
+    ],
+    "revToday": [
+      0,
+      0
+    ],
+    "timeToday": [
+      0,
+      0
+    ],
+    "usn": 0
+  }
+}

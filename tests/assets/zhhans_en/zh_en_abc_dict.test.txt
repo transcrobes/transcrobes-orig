@@ -1,0 +1,1020 @@
+.py   a*
+char   啊
+gr   A
+rem@yy200307   Added gr A.
+ser   1000000063
+ref   1
+ps   m.p.
+psx   used as phrase suffix
+1psx   in enumeration
+1ex   Qián ∼, shū ∼, biǎo ∼, wǒ dōu diū le.
+1hz   钱∼, 书∼, 表∼, 我都丢了。
+1tr   Money, books, watch, I lost everything.
+2psx   in direct address and exclamation
+2ex   Lǎo Wáng ∼, zhè kě bùxíng ∼!
+2hz   老王∼, 这可不行∼!
+2tr   Wang, this won't do!
+rem@2004.05.24   ?missing: {wang} cw: Ignore. Proper N.
+3psx   indicating obviousness/impatience
+3ex   Lái ∼!
+3hz   来∼!
+3tr   Come on!
+4psx   for confirmation
+4ex   Nǐ bù lái ∼?
+4hz   你不来∼?
+4tr   So you're not coming?
+hh   ¹ā [1000000160]
+hh   á [1000000354]
+hh   ǎ [1000000451]
+hh   à [1000000548]
+freq   609.7 [XHPC:1102]
+
+.py   ¹ā
+char   啊
+gr   A
+ser   1000000160
+rem@yy01.07   add class a
+ref   2
+ps   intj.
+psx   indicating elation
+ex@JDF   ∼! Wǒ yòu yíng le!
+hz   ∼! 我又赢了!
+tr   Ha! I've won again!
+hh   a [1000000063]
+hh   á [1000000354]
+hh   ǎ [1000000451]
+hh   à [1000000548]
+freq   216.9 [XHPC:392]
+
+.py   ²ā
+char   阿
+gr   B
+ser   1000000257
+ref   10
+ps   pref.
+psx   used familiarly before
+1psx   childhood name
+1ex@JDF   Ā Bǎo
+1hz   阿宝
+1tr   Precious
+2psx   a monosyllabic personal name or surname
+2ex@JDF   Ā X
+2hz   阿X
+rem@yy200307   Added 2hz.
+3psx   name of a relative
+3ex@JDF   Ā Mā
+3hz   阿妈
+3tr   Mom
+4psx   birth-order number
+4ex@JDF   Ā Sān
+4hz   阿三
+4tr   Third Son
+rem@jdf/yy07.01   re-arranged psx to 1-4psx
+hh   ²ē [1018590404]
+rem@TB2006.06.30   Auto-changed 3ē to 2ē in 'hh' band to match that entry.
+freq   62.5 [XHPC:113(头)]
+
+.py   ³ā
+char   锕[錒]
+rem@TB2000.12   Added this entry (so we have all 103 elements in periodic table).
+ser   1019068420
+gr   *
+ref   u9515
+ps   n.
+en   chem.
+df   actinium
+
+.py   ⁴ā
+char   腌
+ser   1018532107
+gr   *
+ref   NM0000
+ps   char.
+in   āza [1000121313]
+hh   ³yān [1015221594]
+
+.py   ⁵ā
+char   屙
+ser   1018532204
+gr   *
+ref   NM0001
+ps   char.
+in   āshǐ [1000119761]
+rem   Suggest delete this entry and a1shi3 entry. This seems to be a dialect variation of e1shi3.
+rem@TB2000.11   I agree with Jim but don't feel authorized to delete the entries.
+rem   I changed bf. to char. since no definition was present, but if the entries are kept
+rem   then maybe definition should be same as for e1.
+hh   ³ē [1003140244]
+rem@TB2006.06.30   Auto-changed 1ē to 3ē in 'hh' band to match that entry.
+
+.py   á
+char   啊
+ser   1000000354
+gr   E
+ref   3
+ps   intj.
+psx   indicating doubt or questioning
+ex@JDF   ∼? Nǐ shuō shénme?
+hz   ∼? 你说什么?
+tr   Huh, what did you say?
+hh   a [1000000063]
+hh   ¹ā [1000000160]
+hh   ǎ [1000000451]
+hh   à [1000000548]
+freq   5 [gr:E]
+
+.py   ǎ
+char   啊
+ser   1000000451
+gr   E
+ref   4
+ps   intj.
+psx   indicating puzzled surprise
+ex@JDF   ∼! Zhēn yǒu zhè ²shì(r)?
+hz   ∼! 真有这事(儿)?
+tr   What? Is that really so?
+hh   a [1000000063]
+hh   ¹ā [1000000160]
+hh   á [1000000354]
+hh   à [1000000548]
+freq   5 [gr:E]
+
+.py   à
+char   啊
+ser   1000000548
+gr   E
+ref   5
+ps   intj.
+psx   indicating agreement/approval
+ex@JDF   ∼, hǎo ba.
+hz   ∼, 好吧。
+tr   Well, OK.
+hh   a [1000000063]
+hh   ¹ā [1000000160]
+hh   á [1000000354]
+hh   ǎ [1000000451]
+rem   .hwn a1'a1da4xiao4
+rem   char 阿阿大笑
+rem   ser 1000000645
+rem@yh07.01   del class a
+rem   ref vfe3
+rem   ps f.e.
+rem   df laugh out loud; guffaw
+rem@yy0502   Deleted. More than 4 native speakers reacted strongly to this item.
+freq   5 [gr:E]
+
+.py   ābà
+char   阿爸
+ser   1000000742
+gr   *
+ref   13
+ps   n.
+en   topo.
+df   father; dad; daddy
+
+.py   A-bǎn
+char   A版
+ser   1000000839
+gr   *
+ref   v3/5-1
+ps   n.
+en   TW
+df   A-print (a record printed off locally produced master copy)
+rem@TB2001.08   Added hyphen (Mair proof).
+
+.py   Ābí Dìyù
+char   阿鼻地狱[---獄]
+ser   1000000936
+gr   *
+ref   vwei1
+ps   n.
+en   Budd.
+df   the Avici Hell, the last and deepest of the eight hot hells
+
+.py   ābīnggē
+char   阿兵哥
+ser   1000001033
+gr   *
+ref   vtwa1
+ps   n.
+en   TW
+df   soldier
+
+.py   ābó
+char   阿伯
+ser   1000001130
+gr   *
+ref   vfd1b8
+ps   n.
+en   topo.
+df   brother-in-law (husband's elder brother)
+
+.py   Ābōluó
+char   阿波罗[--羅]
+ser   1000001227
+gr   *
+ref   vtwa28
+ps   n.
+en   loan
+rem@TB2001.08   Deleted period after "loan" here an elsewhere (Mair proof).
+df   Apollo
+
+.py   Āchāngzú
+char   阿昌族
+ser   1000001324
+gr   *
+ref   14
+ps   n.
+df   Achang ethnic minority (in Yunnan)
+
+.py   ādì
+char   阿弟
+ser   1000001421
+gr   *
+ref   vfd2a1
+ps   n.
+en   topo.
+df   younger brother
+
+.py   ādiē
+char   阿爹
+ser   1000001518
+gr   *
+ref   16
+ps   n.
+en   topo.
+df   father; dad; pa
+
+.py   Ādǒu
+char   阿斗
+ser   1000001615
+gr   E
+ref   17
+ps   n.
+1df   stupid weakling
+rem@TB2007年02月02日   Changed "doltish" (not in EC) to "stupid".
+rem   1df   doltish weakling
+1ex@JDF   Wǒ yǐwéi tā shì ge ∼.
+1hz   我以为他是个∼。
+1tr   I thought (mistakenly) that he was a dope.
+2df   @@infant name of the last emperor of Shu Han
+rem@TB2005年12月09日   Switched order of 1df and 2df, added @@ to 2df, per JDF.
+freq   5 [gr:E]
+
+.py   kāiquē
+char   开缺[開-]
+ser   1006919655
+gr   *
+ref   vwei543b3
+ps   v.o.
+en   trad.
+df   quit a post and leave it vacant (of an official)
+
+.py   kǎirán*
+char   慨然
+ser   1006919752
+gr   F
+rem@yy200502   Deleted class a (isolates).
+rem@JDF0102   Added class a (Oxford)
+ref   23510
+ps   adv.
+1df   with deep feeling
+2df   generously
+freq   3 [gr:F]
+
+.py   kàirán
+char   忾然[愾-]
+ser   1006919849
+gr   *
+ref   vfe454b2
+ps   v.p.
+df   sigh with deep feelings
+
+.py   kǎiránxiāngzèng
+char   慨然相赠[---贈]
+ser   1006919946
+gr   *
+ref   382b3
+ps   f.e.
+df   give generously
+
+.py   kāirèn(r)
+char   开刃[開-]
+ser   1006920043
+gr   *
+ref   23442
+ps   v.o.
+df   put the first edge on a knife
+
+.py   kāirènr
+char   开刃儿[開-兒]
+ser   1019519761
+gr   *
+see   kāirèn(r) [1006920043]
+rem@TB2010年02月27日   Generated this entry based on parenthesis notation of main entry.
+
+.py   kāi rén wánxiào
+char   开人玩笑[開---]
+ser   1006920140
+gr   *
+ref   vwu1435b1
+ps   v.p.
+df   play a joke on sb.
+
+.py   kàirì
+char   愒日
+ser   1006920237
+gr   *
+ref   vfe447b3
+ps   v.o.
+df   idle away (time)
+
+.py   kāisài
+char   开赛[開賽]
+ser   1006920334
+gr   E
+ref   vxx267b1
+ps   v.o.
+en   sport
+rem@TB2001.10   Added "en sport" (Mair proof).
+df   begin a match
+rem@yy20040624   Added class a (cross-checking 2).
+freq   5 [gr:E]
+
+.py   ¹kāishān
+char   开山[開-]
+ser   1006920431
+gr   *
+ref   23443
+ps   v.o.
+1df   cut into mountain (for quarrying/etc.)
+2en@wei   Budd.
+2df@wei   build the first temple on a famous mountain
+
+.py   ²kāishān
+char   开衫[開-]
+ser   1006920528
+gr   *
+ref   vxx267b2
+ps   n.
+df   sweater jacket
+mw   ²jiàn [件]
+
+.py   kāishānbízǔ
+char   开山鼻祖[開---]
+ser   1006920625
+gr   *
+ref   vwu1435b2
+ps   f.e.
+df   the first person to do sth.; earliest founder
+mw   ²wèi [位]
+
+.py   kāishāng
+char   开墒[開-]
+ser   1006920722
+gr   *
+ref   23445
+ps   v.o.
+see   kāilí [1006909955]
+
+.py   kāishàng*
+char   开上[開-]
+ser   1006920819
+gr   *
+ref   vtwk31
+ps   r.v.
+df   drive up to
+
+.py   kāishān zǔshī
+char   开山祖师[開--師]
+ser   1006920916
+gr   *
+rem@YY1101   del class a
+ref   23444
+ps   n.
+df@wei   founder of religious sect, school of thought, etc.
+
+.py   kāishè
+char   开设[開設]
+gr   C
+ser   1006921013
+ref   23446
+ps   v.
+df   open (shop/etc.); offer (course/etc.)
+ex@CL   Jiàoshòumen ∼le hěn duō xīn kè.
+hz   教授们∼了很多新课。
+tr   The professors are offering many new courses.
+freq   10.5 [XHPC:19]
+
+.py   kāishěn
+char   开审[開審]
+ser   1006921110
+gr   *
+ref   vj77
+ps   v.
+df   start a trial
+
+.py   kāi shēnghuāng
+char   开生荒[開--]
+ser   1006921207
+gr   *
+ref   vcoll21013
+ps   v.o.
+en   topo.
+df   cultivate virgin lands
+
+.py   kāishè zhànghù
+char   开设帐户[開設帳戶]
+ser   1019142140
+gr   *
+ref   ph61498
+ps   v.o.
+df   open an account
+
+.py   zhīzúwúqiú
+char   知足无求[--無-]
+ser   1017682387
+gr   *
+ref   vwu3275b9
+ps   f.e.
+df   One who is content with what he has asks for nothing more.
+
+.py   ¹zhōng*
+char   中
+gr   A
+ser   1017682484
+ref   57825
+1ps   b.f./suf.
+rem@TB2002.11   Changed b.f. to b.f./suf.; frontmatter gives zhong1 as example of suf.
+11df   center; middle; interior
+11in   ¹zhōngxīn [1017768523]
+12df   China
+12in   Zhōngguó [1017712069]
+13df@vlgB   middle; mid
+13in   zhōngyāng [1017776671]
+14df   medium; intermediate
+14in   zhōngděng [1017695676]
+15df   mean; halfway between two extremes
+15in   ¹zhōngjiān [1017720508]
+16df   neutral
+16in   ¹zhōnglì [1017733021]
+17en   lg.
+17df   neutral
+17in   zhōngxìng [1017770366]
+18df@wei   fit for; good for
+18in   zhōngyòng [1017784140]
+rem@TB2000.11   Inserted "ps s.v." here.
+2ps   s.v.
+2en   topo.
+2df   all right; OK.
+2ex   Zhèyàng ∼ bu ∼?
+2hz   这样∼不∼?
+2tr   Is this OK?
+hh   ³zhòng [1017683357]
+freq   1611.2 [XHPC:2912]
+rem@sarahbrahy_2017-09-06T21:45:42CEST   changed entry
+
+.py   ²zhōng
+char   终[終]
+gr   D
+ser   1017682678
+ref   58040
+1ps   b.f.
+11df   end; finish
+11in   ¹niánzhōng [1009086926]
+12df   die
+12in   ¹línzhōng [1007881410]
+13df   whole; entire (time)
+13in   zhōngrì [1017748347]
+2ps   adv.
+2df   eventually; after all; in the end
+3ps   n.
+3df   Surname
+rem@TB2002.10   Fixed band numbering.
+freq   8.9 [XHPC:16]
+rem@sarahbrahy_2017-09-06T21:46:51CEST   changed entry
+
+.py   ³zhōng
+char   钟[鐘]
+gr   A
+ser   1017682581
+rem@yy1001   added class a (PRC)
+ref   58019
+1ps   n.
+11df   bell
+12df   clock
+13en   @@archeo.
+13df   @@<i>náo</i> musical instrument hung upside down to produce a clearer sound when struck
+rem@TB2006年03月24日   Abridged "archeo. {náo} musical instrument hung upside ...".
+2ps   b.f.
+2df   time
+rem   2in san1dian3 zhong1 三点钟 =three o'clock
+rem@TB2000.11   Revised ("in" band must point to existing entry, can't include English):
+2in   diǎnzhōng [1002641276]
+2in   fēnzhōng [1003722438]
+hh   ⁴zhōng [1018944648]
+hh   ⁵zhōng [1017682775]
+freq   189.2 [XHPC:342]
+rem@sarahbrahy_2017-09-06T21:47:29CEST   changed entry
+
+.py   ⁴zhōng
+char   钟/锺[鍾]
+gr   A
+ser   1018944648
+1ps   b.f.
+1df   concentrate (affection/etc.)
+1in   zhōng'ài [1017683551]
+rem@TB2000.11   By separating 钟 into two entries, Jim alerted
+rem   me to a mistake I was making with 钟, 鍾, and 鐘.
+rem   I was using 鐘 rather than 鍾 in zhong1'ai4 etc.
+rem   I moved 'handleless cup' down to the entry for 盅.
+2ps   n.
+rem   11df handleless cup
+2df   Surname
+hh   ³zhōng [1017682581]
+hh   ⁵zhōng [1017682775]
+rem@TB2009年08月12日   No XHPC entry that clearly corresponds to this entry (b.f. and Surname); some doubt whether this entry should really be "gr A"?? Cf. the previous entry for which "gr A" is clearly correct.
+freq   72 [gr:A]
+rem@sarahbrahy_2017-09-06T21:48:31CEST   changed entry
+
+.py   ⁵zhōng(r)
+char   盅/钟/锺[-/鍾]
+rem@TB2000.11   Combined 盅/钟. XHC says same word.
+rem   They were already combined in the compound 酒盅/钟.
+ser   1017682775
+gr   E
+ref   57998
+ps   n.
+rem   ps m.
+rem@TB2000.11   Changed "ps m." to "ps n.". Xuexi Cidian says [名].
+df   handleless cup
+hh   ³zhōng [1017682581]
+hh   ⁴zhōng [1018944648]
+freq   1.7 [XHPC:3]
+rem@sarahbrahy_2017-09-06T21:48:50CEST   changed entry
+
+.py   ⁶zhōng
+char   忠
+ser   1017682872
+gr   E
+ref   58001
+ps   b.f.
+df   loyal; devoted; faithful; honest
+in   ³zhōngxīn [1017768717]
+in   zhōngyán [1017776574]
+freq   5 [gr:E]
+rem@sarahbrahy_2017-09-06T21:49:26CEST   changed entry
+
+.py   ⁷zhōng
+char   衷
+ser   1019055907
+gr   E
+ref   NM4090
+ps   b.f.
+1df   inner feelings; heart
+1in   ²zhōngxīn [1017768620]
+1in   wúdòngyúzhōng [1013804812]
+2df   middle; medium
+2in   zhézhōng [1017446095]
+freq   5 [gr:E]
+rem@sarahbrahy_2017-09-06T21:49:41CEST   changed entry
+
+.py   ⁸zhōng
+char   舯
+ser   1019056004
+gr   *
+ref   NM4092
+ps   char.
+in   zhōngpōumiàn [1017743691]
+
+.py   ⁹zhōng
+char   螽
+ser   1019056101
+gr   *
+ref   NM4093
+ps   char.
+in   zhōngsī [1017758144]
+in   ²fùzhōng [1003900821]
+
+.py   ¹⁰zhōng
+char   忪
+ser   1019056198
+gr   *
+ref   NM4091
+ps   char.
+in   zhēngzhōng [1017377031]
+hh   ³sōng [1018784986]
+rem@TB2006.06.30   Auto-changed 6sōng to 3sōng in 'hh' band to match that entry.
+
+.py   ¹zhǒng
+char   种[種]
+gr   A
+ser   1017682969
+ref   58066
+1ps   n.
+1en   bio.
+1df   species
+2ps   b.f.
+21df   race
+21in   zhǒngzú [1017795198]
+22df   seed; strain; breed
+22in   ¹zhǒngzi [1017794034]
+22in   pèizhǒng [1009451258]
+23df   kind
+23in   zhǒnglèi [1017732730]
+24en   topo.
+24df   guts; grit
+24in   yọ̌uzhǒng [1016472700]
+rem   24ex Ta1 zhen1 you3 ∼. =He sure has guts.
+rem@TB2000.11   Moved example sentence to entry for you3zhong3.
+3ps   m.
+3psx   for kinds/sorts/types
+hh   ²zhòng [1017683260]
+freq   1586.8 [XHPC:2656(量)+212(名)]
+rem@sarahbrahy_2017-09-06T21:50:02CEST   changed entry
+
+.py   ²zhǒng
+char   肿[腫]
+gr   C
+ser   1017683066
+ref   58085
+1ps   v.
+1df   swell
+1ex@cl   Wǒ de jiạ̌o ∼ le.
+1hz   我的脚∼了。
+1tr   My feet are swollen.
+2ps   s.v.
+2df   swelling; swollen
+freq   13.3 [XHPC:24]
+rem@sarahbrahy_2017-09-06T21:51:01CEST   changed entry
+
+.py   ³zhǒng
+rem@TB2006.06.30   Auto-renumbered 4zhǒng to 3zhǒng (moving class-a before non-class-a homophones).
+char   踵
+ser   1019056392
+gr   E
+rem@TB2006.06.29   Auto-added 'class a' for self-containment with 1 class-a polysyllabic entry: mójiānjiēzhǒng 摩肩接踵.
+ref   NM4096
+ps   b.f.
+1df   heel
+1in   jǔzhǒng [1006872416]
+2df   go in person
+2in   zhǒngméndàoxiè [1017738356]
+3df   follow; carry on
+3in   zhǒngwǔ [1017765031]
+freq   5 [gr:E]
+rem@sarahbrahy_2017-09-06T21:51:25CEST   changed entry
+
+.py   ⁴zhǒng
+rem@TB2006.06.30   Auto-renumbered 3zhǒng to 4zhǒng (moving class-a before non-class-a homophones).
+char   冢
+ser   1019056295
+gr   *
+rem@yy1001   del class a
+ref   NM4095
+ps   b.f.
+df   grave; tomb
+in   zhǒngfù [1017707025]
+in   ²fāzhǒng [1003492451]
+
+.py   ¹zhòng
+char   重
+gr   A
+ser   1017683163
+ref   58089
+1ps   n.
+1df   weight
+2ps   s.v.
+21df   heavy
+22df   weighty; important
+22ex   Tā huà shuō de tài ∼ le.
+22hz   他话说得太∼了。
+rem@TB2004.03.22   Changed 的 to 得. Please confirm? cw: Correct.
+22tr   He's putting it too strongly.
+rem@TB2000.11   Inserted space in "shuo1 de0".
+3ps   b.f.
+31df   considerable in amount/value
+31in   zhòngjià [1017720314]
+32df   serious; solemn
+32in   ¹yánzhòng [1015463706]
+33df@wei   discreet
+33in   shènzhòng [1011539571]
+34df@wu   deep
+35df   lay stress on; attach importance to
+35in   ¹zhòngshì [1017754943]
+hh   ²chóng [1001621321]
+freq   145.0 [XHPC:262]
+rem@sarahbrahy_2017-09-06T21:51:42CEST   changed entry
+
+.py   ²zhòng
+char   种[種]
+gr   B
+ser   1017683260
+ref   58065
+ps   v.
+df   plant; cultivate; sow
+ex@yy   Wǒ ∼le yī̠xiē tǔdòu.
+hz   我∼了一些土豆。
+tr   I've planted some potatoes.
+rem@TB2009年06月17日   Changed potatos to potatoes.
+hh   ¹zhǒng [1017682969]
+freq   135.0 [XHPC:244]
+rem@sarahbrahy_2017-09-06T21:52:49CEST   changed entry
+
+.py   ³zhòng
+char   中
+gr   C
+ser   1017683357
+ref   57824
+1ps   v.
+11df   hit (a target); attain
+12df   be hit by
+13df   fall into
+rem@TB2001.08   Added "fall into" (Yanyin note).
+14df   pass an exam
+2ps   suf.
+2df   accurately; on the dot
+2ex   Nǐ cāi∼ le.
+2hz   你猜∼了。
+2tr   You guessed right.
+hh   ¹zhōng [1017682484]
+freq   36.5 [XHPC:66]
+rem@sarahbrahy_2017-09-06T21:53:10CEST   changed entry
+
+.py   ⁴zhòng
+char   众[眾]
+gr   D
+ser   1017683454
+ref   58147
+ps   b.f.
+1df   crowd; multitude
+1in   qúnzhòng [1010548328]
+2df   many; multitudinous; numerous (of people)
+2in   zhòngduō [1017703824]
+2in   zhòngrén [1017747862]
+3df   audience
+3in   guānzhòng [1004486604]
+freq   10.0 [XHPC:18]
+rem@sarahbrahy_2017-09-06T21:53:47CEST   changed entry
+
+.py   ⁵zhòng
+char   仲
+ser   1019056489
+gr   E
+rem@TB2006.06.29   Auto-added 'class a' for self-containment with 3 class-a polysyllabic entries:
+rem@TB2006.06.29   zhòngcái 仲裁; zhòngcáirén 仲裁人; 2zhòngxià 仲夏.
+rem@TB2006.06.29   None of the polysyllabic entries is 'grade A/B/C/D'.
+ref   NM4097
+ps   b.f.
+1df   middle; intermediate
+2df   second among brothers
+2in   bózhòng [1000856573]
+3df   second month of the season
+3in   zhòngchūn [1017693057]
+freq   5 [gr:E]
+rem@sarahbrahy_2017-09-06T21:54:24CEST   changed entry
+
+.py   zhōng'ài
+char   钟爱[鍾愛]
+ser   1017683551
+gr   E
+ref   58020
+ps   v.
+df   dote on
+freq   5 [gr:E]
+rem@sarahbrahy_2017-09-06T21:54:51CEST   changed entry
+
+.py   zhōngbā*
+char   中巴
+ser   1017683648
+gr   *
+ref   17m
+ps   ab.
+ab   zhōngxíng bāshì
+mw   ³liàng [辆]
+hh   Zhōng-Bā [1017683745]
+
+.py   Zhōng-Bā
+char   中巴
+ser   1017683745
+gr   *
+ref   18m
+ps   n./attr.
+df   Sino-Pakistan
+hh   zhōngbā [1017683648]
+
+.py   zhòngbǎ
+char   中靶
+ser   1017683842
+gr   E
+ref   vkura717a1
+ps   v.o.
+df   hit the target (in shooting)
+freq   5 [gr:E]
+rem@sarahbrahy_2017-09-06T21:55:06CEST   changed entry
+
+.py   zǔyànxìng
+char   阻焰性
+ser   1018512901
+gr   *
+ref   vwu3451a3
+ps   n.
+df   flame resistance
+
+.py   zūyáo
+char   租徭
+ser   1018512998
+gr   *
+ref   vfe987c6
+ps   n.
+df   taxes and compulsory services
+
+.py   zúyè
+char   卒业[-業]
+ser   1018513095
+gr   *
+rem@yy1001   del class a
+ref   59734
+ps   n.
+df   graduate study
+
+.py   zǔyè*
+char   祖业[-業]
+ser   1018513192
+gr   *
+ref   59759
+ps   p.w.
+1df   property/trade/business inherited from ancestors
+2df@wei   ancestors' meritorious achievements
+
+.py   ¹zúyī
+char   足医[-醫]
+ser   1018513289
+gr   *
+ref   vwu3448b5
+ps   n.
+df   podiatrist; chiropodist
+
+.py   ²zúyī
+char   足衣
+ser   1018513386
+gr   *
+ref   vfe1320a7
+ps   n.
+df   stockings; socks
+mw   shuāng [双]
+
+.py   zúyǐ*
+char   足以
+gr   D
+ser   1018513483
+rem@yy1001   added class a (PRC)
+ref   59727
+ps   v.p.
+df   sufficient/enough to
+freq   8.9 [XHPC:16]
+rem@sarahbrahy_2017-09-15T09:40:32CEST   changed entry
+
+.py   zúyì
+char   族裔
+ser   1018513580
+gr   *
+ref   vtwz1121
+ps   n.
+1df   one's ethnic background
+2df   one's clan/lineage
+
+.py   zǔyí
+char   祖遗[-遺]
+ser   1018513677
+gr   *
+ref   vwei1378a5
+ps   attr.
+df   inherited from one's ancestors
+
+.py   zúyǐhúkǒu
+char   足以糊口
+ser   1018513774
+gr   *
+ref   vwu3448b6
+ps   f.e.
+df   enough to keep body and soul together
+
+.py   zúyǐluànzhēn
+char   足以乱真[--亂-]
+ser   1018513871
+gr   *
+ref   vwu3448b7
+ps   f.e.
+df   good enough to pass for genuine
+
+.py   zúyīn
+char   足音
+ser   1018513968
+gr   *
+ref   vkura747b3
+ps   n.
+df   sound of footsteps
+
+.py   zúyín
+char   足银[-銀]
+ser   1018514065
+gr   *
+ref   59728
+ps   n.
+df   pure silver
+
+.py   zúyìn*
+char   足印
+ser   1018514162
+gr   *
+ref   vwu3448b13
+ps   n.
+df   footprint
+mw   ²zhī [只]
+
+.py   zǔyìn
+char   祖荫[-蔭]
+ser   1018514259
+gr   *
+ref   vwei1378a6
+ps   n.
+en   wr.
+df   ancestors' protection/blessing
+
+.py   zǔyíng
+char   祖茔[-塋]
+ser   1018514356
+gr   *
+ref   vwei1378a7
+ps   p.w.
+df   ancestral grave
+mw   ⁴zuò [座]
+
+.py   zúyīnqióngrán
+char   足音跫然
+ser   1018514453
+gr   *
+ref   vfe1320a10
+ps   f.e.
+1df   excited to hear footsteps
+2df   longing to have visitors
+
+.py   zúyǐshǒuchéng
+char   足以守成
+ser   1018514550
+gr   *
+ref   vwu3448b8
+ps   f.e.
+df   good enough to carry on
+
+.py   zúyǐzhèngmíng
+char   足以证明[--證-]
+ser   1018514647
+gr   *
+ref   vwu3448b9
+ps   f.e.
+df   suffice to show that ...
+
+.py   zúyǐzhìmìng
+char   足以致命
+ser   1018514744
+gr   *
+ref   vwu3448b10
+ps   f.e.
+df   (The wound) may be fatal.
+
+.py   zúyǐzìháo
+char   足以自豪
+ser   1018514841
+gr   *
+ref   vfe1320a9
+ps   f.e.
+df   enough for one to be proud of
+
+.py   zúyǐzìwèi
+char   足以自慰
+ser   1018514938
+gr   *
+ref   vwu3448b12
+ps   f.e.
+df   enough to console oneself
+
+.py   zúyīzúshí
+char   足衣足食
+ser   1018515035
+gr   *
+ref   vfe1320a8
+ps   f.e.
+df   have no shortage of food and clothing
+
+.py   zūyòng*
+char   租用
+ser   1018515132
+gr   E
+rem@TB2004.03.22   Added class a per Yanyin.
+ref   59709
+ps   v.
+df   rent (for use)
+freq   5 [gr:E]
+rem@sarahbrahy_2017-09-15T09:40:44CEST   changed entry

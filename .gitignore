@@ -89,6 +89,7 @@ local_settings.py
 **/settings/prod.py
 **/settings/dev.py
 .env
+test.env
 db.sqlite3
 /static/
 /tmp/

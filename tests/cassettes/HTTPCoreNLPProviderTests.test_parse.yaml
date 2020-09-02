@@ -1,0 +1,577 @@
+interactions:
+- request:
+    body: "\u4E60\u8FD1\u5E73\u5728\u8D3A\u7535\u4E2D\u6307\u51FA\uFF0C\u4E2D\u8461\u53CB\u8C0A\u6E90\u8FDC\u6D41\u957F\u3002\u5EFA\u4EA440\u5E74\u6765\uFF0C\u53CC\u65B9\u79C9\u6301\u76F8\u4E92\u5C0A\u91CD\u3001\u5E73\u7B49\u76F8\u5F85\u3001\u4E92\u5229\u5171\u8D62\u7684\u7CBE\u795E\u63A8\u52A8\u53CC\u8FB9\u5173\u7CFB\u5065\u5EB7\u7A33\u5B9A\u53D1\u5C55\u30021999\u5E74\uFF0C\u53CC\u65B9\u59A5\u5584\u89E3\u51B3\u6FB3\u95E8\u95EE\u9898\uFF0C\u6811\u7ACB\u4E86\u56FD\u4E0E\u56FD\u901A\u8FC7\u53CB\u597D\u534F\u5546\u89E3\u51B3\u5386\u53F2\u9057\u7559\u95EE\u9898\u7684\u5178\u8303\u30022005\u5E74\u4E2D\u8461\u5EFA\u7ACB\u5168\u9762\u6218\u7565\u4F19\u4F34\u5173\u7CFB\u4EE5\u6765\uFF0C\u53CC\u65B9\u9AD8\u5C42\u4E92\u8BBF\u9891\u7E41\uFF0C\u653F\u6CBB\u4E92\u4FE1\u4E0D\u65AD\u52A0\u6DF1\uFF0C\u5404\u9886\u57DF\u4E92\u5229\u5408\u4F5C\u6210\u679C\u663E\u8457\u3002\u4E0D\u4E45\u524D\uFF0C\u6211\u6210\u529F\u8BBF\u95EE\u8D35\u56FD\uFF0C\u540C\u4F60\u8FDB\u884C\u6DF1\u5165\u53CB\u597D\u4EA4\u6D41\uFF0C\u5171\u540C\u89C4\u5212\u4E86\u4E2D\u8461\u5173\u7CFB\u53D1\u5C55\u65B0\u7684\u84DD\u56FE\u3002\u6211\u9AD8\u5EA6\u91CD\u89C6\u4E2D\u8461\u5173\u7CFB\u53D1\u5C55\uFF0C\u613F\u540C\u4F60\u4E00\u9053\u52AA\u529B\uFF0C\u4EE5\u4E24\u56FD\u5EFA\u4EA440\u5468\u5E74\u4E3A\u65B0\u8D77\u70B9\uFF0C\u63A8\u52A8\u4E2D\u8461\u5168\u9762\u6218\u7565\u4F19\u4F34\u5173\u7CFB\u8FC8\u4E0A\u65B0\u53F0\u9636\uFF0C\u66F4\u597D\u9020\u798F\u4E24\u56FD\u548C\u4E24\u56FD\u4EBA\u6C11\u3002\n"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '739'
+      User-Agent:
+      - python-requests/2.24.0
+    method: POST
+    uri: http://localhost:9000/?properties=%7B%22annotators%22%3A%22lemma%22%2C%22outputFormat%22%3A%22json%22%7D
+  response:
+    body:
+      string: "{\n  \"sentences\": [\n    {\n      \"index\": 0,\n      \"tokens\":
+        [\n        {\n          \"index\": 1,\n          \"word\": \"\u4E60\u8FD1\u5E73\",\n
+        \         \"originalText\": \"\u4E60\u8FD1\u5E73\",\n          \"lemma\":
+        \"\u4E60\u8FD1\u5E73\",\n          \"characterOffsetBegin\": 0,\n          \"characterOffsetEnd\":
+        3,\n          \"pos\": \"NR\"\n        },\n        {\n          \"index\":
+        2,\n          \"word\": \"\u5728\",\n          \"originalText\": \"\u5728\",\n
+        \         \"lemma\": \"\u5728\",\n          \"characterOffsetBegin\": 3,\n
+        \         \"characterOffsetEnd\": 4,\n          \"pos\": \"P\"\n        },\n
+        \       {\n          \"index\": 3,\n          \"word\": \"\u8D3A\u7535\",\n
+        \         \"originalText\": \"\u8D3A\u7535\",\n          \"lemma\": \"\u8D3A\u7535\",\n
+        \         \"characterOffsetBegin\": 4,\n          \"characterOffsetEnd\":
+        6,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        4,\n          \"word\": \"\u4E2D\",\n          \"originalText\": \"\u4E2D\",\n
+        \         \"lemma\": \"\u4E2D\",\n          \"characterOffsetBegin\": 6,\n
+        \         \"characterOffsetEnd\": 7,\n          \"pos\": \"LC\"\n        },\n
+        \       {\n          \"index\": 5,\n          \"word\": \"\u6307\u51FA\",\n
+        \         \"originalText\": \"\u6307\u51FA\",\n          \"lemma\": \"\u6307\u51FA\",\n
+        \         \"characterOffsetBegin\": 7,\n          \"characterOffsetEnd\":
+        9,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        6,\n          \"word\": \"\uFF0C\",\n          \"originalText\": \"\uFF0C\",\n
+        \         \"lemma\": \"\uFF0C\",\n          \"characterOffsetBegin\": 9,\n
+        \         \"characterOffsetEnd\": 10,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 7,\n          \"word\": \"\u4E2D\",\n          \"originalText\":
+        \"\u4E2D\",\n          \"lemma\": \"\u4E2D\",\n          \"characterOffsetBegin\":
+        10,\n          \"characterOffsetEnd\": 11,\n          \"pos\": \"NR\"\n        },\n
+        \       {\n          \"index\": 8,\n          \"word\": \"\u8461\",\n          \"originalText\":
+        \"\u8461\",\n          \"lemma\": \"\u8461\",\n          \"characterOffsetBegin\":
+        11,\n          \"characterOffsetEnd\": 12,\n          \"pos\": \"NR\"\n        },\n
+        \       {\n          \"index\": 9,\n          \"word\": \"\u53CB\u8C0A\",\n
+        \         \"originalText\": \"\u53CB\u8C0A\",\n          \"lemma\": \"\u53CB\u8C0A\",\n
+        \         \"characterOffsetBegin\": 12,\n          \"characterOffsetEnd\":
+        14,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        10,\n          \"word\": \"\u6E90\u8FDC\u6D41\u957F\",\n          \"originalText\":
+        \"\u6E90\u8FDC\u6D41\u957F\",\n          \"lemma\": \"\u6E90\u8FDC\u6D41\u957F\",\n
+        \         \"characterOffsetBegin\": 14,\n          \"characterOffsetEnd\":
+        18,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        11,\n          \"word\": \"\u3002\",\n          \"originalText\": \"\u3002\",\n
+        \         \"lemma\": \"\u3002\",\n          \"characterOffsetBegin\": 18,\n
+        \         \"characterOffsetEnd\": 19,\n          \"pos\": \"PU\"\n        }\n
+        \     ]\n    },\n    {\n      \"index\": 1,\n      \"tokens\": [\n        {\n
+        \         \"index\": 1,\n          \"word\": \"\u5EFA\u4EA4\",\n          \"originalText\":
+        \"\u5EFA\u4EA4\",\n          \"lemma\": \"\u5EFA\u4EA4\",\n          \"characterOffsetBegin\":
+        19,\n          \"characterOffsetEnd\": 21,\n          \"pos\": \"VV\"\n        },\n
+        \       {\n          \"index\": 2,\n          \"word\": \"40\",\n          \"originalText\":
+        \"40\",\n          \"lemma\": \"40\",\n          \"characterOffsetBegin\":
+        21,\n          \"characterOffsetEnd\": 23,\n          \"pos\": \"CD\"\n        },\n
+        \       {\n          \"index\": 3,\n          \"word\": \"\u5E74\",\n          \"originalText\":
+        \"\u5E74\",\n          \"lemma\": \"\u5E74\",\n          \"characterOffsetBegin\":
+        23,\n          \"characterOffsetEnd\": 24,\n          \"pos\": \"M\"\n        },\n
+        \       {\n          \"index\": 4,\n          \"word\": \"\u6765\",\n          \"originalText\":
+        \"\u6765\",\n          \"lemma\": \"\u6765\",\n          \"characterOffsetBegin\":
+        24,\n          \"characterOffsetEnd\": 25,\n          \"pos\": \"LC\"\n        },\n
+        \       {\n          \"index\": 5,\n          \"word\": \"\uFF0C\",\n          \"originalText\":
+        \"\uFF0C\",\n          \"lemma\": \"\uFF0C\",\n          \"characterOffsetBegin\":
+        25,\n          \"characterOffsetEnd\": 26,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 6,\n          \"word\": \"\u53CC\u65B9\",\n
+        \         \"originalText\": \"\u53CC\u65B9\",\n          \"lemma\": \"\u53CC\u65B9\",\n
+        \         \"characterOffsetBegin\": 26,\n          \"characterOffsetEnd\":
+        28,\n          \"pos\": \"PN\"\n        },\n        {\n          \"index\":
+        7,\n          \"word\": \"\u79C9\u6301\",\n          \"originalText\": \"\u79C9\u6301\",\n
+        \         \"lemma\": \"\u79C9\u6301\",\n          \"characterOffsetBegin\":
+        28,\n          \"characterOffsetEnd\": 30,\n          \"pos\": \"VV\"\n        },\n
+        \       {\n          \"index\": 8,\n          \"word\": \"\u76F8\u4E92\",\n
+        \         \"originalText\": \"\u76F8\u4E92\",\n          \"lemma\": \"\u76F8\u4E92\",\n
+        \         \"characterOffsetBegin\": 30,\n          \"characterOffsetEnd\":
+        32,\n          \"pos\": \"AD\"\n        },\n        {\n          \"index\":
+        9,\n          \"word\": \"\u5C0A\u91CD\",\n          \"originalText\": \"\u5C0A\u91CD\",\n
+        \         \"lemma\": \"\u5C0A\u91CD\",\n          \"characterOffsetBegin\":
+        32,\n          \"characterOffsetEnd\": 34,\n          \"pos\": \"VV\"\n        },\n
+        \       {\n          \"index\": 10,\n          \"word\": \"\u3001\",\n          \"originalText\":
+        \"\u3001\",\n          \"lemma\": \"\u3001\",\n          \"characterOffsetBegin\":
+        34,\n          \"characterOffsetEnd\": 35,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 11,\n          \"word\": \"\u5E73\u7B49\",\n
+        \         \"originalText\": \"\u5E73\u7B49\",\n          \"lemma\": \"\u5E73\u7B49\",\n
+        \         \"characterOffsetBegin\": 35,\n          \"characterOffsetEnd\":
+        37,\n          \"pos\": \"AD\"\n        },\n        {\n          \"index\":
+        12,\n          \"word\": \"\u76F8\",\n          \"originalText\": \"\u76F8\",\n
+        \         \"lemma\": \"\u76F8\",\n          \"characterOffsetBegin\": 37,\n
+        \         \"characterOffsetEnd\": 38,\n          \"pos\": \"AD\"\n        },\n
+        \       {\n          \"index\": 13,\n          \"word\": \"\u5F85\",\n          \"originalText\":
+        \"\u5F85\",\n          \"lemma\": \"\u5F85\",\n          \"characterOffsetBegin\":
+        38,\n          \"characterOffsetEnd\": 39,\n          \"pos\": \"VV\"\n        },\n
+        \       {\n          \"index\": 14,\n          \"word\": \"\u3001\",\n          \"originalText\":
+        \"\u3001\",\n          \"lemma\": \"\u3001\",\n          \"characterOffsetBegin\":
+        39,\n          \"characterOffsetEnd\": 40,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 15,\n          \"word\": \"\u4E92\u5229\",\n
+        \         \"originalText\": \"\u4E92\u5229\",\n          \"lemma\": \"\u4E92\u5229\",\n
+        \         \"characterOffsetBegin\": 40,\n          \"characterOffsetEnd\":
+        42,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        16,\n          \"word\": \"\u5171\u8D62\",\n          \"originalText\": \"\u5171\u8D62\",\n
+        \         \"lemma\": \"\u5171\u8D62\",\n          \"characterOffsetBegin\":
+        42,\n          \"characterOffsetEnd\": 44,\n          \"pos\": \"VV\"\n        },\n
+        \       {\n          \"index\": 17,\n          \"word\": \"\u7684\",\n          \"originalText\":
+        \"\u7684\",\n          \"lemma\": \"\u7684\",\n          \"characterOffsetBegin\":
+        44,\n          \"characterOffsetEnd\": 45,\n          \"pos\": \"DEC\"\n        },\n
+        \       {\n          \"index\": 18,\n          \"word\": \"\u7CBE\u795E\",\n
+        \         \"originalText\": \"\u7CBE\u795E\",\n          \"lemma\": \"\u7CBE\u795E\",\n
+        \         \"characterOffsetBegin\": 45,\n          \"characterOffsetEnd\":
+        47,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        19,\n          \"word\": \"\u63A8\u52A8\",\n          \"originalText\": \"\u63A8\u52A8\",\n
+        \         \"lemma\": \"\u63A8\u52A8\",\n          \"characterOffsetBegin\":
+        47,\n          \"characterOffsetEnd\": 49,\n          \"pos\": \"VV\"\n        },\n
+        \       {\n          \"index\": 20,\n          \"word\": \"\u53CC\u8FB9\",\n
+        \         \"originalText\": \"\u53CC\u8FB9\",\n          \"lemma\": \"\u53CC\u8FB9\",\n
+        \         \"characterOffsetBegin\": 49,\n          \"characterOffsetEnd\":
+        51,\n          \"pos\": \"JJ\"\n        },\n        {\n          \"index\":
+        21,\n          \"word\": \"\u5173\u7CFB\",\n          \"originalText\": \"\u5173\u7CFB\",\n
+        \         \"lemma\": \"\u5173\u7CFB\",\n          \"characterOffsetBegin\":
+        51,\n          \"characterOffsetEnd\": 53,\n          \"pos\": \"NN\"\n        },\n
+        \       {\n          \"index\": 22,\n          \"word\": \"\u5065\u5EB7\",\n
+        \         \"originalText\": \"\u5065\u5EB7\",\n          \"lemma\": \"\u5065\u5EB7\",\n
+        \         \"characterOffsetBegin\": 53,\n          \"characterOffsetEnd\":
+        55,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        23,\n          \"word\": \"\u7A33\u5B9A\",\n          \"originalText\": \"\u7A33\u5B9A\",\n
+        \         \"lemma\": \"\u7A33\u5B9A\",\n          \"characterOffsetBegin\":
+        55,\n          \"characterOffsetEnd\": 57,\n          \"pos\": \"AD\"\n        },\n
+        \       {\n          \"index\": 24,\n          \"word\": \"\u53D1\u5C55\",\n
+        \         \"originalText\": \"\u53D1\u5C55\",\n          \"lemma\": \"\u53D1\u5C55\",\n
+        \         \"characterOffsetBegin\": 57,\n          \"characterOffsetEnd\":
+        59,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        25,\n          \"word\": \"\u3002\",\n          \"originalText\": \"\u3002\",\n
+        \         \"lemma\": \"\u3002\",\n          \"characterOffsetBegin\": 59,\n
+        \         \"characterOffsetEnd\": 60,\n          \"pos\": \"PU\"\n        }\n
+        \     ]\n    },\n    {\n      \"index\": 2,\n      \"tokens\": [\n        {\n
+        \         \"index\": 1,\n          \"word\": \"1999\u5E74\",\n          \"originalText\":
+        \"1999\u5E74\",\n          \"lemma\": \"1999\u5E74\",\n          \"characterOffsetBegin\":
+        60,\n          \"characterOffsetEnd\": 65,\n          \"pos\": \"NT\"\n        },\n
+        \       {\n          \"index\": 2,\n          \"word\": \"\uFF0C\",\n          \"originalText\":
+        \"\uFF0C\",\n          \"lemma\": \"\uFF0C\",\n          \"characterOffsetBegin\":
+        65,\n          \"characterOffsetEnd\": 66,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 3,\n          \"word\": \"\u53CC\u65B9\",\n
+        \         \"originalText\": \"\u53CC\u65B9\",\n          \"lemma\": \"\u53CC\u65B9\",\n
+        \         \"characterOffsetBegin\": 66,\n          \"characterOffsetEnd\":
+        68,\n          \"pos\": \"PN\"\n        },\n        {\n          \"index\":
+        4,\n          \"word\": \"\u59A5\u5584\",\n          \"originalText\": \"\u59A5\u5584\",\n
+        \         \"lemma\": \"\u59A5\u5584\",\n          \"characterOffsetBegin\":
+        68,\n          \"characterOffsetEnd\": 70,\n          \"pos\": \"AD\"\n        },\n
+        \       {\n          \"index\": 5,\n          \"word\": \"\u89E3\u51B3\",\n
+        \         \"originalText\": \"\u89E3\u51B3\",\n          \"lemma\": \"\u89E3\u51B3\",\n
+        \         \"characterOffsetBegin\": 70,\n          \"characterOffsetEnd\":
+        72,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        6,\n          \"word\": \"\u6FB3\u95E8\",\n          \"originalText\": \"\u6FB3\u95E8\",\n
+        \         \"lemma\": \"\u6FB3\u95E8\",\n          \"characterOffsetBegin\":
+        72,\n          \"characterOffsetEnd\": 74,\n          \"pos\": \"NR\"\n        },\n
+        \       {\n          \"index\": 7,\n          \"word\": \"\u95EE\u9898\",\n
+        \         \"originalText\": \"\u95EE\u9898\",\n          \"lemma\": \"\u95EE\u9898\",\n
+        \         \"characterOffsetBegin\": 74,\n          \"characterOffsetEnd\":
+        76,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        8,\n          \"word\": \"\uFF0C\",\n          \"originalText\": \"\uFF0C\",\n
+        \         \"lemma\": \"\uFF0C\",\n          \"characterOffsetBegin\": 76,\n
+        \         \"characterOffsetEnd\": 77,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 9,\n          \"word\": \"\u6811\u7ACB\",\n
+        \         \"originalText\": \"\u6811\u7ACB\",\n          \"lemma\": \"\u6811\u7ACB\",\n
+        \         \"characterOffsetBegin\": 77,\n          \"characterOffsetEnd\":
+        79,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        10,\n          \"word\": \"\u4E86\",\n          \"originalText\": \"\u4E86\",\n
+        \         \"lemma\": \"\u4E86\",\n          \"characterOffsetBegin\": 79,\n
+        \         \"characterOffsetEnd\": 80,\n          \"pos\": \"AS\"\n        },\n
+        \       {\n          \"index\": 11,\n          \"word\": \"\u56FD\",\n          \"originalText\":
+        \"\u56FD\",\n          \"lemma\": \"\u56FD\",\n          \"characterOffsetBegin\":
+        80,\n          \"characterOffsetEnd\": 81,\n          \"pos\": \"NN\"\n        },\n
+        \       {\n          \"index\": 12,\n          \"word\": \"\u4E0E\",\n          \"originalText\":
+        \"\u4E0E\",\n          \"lemma\": \"\u4E0E\",\n          \"characterOffsetBegin\":
+        81,\n          \"characterOffsetEnd\": 82,\n          \"pos\": \"CC\"\n        },\n
+        \       {\n          \"index\": 13,\n          \"word\": \"\u56FD\",\n          \"originalText\":
+        \"\u56FD\",\n          \"lemma\": \"\u56FD\",\n          \"characterOffsetBegin\":
+        82,\n          \"characterOffsetEnd\": 83,\n          \"pos\": \"NN\"\n        },\n
+        \       {\n          \"index\": 14,\n          \"word\": \"\u901A\u8FC7\",\n
+        \         \"originalText\": \"\u901A\u8FC7\",\n          \"lemma\": \"\u901A\u8FC7\",\n
+        \         \"characterOffsetBegin\": 83,\n          \"characterOffsetEnd\":
+        85,\n          \"pos\": \"P\"\n        },\n        {\n          \"index\":
+        15,\n          \"word\": \"\u53CB\u597D\",\n          \"originalText\": \"\u53CB\u597D\",\n
+        \         \"lemma\": \"\u53CB\u597D\",\n          \"characterOffsetBegin\":
+        85,\n          \"characterOffsetEnd\": 87,\n          \"pos\": \"JJ\"\n        },\n
+        \       {\n          \"index\": 16,\n          \"word\": \"\u534F\u5546\",\n
+        \         \"originalText\": \"\u534F\u5546\",\n          \"lemma\": \"\u534F\u5546\",\n
+        \         \"characterOffsetBegin\": 87,\n          \"characterOffsetEnd\":
+        89,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        17,\n          \"word\": \"\u89E3\u51B3\",\n          \"originalText\": \"\u89E3\u51B3\",\n
+        \         \"lemma\": \"\u89E3\u51B3\",\n          \"characterOffsetBegin\":
+        89,\n          \"characterOffsetEnd\": 91,\n          \"pos\": \"VV\"\n        },\n
+        \       {\n          \"index\": 18,\n          \"word\": \"\u5386\u53F2\",\n
+        \         \"originalText\": \"\u5386\u53F2\",\n          \"lemma\": \"\u5386\u53F2\",\n
+        \         \"characterOffsetBegin\": 91,\n          \"characterOffsetEnd\":
+        93,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        19,\n          \"word\": \"\u9057\u7559\",\n          \"originalText\": \"\u9057\u7559\",\n
+        \         \"lemma\": \"\u9057\u7559\",\n          \"characterOffsetBegin\":
+        93,\n          \"characterOffsetEnd\": 95,\n          \"pos\": \"VV\"\n        },\n
+        \       {\n          \"index\": 20,\n          \"word\": \"\u95EE\u9898\",\n
+        \         \"originalText\": \"\u95EE\u9898\",\n          \"lemma\": \"\u95EE\u9898\",\n
+        \         \"characterOffsetBegin\": 95,\n          \"characterOffsetEnd\":
+        97,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        21,\n          \"word\": \"\u7684\",\n          \"originalText\": \"\u7684\",\n
+        \         \"lemma\": \"\u7684\",\n          \"characterOffsetBegin\": 97,\n
+        \         \"characterOffsetEnd\": 98,\n          \"pos\": \"DEC\"\n        },\n
+        \       {\n          \"index\": 22,\n          \"word\": \"\u5178\u8303\",\n
+        \         \"originalText\": \"\u5178\u8303\",\n          \"lemma\": \"\u5178\u8303\",\n
+        \         \"characterOffsetBegin\": 98,\n          \"characterOffsetEnd\":
+        100,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        23,\n          \"word\": \"\u3002\",\n          \"originalText\": \"\u3002\",\n
+        \         \"lemma\": \"\u3002\",\n          \"characterOffsetBegin\": 100,\n
+        \         \"characterOffsetEnd\": 101,\n          \"pos\": \"PU\"\n        }\n
+        \     ]\n    },\n    {\n      \"index\": 3,\n      \"tokens\": [\n        {\n
+        \         \"index\": 1,\n          \"word\": \"2005\u5E74\",\n          \"originalText\":
+        \"2005\u5E74\",\n          \"lemma\": \"2005\u5E74\",\n          \"characterOffsetBegin\":
+        101,\n          \"characterOffsetEnd\": 106,\n          \"pos\": \"NT\"\n
+        \       },\n        {\n          \"index\": 2,\n          \"word\": \"\u4E2D\",\n
+        \         \"originalText\": \"\u4E2D\",\n          \"lemma\": \"\u4E2D\",\n
+        \         \"characterOffsetBegin\": 106,\n          \"characterOffsetEnd\":
+        107,\n          \"pos\": \"NR\"\n        },\n        {\n          \"index\":
+        3,\n          \"word\": \"\u8461\",\n          \"originalText\": \"\u8461\",\n
+        \         \"lemma\": \"\u8461\",\n          \"characterOffsetBegin\": 107,\n
+        \         \"characterOffsetEnd\": 108,\n          \"pos\": \"NR\"\n        },\n
+        \       {\n          \"index\": 4,\n          \"word\": \"\u5EFA\u7ACB\",\n
+        \         \"originalText\": \"\u5EFA\u7ACB\",\n          \"lemma\": \"\u5EFA\u7ACB\",\n
+        \         \"characterOffsetBegin\": 108,\n          \"characterOffsetEnd\":
+        110,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        5,\n          \"word\": \"\u5168\u9762\",\n          \"originalText\": \"\u5168\u9762\",\n
+        \         \"lemma\": \"\u5168\u9762\",\n          \"characterOffsetBegin\":
+        110,\n          \"characterOffsetEnd\": 112,\n          \"pos\": \"JJ\"\n
+        \       },\n        {\n          \"index\": 6,\n          \"word\": \"\u6218\u7565\",\n
+        \         \"originalText\": \"\u6218\u7565\",\n          \"lemma\": \"\u6218\u7565\",\n
+        \         \"characterOffsetBegin\": 112,\n          \"characterOffsetEnd\":
+        114,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        7,\n          \"word\": \"\u4F19\u4F34\",\n          \"originalText\": \"\u4F19\u4F34\",\n
+        \         \"lemma\": \"\u4F19\u4F34\",\n          \"characterOffsetBegin\":
+        114,\n          \"characterOffsetEnd\": 116,\n          \"pos\": \"NN\"\n
+        \       },\n        {\n          \"index\": 8,\n          \"word\": \"\u5173\u7CFB\",\n
+        \         \"originalText\": \"\u5173\u7CFB\",\n          \"lemma\": \"\u5173\u7CFB\",\n
+        \         \"characterOffsetBegin\": 116,\n          \"characterOffsetEnd\":
+        118,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        9,\n          \"word\": \"\u4EE5\u6765\",\n          \"originalText\": \"\u4EE5\u6765\",\n
+        \         \"lemma\": \"\u4EE5\u6765\",\n          \"characterOffsetBegin\":
+        118,\n          \"characterOffsetEnd\": 120,\n          \"pos\": \"LC\"\n
+        \       },\n        {\n          \"index\": 10,\n          \"word\": \"\uFF0C\",\n
+        \         \"originalText\": \"\uFF0C\",\n          \"lemma\": \"\uFF0C\",\n
+        \         \"characterOffsetBegin\": 120,\n          \"characterOffsetEnd\":
+        121,\n          \"pos\": \"PU\"\n        },\n        {\n          \"index\":
+        11,\n          \"word\": \"\u53CC\u65B9\",\n          \"originalText\": \"\u53CC\u65B9\",\n
+        \         \"lemma\": \"\u53CC\u65B9\",\n          \"characterOffsetBegin\":
+        121,\n          \"characterOffsetEnd\": 123,\n          \"pos\": \"PN\"\n
+        \       },\n        {\n          \"index\": 12,\n          \"word\": \"\u9AD8\u5C42\",\n
+        \         \"originalText\": \"\u9AD8\u5C42\",\n          \"lemma\": \"\u9AD8\u5C42\",\n
+        \         \"characterOffsetBegin\": 123,\n          \"characterOffsetEnd\":
+        125,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        13,\n          \"word\": \"\u4E92\u8BBF\",\n          \"originalText\": \"\u4E92\u8BBF\",\n
+        \         \"lemma\": \"\u4E92\u8BBF\",\n          \"characterOffsetBegin\":
+        125,\n          \"characterOffsetEnd\": 127,\n          \"pos\": \"NN\"\n
+        \       },\n        {\n          \"index\": 14,\n          \"word\": \"\u9891\u7E41\",\n
+        \         \"originalText\": \"\u9891\u7E41\",\n          \"lemma\": \"\u9891\u7E41\",\n
+        \         \"characterOffsetBegin\": 127,\n          \"characterOffsetEnd\":
+        129,\n          \"pos\": \"VA\"\n        },\n        {\n          \"index\":
+        15,\n          \"word\": \"\uFF0C\",\n          \"originalText\": \"\uFF0C\",\n
+        \         \"lemma\": \"\uFF0C\",\n          \"characterOffsetBegin\": 129,\n
+        \         \"characterOffsetEnd\": 130,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 16,\n          \"word\": \"\u653F\u6CBB\",\n
+        \         \"originalText\": \"\u653F\u6CBB\",\n          \"lemma\": \"\u653F\u6CBB\",\n
+        \         \"characterOffsetBegin\": 130,\n          \"characterOffsetEnd\":
+        132,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        17,\n          \"word\": \"\u4E92\u4FE1\",\n          \"originalText\": \"\u4E92\u4FE1\",\n
+        \         \"lemma\": \"\u4E92\u4FE1\",\n          \"characterOffsetBegin\":
+        132,\n          \"characterOffsetEnd\": 134,\n          \"pos\": \"NN\"\n
+        \       },\n        {\n          \"index\": 18,\n          \"word\": \"\u4E0D\u65AD\",\n
+        \         \"originalText\": \"\u4E0D\u65AD\",\n          \"lemma\": \"\u4E0D\u65AD\",\n
+        \         \"characterOffsetBegin\": 134,\n          \"characterOffsetEnd\":
+        136,\n          \"pos\": \"AD\"\n        },\n        {\n          \"index\":
+        19,\n          \"word\": \"\u52A0\u6DF1\",\n          \"originalText\": \"\u52A0\u6DF1\",\n
+        \         \"lemma\": \"\u52A0\u6DF1\",\n          \"characterOffsetBegin\":
+        136,\n          \"characterOffsetEnd\": 138,\n          \"pos\": \"VV\"\n
+        \       },\n        {\n          \"index\": 20,\n          \"word\": \"\uFF0C\",\n
+        \         \"originalText\": \"\uFF0C\",\n          \"lemma\": \"\uFF0C\",\n
+        \         \"characterOffsetBegin\": 138,\n          \"characterOffsetEnd\":
+        139,\n          \"pos\": \"PU\"\n        },\n        {\n          \"index\":
+        21,\n          \"word\": \"\u5404\",\n          \"originalText\": \"\u5404\",\n
+        \         \"lemma\": \"\u5404\",\n          \"characterOffsetBegin\": 139,\n
+        \         \"characterOffsetEnd\": 140,\n          \"pos\": \"DT\"\n        },\n
+        \       {\n          \"index\": 22,\n          \"word\": \"\u9886\u57DF\",\n
+        \         \"originalText\": \"\u9886\u57DF\",\n          \"lemma\": \"\u9886\u57DF\",\n
+        \         \"characterOffsetBegin\": 140,\n          \"characterOffsetEnd\":
+        142,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        23,\n          \"word\": \"\u4E92\u5229\",\n          \"originalText\": \"\u4E92\u5229\",\n
+        \         \"lemma\": \"\u4E92\u5229\",\n          \"characterOffsetBegin\":
+        142,\n          \"characterOffsetEnd\": 144,\n          \"pos\": \"VV\"\n
+        \       },\n        {\n          \"index\": 24,\n          \"word\": \"\u5408\u4F5C\",\n
+        \         \"originalText\": \"\u5408\u4F5C\",\n          \"lemma\": \"\u5408\u4F5C\",\n
+        \         \"characterOffsetBegin\": 144,\n          \"characterOffsetEnd\":
+        146,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        25,\n          \"word\": \"\u6210\u679C\",\n          \"originalText\": \"\u6210\u679C\",\n
+        \         \"lemma\": \"\u6210\u679C\",\n          \"characterOffsetBegin\":
+        146,\n          \"characterOffsetEnd\": 148,\n          \"pos\": \"NN\"\n
+        \       },\n        {\n          \"index\": 26,\n          \"word\": \"\u663E\u8457\",\n
+        \         \"originalText\": \"\u663E\u8457\",\n          \"lemma\": \"\u663E\u8457\",\n
+        \         \"characterOffsetBegin\": 148,\n          \"characterOffsetEnd\":
+        150,\n          \"pos\": \"VA\"\n        },\n        {\n          \"index\":
+        27,\n          \"word\": \"\u3002\",\n          \"originalText\": \"\u3002\",\n
+        \         \"lemma\": \"\u3002\",\n          \"characterOffsetBegin\": 150,\n
+        \         \"characterOffsetEnd\": 151,\n          \"pos\": \"PU\"\n        }\n
+        \     ]\n    },\n    {\n      \"index\": 4,\n      \"tokens\": [\n        {\n
+        \         \"index\": 1,\n          \"word\": \"\u4E0D\u4E45\u524D\",\n          \"originalText\":
+        \"\u4E0D\u4E45\u524D\",\n          \"lemma\": \"\u4E0D\u4E45\u524D\",\n          \"characterOffsetBegin\":
+        151,\n          \"characterOffsetEnd\": 154,\n          \"pos\": \"AD\"\n
+        \       },\n        {\n          \"index\": 2,\n          \"word\": \"\uFF0C\",\n
+        \         \"originalText\": \"\uFF0C\",\n          \"lemma\": \"\uFF0C\",\n
+        \         \"characterOffsetBegin\": 154,\n          \"characterOffsetEnd\":
+        155,\n          \"pos\": \"PU\"\n        },\n        {\n          \"index\":
+        3,\n          \"word\": \"\u6211\",\n          \"originalText\": \"\u6211\",\n
+        \         \"lemma\": \"\u6211\",\n          \"characterOffsetBegin\": 155,\n
+        \         \"characterOffsetEnd\": 156,\n          \"pos\": \"PN\"\n        },\n
+        \       {\n          \"index\": 4,\n          \"word\": \"\u6210\u529F\",\n
+        \         \"originalText\": \"\u6210\u529F\",\n          \"lemma\": \"\u6210\u529F\",\n
+        \         \"characterOffsetBegin\": 156,\n          \"characterOffsetEnd\":
+        158,\n          \"pos\": \"AD\"\n        },\n        {\n          \"index\":
+        5,\n          \"word\": \"\u8BBF\u95EE\",\n          \"originalText\": \"\u8BBF\u95EE\",\n
+        \         \"lemma\": \"\u8BBF\u95EE\",\n          \"characterOffsetBegin\":
+        158,\n          \"characterOffsetEnd\": 160,\n          \"pos\": \"VV\"\n
+        \       },\n        {\n          \"index\": 6,\n          \"word\": \"\u8D35\u56FD\",\n
+        \         \"originalText\": \"\u8D35\u56FD\",\n          \"lemma\": \"\u8D35\u56FD\",\n
+        \         \"characterOffsetBegin\": 160,\n          \"characterOffsetEnd\":
+        162,\n          \"pos\": \"NR\"\n        },\n        {\n          \"index\":
+        7,\n          \"word\": \"\uFF0C\",\n          \"originalText\": \"\uFF0C\",\n
+        \         \"lemma\": \"\uFF0C\",\n          \"characterOffsetBegin\": 162,\n
+        \         \"characterOffsetEnd\": 163,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 8,\n          \"word\": \"\u540C\",\n          \"originalText\":
+        \"\u540C\",\n          \"lemma\": \"\u540C\",\n          \"characterOffsetBegin\":
+        163,\n          \"characterOffsetEnd\": 164,\n          \"pos\": \"P\"\n        },\n
+        \       {\n          \"index\": 9,\n          \"word\": \"\u4F60\",\n          \"originalText\":
+        \"\u4F60\",\n          \"lemma\": \"\u4F60\",\n          \"characterOffsetBegin\":
+        164,\n          \"characterOffsetEnd\": 165,\n          \"pos\": \"PN\"\n
+        \       },\n        {\n          \"index\": 10,\n          \"word\": \"\u8FDB\u884C\",\n
+        \         \"originalText\": \"\u8FDB\u884C\",\n          \"lemma\": \"\u8FDB\u884C\",\n
+        \         \"characterOffsetBegin\": 165,\n          \"characterOffsetEnd\":
+        167,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        11,\n          \"word\": \"\u6DF1\u5165\",\n          \"originalText\": \"\u6DF1\u5165\",\n
+        \         \"lemma\": \"\u6DF1\u5165\",\n          \"characterOffsetBegin\":
+        167,\n          \"characterOffsetEnd\": 169,\n          \"pos\": \"JJ\"\n
+        \       },\n        {\n          \"index\": 12,\n          \"word\": \"\u53CB\u597D\",\n
+        \         \"originalText\": \"\u53CB\u597D\",\n          \"lemma\": \"\u53CB\u597D\",\n
+        \         \"characterOffsetBegin\": 169,\n          \"characterOffsetEnd\":
+        171,\n          \"pos\": \"JJ\"\n        },\n        {\n          \"index\":
+        13,\n          \"word\": \"\u4EA4\u6D41\",\n          \"originalText\": \"\u4EA4\u6D41\",\n
+        \         \"lemma\": \"\u4EA4\u6D41\",\n          \"characterOffsetBegin\":
+        171,\n          \"characterOffsetEnd\": 173,\n          \"pos\": \"NN\"\n
+        \       },\n        {\n          \"index\": 14,\n          \"word\": \"\uFF0C\",\n
+        \         \"originalText\": \"\uFF0C\",\n          \"lemma\": \"\uFF0C\",\n
+        \         \"characterOffsetBegin\": 173,\n          \"characterOffsetEnd\":
+        174,\n          \"pos\": \"PU\"\n        },\n        {\n          \"index\":
+        15,\n          \"word\": \"\u5171\u540C\",\n          \"originalText\": \"\u5171\u540C\",\n
+        \         \"lemma\": \"\u5171\u540C\",\n          \"characterOffsetBegin\":
+        174,\n          \"characterOffsetEnd\": 176,\n          \"pos\": \"AD\"\n
+        \       },\n        {\n          \"index\": 16,\n          \"word\": \"\u89C4\u5212\",\n
+        \         \"originalText\": \"\u89C4\u5212\",\n          \"lemma\": \"\u89C4\u5212\",\n
+        \         \"characterOffsetBegin\": 176,\n          \"characterOffsetEnd\":
+        178,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        17,\n          \"word\": \"\u4E86\",\n          \"originalText\": \"\u4E86\",\n
+        \         \"lemma\": \"\u4E86\",\n          \"characterOffsetBegin\": 178,\n
+        \         \"characterOffsetEnd\": 179,\n          \"pos\": \"AS\"\n        },\n
+        \       {\n          \"index\": 18,\n          \"word\": \"\u4E2D\",\n          \"originalText\":
+        \"\u4E2D\",\n          \"lemma\": \"\u4E2D\",\n          \"characterOffsetBegin\":
+        179,\n          \"characterOffsetEnd\": 180,\n          \"pos\": \"NR\"\n
+        \       },\n        {\n          \"index\": 19,\n          \"word\": \"\u8461\",\n
+        \         \"originalText\": \"\u8461\",\n          \"lemma\": \"\u8461\",\n
+        \         \"characterOffsetBegin\": 180,\n          \"characterOffsetEnd\":
+        181,\n          \"pos\": \"NR\"\n        },\n        {\n          \"index\":
+        20,\n          \"word\": \"\u5173\u7CFB\",\n          \"originalText\": \"\u5173\u7CFB\",\n
+        \         \"lemma\": \"\u5173\u7CFB\",\n          \"characterOffsetBegin\":
+        181,\n          \"characterOffsetEnd\": 183,\n          \"pos\": \"NN\"\n
+        \       },\n        {\n          \"index\": 21,\n          \"word\": \"\u53D1\u5C55\",\n
+        \         \"originalText\": \"\u53D1\u5C55\",\n          \"lemma\": \"\u53D1\u5C55\",\n
+        \         \"characterOffsetBegin\": 183,\n          \"characterOffsetEnd\":
+        185,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        22,\n          \"word\": \"\u65B0\",\n          \"originalText\": \"\u65B0\",\n
+        \         \"lemma\": \"\u65B0\",\n          \"characterOffsetBegin\": 185,\n
+        \         \"characterOffsetEnd\": 186,\n          \"pos\": \"VA\"\n        },\n
+        \       {\n          \"index\": 23,\n          \"word\": \"\u7684\",\n          \"originalText\":
+        \"\u7684\",\n          \"lemma\": \"\u7684\",\n          \"characterOffsetBegin\":
+        186,\n          \"characterOffsetEnd\": 187,\n          \"pos\": \"DEC\"\n
+        \       },\n        {\n          \"index\": 24,\n          \"word\": \"\u84DD\u56FE\",\n
+        \         \"originalText\": \"\u84DD\u56FE\",\n          \"lemma\": \"\u84DD\u56FE\",\n
+        \         \"characterOffsetBegin\": 187,\n          \"characterOffsetEnd\":
+        189,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        25,\n          \"word\": \"\u3002\",\n          \"originalText\": \"\u3002\",\n
+        \         \"lemma\": \"\u3002\",\n          \"characterOffsetBegin\": 189,\n
+        \         \"characterOffsetEnd\": 190,\n          \"pos\": \"PU\"\n        }\n
+        \     ]\n    },\n    {\n      \"index\": 5,\n      \"tokens\": [\n        {\n
+        \         \"index\": 1,\n          \"word\": \"\u6211\",\n          \"originalText\":
+        \"\u6211\",\n          \"lemma\": \"\u6211\",\n          \"characterOffsetBegin\":
+        190,\n          \"characterOffsetEnd\": 191,\n          \"pos\": \"PN\"\n
+        \       },\n        {\n          \"index\": 2,\n          \"word\": \"\u9AD8\u5EA6\",\n
+        \         \"originalText\": \"\u9AD8\u5EA6\",\n          \"lemma\": \"\u9AD8\u5EA6\",\n
+        \         \"characterOffsetBegin\": 191,\n          \"characterOffsetEnd\":
+        193,\n          \"pos\": \"AD\"\n        },\n        {\n          \"index\":
+        3,\n          \"word\": \"\u91CD\u89C6\",\n          \"originalText\": \"\u91CD\u89C6\",\n
+        \         \"lemma\": \"\u91CD\u89C6\",\n          \"characterOffsetBegin\":
+        193,\n          \"characterOffsetEnd\": 195,\n          \"pos\": \"VV\"\n
+        \       },\n        {\n          \"index\": 4,\n          \"word\": \"\u4E2D\",\n
+        \         \"originalText\": \"\u4E2D\",\n          \"lemma\": \"\u4E2D\",\n
+        \         \"characterOffsetBegin\": 195,\n          \"characterOffsetEnd\":
+        196,\n          \"pos\": \"NR\"\n        },\n        {\n          \"index\":
+        5,\n          \"word\": \"\u8461\",\n          \"originalText\": \"\u8461\",\n
+        \         \"lemma\": \"\u8461\",\n          \"characterOffsetBegin\": 196,\n
+        \         \"characterOffsetEnd\": 197,\n          \"pos\": \"NR\"\n        },\n
+        \       {\n          \"index\": 6,\n          \"word\": \"\u5173\u7CFB\",\n
+        \         \"originalText\": \"\u5173\u7CFB\",\n          \"lemma\": \"\u5173\u7CFB\",\n
+        \         \"characterOffsetBegin\": 197,\n          \"characterOffsetEnd\":
+        199,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        7,\n          \"word\": \"\u53D1\u5C55\",\n          \"originalText\": \"\u53D1\u5C55\",\n
+        \         \"lemma\": \"\u53D1\u5C55\",\n          \"characterOffsetBegin\":
+        199,\n          \"characterOffsetEnd\": 201,\n          \"pos\": \"NN\"\n
+        \       },\n        {\n          \"index\": 8,\n          \"word\": \"\uFF0C\",\n
+        \         \"originalText\": \"\uFF0C\",\n          \"lemma\": \"\uFF0C\",\n
+        \         \"characterOffsetBegin\": 201,\n          \"characterOffsetEnd\":
+        202,\n          \"pos\": \"PU\"\n        },\n        {\n          \"index\":
+        9,\n          \"word\": \"\u613F\",\n          \"originalText\": \"\u613F\",\n
+        \         \"lemma\": \"\u613F\",\n          \"characterOffsetBegin\": 202,\n
+        \         \"characterOffsetEnd\": 203,\n          \"pos\": \"VV\"\n        },\n
+        \       {\n          \"index\": 10,\n          \"word\": \"\u540C\",\n          \"originalText\":
+        \"\u540C\",\n          \"lemma\": \"\u540C\",\n          \"characterOffsetBegin\":
+        203,\n          \"characterOffsetEnd\": 204,\n          \"pos\": \"P\"\n        },\n
+        \       {\n          \"index\": 11,\n          \"word\": \"\u4F60\",\n          \"originalText\":
+        \"\u4F60\",\n          \"lemma\": \"\u4F60\",\n          \"characterOffsetBegin\":
+        204,\n          \"characterOffsetEnd\": 205,\n          \"pos\": \"PN\"\n
+        \       },\n        {\n          \"index\": 12,\n          \"word\": \"\u4E00\u9053\",\n
+        \         \"originalText\": \"\u4E00\u9053\",\n          \"lemma\": \"\u4E00\u9053\",\n
+        \         \"characterOffsetBegin\": 205,\n          \"characterOffsetEnd\":
+        207,\n          \"pos\": \"AD\"\n        },\n        {\n          \"index\":
+        13,\n          \"word\": \"\u52AA\u529B\",\n          \"originalText\": \"\u52AA\u529B\",\n
+        \         \"lemma\": \"\u52AA\u529B\",\n          \"characterOffsetBegin\":
+        207,\n          \"characterOffsetEnd\": 209,\n          \"pos\": \"VV\"\n
+        \       },\n        {\n          \"index\": 14,\n          \"word\": \"\uFF0C\",\n
+        \         \"originalText\": \"\uFF0C\",\n          \"lemma\": \"\uFF0C\",\n
+        \         \"characterOffsetBegin\": 209,\n          \"characterOffsetEnd\":
+        210,\n          \"pos\": \"PU\"\n        },\n        {\n          \"index\":
+        15,\n          \"word\": \"\u4EE5\",\n          \"originalText\": \"\u4EE5\",\n
+        \         \"lemma\": \"\u4EE5\",\n          \"characterOffsetBegin\": 210,\n
+        \         \"characterOffsetEnd\": 211,\n          \"pos\": \"P\"\n        },\n
+        \       {\n          \"index\": 16,\n          \"word\": \"\u4E24\",\n          \"originalText\":
+        \"\u4E24\",\n          \"lemma\": \"\u4E24\",\n          \"characterOffsetBegin\":
+        211,\n          \"characterOffsetEnd\": 212,\n          \"pos\": \"CD\"\n
+        \       },\n        {\n          \"index\": 17,\n          \"word\": \"\u56FD\",\n
+        \         \"originalText\": \"\u56FD\",\n          \"lemma\": \"\u56FD\",\n
+        \         \"characterOffsetBegin\": 212,\n          \"characterOffsetEnd\":
+        213,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        18,\n          \"word\": \"\u5EFA\u4EA4\",\n          \"originalText\": \"\u5EFA\u4EA4\",\n
+        \         \"lemma\": \"\u5EFA\u4EA4\",\n          \"characterOffsetBegin\":
+        213,\n          \"characterOffsetEnd\": 215,\n          \"pos\": \"VV\"\n
+        \       },\n        {\n          \"index\": 19,\n          \"word\": \"40\",\n
+        \         \"originalText\": \"40\",\n          \"lemma\": \"40\",\n          \"characterOffsetBegin\":
+        215,\n          \"characterOffsetEnd\": 217,\n          \"pos\": \"CD\"\n
+        \       },\n        {\n          \"index\": 20,\n          \"word\": \"\u5468\u5E74\",\n
+        \         \"originalText\": \"\u5468\u5E74\",\n          \"lemma\": \"\u5468\u5E74\",\n
+        \         \"characterOffsetBegin\": 217,\n          \"characterOffsetEnd\":
+        219,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        21,\n          \"word\": \"\u4E3A\",\n          \"originalText\": \"\u4E3A\",\n
+        \         \"lemma\": \"\u4E3A\",\n          \"characterOffsetBegin\": 219,\n
+        \         \"characterOffsetEnd\": 220,\n          \"pos\": \"P\"\n        },\n
+        \       {\n          \"index\": 22,\n          \"word\": \"\u65B0\",\n          \"originalText\":
+        \"\u65B0\",\n          \"lemma\": \"\u65B0\",\n          \"characterOffsetBegin\":
+        220,\n          \"characterOffsetEnd\": 221,\n          \"pos\": \"JJ\"\n
+        \       },\n        {\n          \"index\": 23,\n          \"word\": \"\u8D77\u70B9\",\n
+        \         \"originalText\": \"\u8D77\u70B9\",\n          \"lemma\": \"\u8D77\u70B9\",\n
+        \         \"characterOffsetBegin\": 221,\n          \"characterOffsetEnd\":
+        223,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        24,\n          \"word\": \"\uFF0C\",\n          \"originalText\": \"\uFF0C\",\n
+        \         \"lemma\": \"\uFF0C\",\n          \"characterOffsetBegin\": 223,\n
+        \         \"characterOffsetEnd\": 224,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 25,\n          \"word\": \"\u63A8\u52A8\",\n
+        \         \"originalText\": \"\u63A8\u52A8\",\n          \"lemma\": \"\u63A8\u52A8\",\n
+        \         \"characterOffsetBegin\": 224,\n          \"characterOffsetEnd\":
+        226,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        26,\n          \"word\": \"\u4E2D\",\n          \"originalText\": \"\u4E2D\",\n
+        \         \"lemma\": \"\u4E2D\",\n          \"characterOffsetBegin\": 226,\n
+        \         \"characterOffsetEnd\": 227,\n          \"pos\": \"NR\"\n        },\n
+        \       {\n          \"index\": 27,\n          \"word\": \"\u8461\",\n          \"originalText\":
+        \"\u8461\",\n          \"lemma\": \"\u8461\",\n          \"characterOffsetBegin\":
+        227,\n          \"characterOffsetEnd\": 228,\n          \"pos\": \"NR\"\n
+        \       },\n        {\n          \"index\": 28,\n          \"word\": \"\u5168\u9762\",\n
+        \         \"originalText\": \"\u5168\u9762\",\n          \"lemma\": \"\u5168\u9762\",\n
+        \         \"characterOffsetBegin\": 228,\n          \"characterOffsetEnd\":
+        230,\n          \"pos\": \"JJ\"\n        },\n        {\n          \"index\":
+        29,\n          \"word\": \"\u6218\u7565\",\n          \"originalText\": \"\u6218\u7565\",\n
+        \         \"lemma\": \"\u6218\u7565\",\n          \"characterOffsetBegin\":
+        230,\n          \"characterOffsetEnd\": 232,\n          \"pos\": \"NN\"\n
+        \       },\n        {\n          \"index\": 30,\n          \"word\": \"\u4F19\u4F34\",\n
+        \         \"originalText\": \"\u4F19\u4F34\",\n          \"lemma\": \"\u4F19\u4F34\",\n
+        \         \"characterOffsetBegin\": 232,\n          \"characterOffsetEnd\":
+        234,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        31,\n          \"word\": \"\u5173\u7CFB\",\n          \"originalText\": \"\u5173\u7CFB\",\n
+        \         \"lemma\": \"\u5173\u7CFB\",\n          \"characterOffsetBegin\":
+        234,\n          \"characterOffsetEnd\": 236,\n          \"pos\": \"NN\"\n
+        \       },\n        {\n          \"index\": 32,\n          \"word\": \"\u8FC8\u4E0A\",\n
+        \         \"originalText\": \"\u8FC8\u4E0A\",\n          \"lemma\": \"\u8FC8\u4E0A\",\n
+        \         \"characterOffsetBegin\": 236,\n          \"characterOffsetEnd\":
+        238,\n          \"pos\": \"VV\"\n        },\n        {\n          \"index\":
+        33,\n          \"word\": \"\u65B0\",\n          \"originalText\": \"\u65B0\",\n
+        \         \"lemma\": \"\u65B0\",\n          \"characterOffsetBegin\": 238,\n
+        \         \"characterOffsetEnd\": 239,\n          \"pos\": \"JJ\"\n        },\n
+        \       {\n          \"index\": 34,\n          \"word\": \"\u53F0\u9636\",\n
+        \         \"originalText\": \"\u53F0\u9636\",\n          \"lemma\": \"\u53F0\u9636\",\n
+        \         \"characterOffsetBegin\": 239,\n          \"characterOffsetEnd\":
+        241,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        35,\n          \"word\": \"\uFF0C\",\n          \"originalText\": \"\uFF0C\",\n
+        \         \"lemma\": \"\uFF0C\",\n          \"characterOffsetBegin\": 241,\n
+        \         \"characterOffsetEnd\": 242,\n          \"pos\": \"PU\"\n        },\n
+        \       {\n          \"index\": 36,\n          \"word\": \"\u66F4\",\n          \"originalText\":
+        \"\u66F4\",\n          \"lemma\": \"\u66F4\",\n          \"characterOffsetBegin\":
+        242,\n          \"characterOffsetEnd\": 243,\n          \"pos\": \"AD\"\n
+        \       },\n        {\n          \"index\": 37,\n          \"word\": \"\u597D\",\n
+        \         \"originalText\": \"\u597D\",\n          \"lemma\": \"\u597D\",\n
+        \         \"characterOffsetBegin\": 243,\n          \"characterOffsetEnd\":
+        244,\n          \"pos\": \"AD\"\n        },\n        {\n          \"index\":
+        38,\n          \"word\": \"\u9020\u798F\",\n          \"originalText\": \"\u9020\u798F\",\n
+        \         \"lemma\": \"\u9020\u798F\",\n          \"characterOffsetBegin\":
+        244,\n          \"characterOffsetEnd\": 246,\n          \"pos\": \"VV\"\n
+        \       },\n        {\n          \"index\": 39,\n          \"word\": \"\u4E24\",\n
+        \         \"originalText\": \"\u4E24\",\n          \"lemma\": \"\u4E24\",\n
+        \         \"characterOffsetBegin\": 246,\n          \"characterOffsetEnd\":
+        247,\n          \"pos\": \"CD\"\n        },\n        {\n          \"index\":
+        40,\n          \"word\": \"\u56FD\",\n          \"originalText\": \"\u56FD\",\n
+        \         \"lemma\": \"\u56FD\",\n          \"characterOffsetBegin\": 247,\n
+        \         \"characterOffsetEnd\": 248,\n          \"pos\": \"NN\"\n        },\n
+        \       {\n          \"index\": 41,\n          \"word\": \"\u548C\",\n          \"originalText\":
+        \"\u548C\",\n          \"lemma\": \"\u548C\",\n          \"characterOffsetBegin\":
+        248,\n          \"characterOffsetEnd\": 249,\n          \"pos\": \"CC\"\n
+        \       },\n        {\n          \"index\": 42,\n          \"word\": \"\u4E24\",\n
+        \         \"originalText\": \"\u4E24\",\n          \"lemma\": \"\u4E24\",\n
+        \         \"characterOffsetBegin\": 249,\n          \"characterOffsetEnd\":
+        250,\n          \"pos\": \"CD\"\n        },\n        {\n          \"index\":
+        43,\n          \"word\": \"\u56FD\",\n          \"originalText\": \"\u56FD\",\n
+        \         \"lemma\": \"\u56FD\",\n          \"characterOffsetBegin\": 250,\n
+        \         \"characterOffsetEnd\": 251,\n          \"pos\": \"NN\"\n        },\n
+        \       {\n          \"index\": 44,\n          \"word\": \"\u4EBA\u6C11\",\n
+        \         \"originalText\": \"\u4EBA\u6C11\",\n          \"lemma\": \"\u4EBA\u6C11\",\n
+        \         \"characterOffsetBegin\": 251,\n          \"characterOffsetEnd\":
+        253,\n          \"pos\": \"NN\"\n        },\n        {\n          \"index\":
+        45,\n          \"word\": \"\u3002\",\n          \"originalText\": \"\u3002\",\n
+        \         \"lemma\": \"\u3002\",\n          \"characterOffsetBegin\": 253,\n
+        \         \"characterOffsetEnd\": 254,\n          \"pos\": \"PU\"\n        }\n
+        \     ]\n    }\n  ]\n}\n"
+    headers:
+      Access-control-allow-credentials:
+      - 'true'
+      Access-control-allow-credentials-header:
+      - '*'
+      Access-control-allow-headers:
+      - '*'
+      Access-control-allow-methods:
+      - GET,POST,PUT,DELETE,OPTIONS
+      Access-control-allow-origin:
+      - '*'
+      Content-length:
+      - '36242'
+      Content-type:
+      - application/json;charset=UTF-8
+      Date:
+      - Sat, 12 Sep 2020 01:51:23 GMT
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,101 @@
+# CC-CEDICT
+# Community maintained free Chinese-English dictionary.
+#
+# Published by MDBG
+#
+# License:
+# Creative Commons Attribution-Share Alike 3.0
+# http://creativecommons.org/licenses/by-sa/3.0/
+#
+# Referenced works:
+# CEDICT - Copyright (C) 1997, 1998 Paul Andrew Denisowski
+#
+# CC-CEDICT can be downloaded from:
+# http://www.mdbg.net/chindict/chindict.php?page=cc-cedict
+#
+# Additions and corrections can be sent through:
+# https://cc-cedict.org/editor/editor.php
+#
+# For more information about CC-CEDICT see:
+# https://cc-cedict.org/wiki/
+#
+#! version=1
+#! subversion=0
+#! format=ts
+#! charset=UTF-8
+#! entries=116588
+#! publisher=MDBG
+#! license=http://creativecommons.org/licenses/by-sa/3.0/
+#! date=2018-11-21T08:27:16Z
+#! time=1542788836
+% % [pa1] /percent (Tw)/
+21三體綜合症 21三体综合症 [er4 shi2 yi1 san1 ti3 zong1 he2 zheng4] /trisomy/Down's syndrome/
+3C 3C [san1 C] /abbr. for computers, communications, and consumer electronics/China Compulsory Certificate (CCC)/
+3P 3P [san1 P] /(slang) threesome/
+3Q 3Q [san1 Q] /(Internet slang) thank you (loanword)/
+502膠 502胶 [wu3 ling2 er4 jiao1] /cyanoacrylate glue/
+A A [A] /(slang) (Tw) to steal/
+AA制 AA制 [A A zhi4] /to split the bill/to go Dutch/
+AB制 AB制 [A B zhi4] /to split the bill (where the male counterpart foots the larger portion of the sum)/(theater) a system where two actors take turns in acting the main role, with one actor replacing the other if either is unavailable/
+ACG ACG [A C G] /acronym for "anime, comics and games"/
+A咖 A咖 [A ka1] /class "A"/top grade/
+A圈兒 A圈儿 [A quan1 r5] /at symbol, @/
+A片 A片 [A pian4] /adult movie/pornography/
+A菜 A菜 [A cai4] /(Tw) lettuce (from Taiwanese 萵仔菜, POJ pr. [e-á-tshài])/
+A貨 A货 [A huo4] /good-quality fake/
+B B [bi1] /euphemistic variant of 屄[bi1]/
+BP機 BP机 [B P ji1] /beeper (loanword)/pager/
+一排 一排 [yi1 pai2] /row/
+一探究竟 一探究竟 [yi1 tan4 jiu1 jing4] /to check out/to investigate/
+一掬同情之淚 一掬同情之泪 [yi1 ju1 tong2 qing2 zhi1 lei4] /to shed tears of sympathy (idiom)/
+一揮而就 一挥而就 [yi1 hui1 er2 jiu4] /to finish (a letter, a painting) at a stroke/
+一撥兒 一拨儿 [yi1 bo1 r5] /group of people/
+一擁而上 一拥而上 [yi1 yong1 er2 shang4] /to swarm around/flocking (to see)/
+一擁而入 一拥而入 [yi1 yong1 er2 ru4] /to swarm in (of people etc) (idiom)/
+一擊入洞 一击入洞 [yi1 ji1 ru4 dong4] /hole in one (golf)/
+一擲千金 一掷千金 [yi1 zhi4 qian1 jin1] /lit. stake a thousand pieces of gold on one throw (idiom); to throw away money recklessly/extravagant/
+一攬子 一揽子 [yi1 lan3 zi5] /all-inclusive/undiscriminating/
+一改故轍 一改故辙 [yi1 gai3 gu4 zhe2] /complete change from the old rut (idiom); dramatic change of direction/a volte-face/to change old practices/
+一敗塗地 一败涂地 [yi1 bai4 tu2 di4] /failed and wiped over the floor (idiom); to fail utterly/a crushing defeat/beaten and in a hopeless position/
+一文不值 一文不值 [yi1 wen2 bu4 zhi2] /worthless (idiom)/no use whatsoever/
+一文不名 一文不名 [yi1 wen2 bu4 ming2] /to be penniless/
+一斑 一斑 [yi1 ban1] /lit. one spot (on the leopard)/fig. one small item in a big scheme/
+一方 一方 [yi1 fang1] /a party (in a contract or legal case)/one side/area/region/
+一方面 一方面 [yi1 fang1 mian4] /on the one hand/
+一旁 一旁 [yi1 pang2] /aside/to the side of/
+一族 一族 [yi1 zu2] /social group/subculture/family/clan/see also 族[zu2]/
+一日三秋 一日三秋 [yi1 ri4 san1 qiu1] /a single day apart seems like three seasons (idiom)/
+服服帖帖 服服帖帖 [fu2 fu5 tie1 tie1] /submissive/docile/obedient/
+服毒 服毒 [fu2 du2] /to take poison/
+服氣 服气 [fu2 qi4] /to be convinced/to accept/
+服法 服法 [fu2 fa3] /to submit to the law/to obey the law/
+服滿 服满 [fu2 man3] /to have completed the mourning period (traditional)/to have served one's time/
+服用 服用 [fu2 yong4] /to take (medicine)/
+服眾 服众 [fu2 zhong4] /to convince the masses/
+服硬 服硬 [fu2 ying4] /to yield to force/
+服罪 服罪 [fu2 zui4] /to admit to a crime/to plead guilty/
+服老 服老 [fu2 lao3] /to admit to one's advancing years/to acquiesce to old age/
+服膺 服膺 [fu2 ying1] /to bear in mind/
+服藥 服药 [fu2 yao4] /to take medicine/
+服藥過量 服药过量 [fu2 yao4 guo4 liang4] /overdose of drugs/
+服裝 服装 [fu2 zhuang1] /dress/clothing/costume/clothes/CL:身[shen1]/
+龍鍾 龙钟 [long2 zhong1] /decrepit/senile/
+龍門 龙门 [Long2 men2] /Longmen county in Huizhou 惠州[Hui4 zhou1], Guangdong/mythical Dragon gate where a carp can transform into a dragon/
+龍門刨 龙门刨 [long2 men2 bao4] /double column surface grinding machine/
+龍門山 龙门山 [Long2 men2 shan1] /Mt Longmen, the northwest boundary of the Sichuan basin, an active geological fault line/Mt Longmen in Shandong/Mt Longmen in Henan/
+龍門山斷層 龙门山断层 [Long2 men2 shan1 duan4 ceng2] /Longmenshan fault line, a tectonically active thrust fault line at the northwest boundary of the Sichuan basin/
+龍門斷層 龙门断层 [Long2 men2 duan4 ceng2] /Longmenshan fault line, a tectonically active thrust fault line at the northwest boundary of the Sichuan basin/
+龍門石窟 龙门石窟 [Long2 men2 Shi2 ku1] /Longmen Grottoes at Luoyang 洛陽|洛阳[Luo4 yang2], Henan/
+龍門縣 龙门县 [Long2 men2 xian4] /Longmen county in Huizhou 惠州[Hui4 zhou1], Guangdong/
+龍陵 龙陵 [Long2 ling2] /Longling county in Baoshan 保山[Bao3 shan1], Yunnan/
+龍陵縣 龙陵县 [Long2 ling2 xian4] /Longling county in Baoshan 保山[Bao3 shan1], Yunnan/
+龍陽 龙阳 [Long2 yang2] /place in Shanghai/(coll.) male homosexual/
+龍陽君 龙阳君 [long2 yang2 jun1] /homosexual (positive term)/
+龍韜 龙韬 [long2 tao1] /military strategy and tactics/the imperial guard/
+龍頭 龙头 [long2 tou2] /faucet/water tap/bicycle handle bar/chief (esp. of gang)/boss/decision maker/(market) leader (of companies)/front end of mud-flow/figurehead on prow of dragon boat 龍船|龙船/
+龍頭企業 龙头企业 [long2 tou2 qi3 ye4] /key enterprises/leading enterprises/
+龍頭老大 龙头老大 [long2 tou2 lao3 da4] /big boss/leader of a group/dominant (position)/
+龍頭蛇尾 龙头蛇尾 [long2 tou2 she2 wei3] /lit. dragon's head, snake's tail (idiom); fig. a strong start but weak finish/
+龍飛 龙飞 [long2 fei1] /to promote (to official position in former times)/
+龍飛鳳舞 龙飞凤舞 [long2 fei1 feng4 wu3] /flamboyant or bold cursive calligraphy (idiom)/
+龍馬潭區 龙马潭区 [Long2 ma3 tan2 qu1] /Longmatan district of Luzhou city 瀘州市|泸州市[Lu2 zhou1 shi4], Sichuan/
