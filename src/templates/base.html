@@ -1,9 +1,14 @@
 <!-- templates/base.html -->
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+  <meta charset="utf-8" />
+  <title>{% block title %}Transcrobes{% endblock %}</title>
+  <script>
+    const cookies = document.cookie.split('; ').reduce((acc, c) => {const [key, val] = c.split('='); acc[key] = val; return acc;}, {});
+    const csrftoken = cookies["csrftoken"];
+  </script>
 </head>
 <body>
   <main>

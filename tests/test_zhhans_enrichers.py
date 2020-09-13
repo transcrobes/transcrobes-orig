@@ -215,7 +215,6 @@ class FullEnrichMixin(VCRMixin):
         # test with no known entries
         model = self.manager.enricher().enrich_to_json(intxt_txt, self.user.username, self.manager)
         enriched = pkgutil.get_data("tests.assets.enrichers.bing", "enriched_model_no_notes.json").decode("utf-8")
-
         self.assertEqual(model, json.loads(enriched))
 
         notes_dir = os.path.dirname(sys.modules["tests.assets.enrichers.notes"].__file__)
@@ -235,7 +234,6 @@ class FullEnrichMixin(VCRMixin):
         enriched_notes = pkgutil.get_data("tests.assets.enrichers.bing", "enriched_model_with_notes.json").decode(
             "utf-8"
         )
-
         self.assertEqual(model, json.loads(enriched_notes))
 
 

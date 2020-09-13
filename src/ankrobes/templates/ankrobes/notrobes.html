@@ -1,0 +1,23 @@
+<!-- templates/ankrobes/notrobes.html-->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notrobes: add/edit your Transcrobes notes{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+  Hi {{ user.username }}!
+
+  <div id="root" />
+  <script src="{% static 'notrobes-bundle.js' %}"></script>
+
+{% else %}
+  <p>You are not logged in. Please log in or send and email to anton.melser@my.cityu.edu.hk for an account</p>
+  <a href="{% url 'login' %}">login</a>
+  <!--<p><a href="{% url 'signup' %}">sign up</a></p>-->
+
+{% endif %}
+
+{% endblock %}

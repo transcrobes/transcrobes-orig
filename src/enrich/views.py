@@ -3,7 +3,9 @@ import json
 import logging
 
 from django.http import HttpResponse, JsonResponse
+from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from ankrobes import Ankrobes
 from enrich.data import managers
@@ -22,17 +24,25 @@ def do_response(response):
 # PROD API
 @api_view(["POST", "OPTIONS"])
 def enrich_json(request):
-    logger.debug("Received to enrich json: %s", request.body.decode("utf-8"))
+    logger.debug("Received to enrich json: %s", request.data)
     outdata = {}
     if request.method == "POST":
         username, lang_pair = get_username_lang_pair(request)
         manager = managers.get(lang_pair)
         if not manager:
-            return HttpResponse(f"Server does not support language pair {lang_pair}", status=501)
+            return Response(
+                f"Server does not support language pair {lang_pair}", status=status.HTTP_501_NOT_IMPLEMENTED
+            )
+        text = request.data.get("data")
+        if not text:
+            return Response(
+                'Incorrectly formed query, you must provide a JSON like { "data": "好" }"',
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        outdata = manager.enricher().enrich_to_json(request.body.decode("utf-8"), username, manager)
+        outdata = manager.enricher().enrich_to_json(text, username, manager)
 
-    return do_response(JsonResponse(outdata))
+    return do_response(Response(outdata))
 
 
 @api_view(["POST", "OPTIONS"])
@@ -45,28 +55,34 @@ def word_definitions(request):
     if request.method == "POST":
         manager = managers.get(request.user.transcrober.lang_pair())
         if not manager:
-            return HttpResponse(
-                f"Server does not support language pair {request.user.transcrober.lang_pair()}", status=501
+            return Response(
+                f"Server does not support language pair {request.user.transcrober.lang_pair()}",
+                status=status.HTTP_501_NOT_IMPLEMENTED,
             )
 
-        w = request.body.decode("utf-8")
+        w = request.data.get("data")
+        if not w:
+            return Response(
+                'Incorrectly formed query, you must provide a JSON like { "data": "好" }"',
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         t = {"word": w, "pos": "NN", "lemma": w}  # fake pos, here we don't care
         if not manager.enricher().needs_enriching(t):
-            return JsonResponse({})
+            return Response({})
 
         # FIXME: iterate on all lookup providers for each lemma returned
         # (plus the original?)
         # lemmas = manager.word_lemmatizer().lemmatize(w)
 
         # get existing notes
-        userdb = Ankrobes(request.user.username)
-        notes = userdb.get_word(w)
+        with Ankrobes(request.user.username) as userdb:
+            notes = userdb.get_word(w)
 
         word_stats = []
         for m in manager.metadata():
             word_stats.append(m.metas_as_string(w))
 
-        logger.debug("Received get json defs: %s", request.body.decode("utf-8"))
+        logger.debug("Received get json defs: %s", w)
         data = {
             "defs": [note_format(manager.default().get_standardised_defs(t), w)]
             + [note_format(x.get_standardised_defs(t), w) for x in manager.secondary()],
@@ -75,7 +91,7 @@ def word_definitions(request):
             "notes": notes,
         }
 
-    return do_response(JsonResponse(data))
+    return do_response(Response(data))
 
 
 # END PROD API

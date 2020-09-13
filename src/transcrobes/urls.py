@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from django.contrib import admin
 from django.urls import include, path
 from django.views.generic.base import TemplateView  # new
@@ -33,6 +32,8 @@ urlpatterns = [
     path("data/", include("data.urls")),
     path("accounts/", include("accounts.urls")),  # new
     path("accounts/", include("django.contrib.auth.urls")),  # new
+    # browable rest api
+    path("api-auth/", include("rest_framework.urls")),
 ]
 
 # if "survey" in settings.INSTALLED_APPS:

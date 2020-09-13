@@ -1,13 +1,34 @@
 # -*- coding: utf-8 -*-
-
 import json
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django_extensions.db.models import ActivatorModel, TimeStampedModel, TitleSlugDescriptionModel
 
 from enrich.models import BingAPILookup
+
+
+class Survey(ActivatorModel, TitleSlugDescriptionModel, TimeStampedModel):
+    survey_json = models.JSONField()
+    users = models.ManyToManyField(User, through="UserSurvey")
+
+    def __str__(self):
+        return f"{self.title}"
+
+
+class UserSurvey(TimeStampedModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    data = models.JSONField(null=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.survey.title}"
+
+    class Meta:
+        unique_together = [["user", "survey"]]
 
 
 class Source(models.Model):

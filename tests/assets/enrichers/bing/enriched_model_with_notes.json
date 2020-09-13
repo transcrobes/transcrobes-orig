@@ -61,9 +61,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 1,
                     "lemma": "\u4e60\u8fd1\u5e73",
@@ -131,9 +129,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 2,
                     "lemma": "\u5728",
@@ -201,9 +197,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 3,
                     "lemma": "\u8d3a\u7535",
@@ -384,8 +378,7 @@
                                     "upos": "other"
                                 }
                             ]
-                        },
-                        "third": {}
+                        }
                     },
                     "index": 4,
                     "lemma": "\u4e2d",
@@ -493,9 +486,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 5,
                     "lemma": "\u6307\u51fa",
@@ -688,8 +679,7 @@
                                     "upos": "n."
                                 }
                             ]
-                        },
-                        "third": {}
+                        }
                     },
                     "index": 7,
                     "lemma": "\u4e2d",
@@ -755,9 +745,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 8,
                     "lemma": "\u8461",
@@ -823,9 +811,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 9,
                     "lemma": "\u53cb\u8c0a",
@@ -894,9 +880,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 10,
                     "lemma": "\u6e90\u8fdc\u6d41\u957f",
@@ -988,9 +972,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 1,
                     "lemma": "\u5efa\u4ea4",
@@ -1072,9 +1054,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 3,
                     "lemma": "\u5e74",
@@ -1142,9 +1122,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 4,
                     "lemma": "\u6765",
@@ -1274,9 +1252,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 6,
                     "lemma": "\u53cc\u65b9",
@@ -1343,9 +1319,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 7,
                     "lemma": "\u79c9\u6301",
@@ -1440,9 +1414,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 8,
                     "lemma": "\u76f8\u4e92",
@@ -1535,9 +1507,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 9,
                     "lemma": "\u5c0a\u91cd",
@@ -1654,9 +1624,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 11,
                     "lemma": "\u5e73\u7b49",
@@ -1741,9 +1709,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 12,
                     "lemma": "\u76f8",
@@ -1825,9 +1791,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 13,
                     "lemma": "\u5f85",
@@ -1915,9 +1879,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 15,
                     "lemma": "\u4e92\u5229",
@@ -1953,7 +1915,6 @@
                     "characterOffsetBegin": 42,
                     "characterOffsetEnd": 44,
                     "definitions": {
-                        "best": {},
                         "fallback": {
                             "OTHER": [
                                 {
@@ -1965,9 +1926,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 16,
                     "lemma": "\u5171\u8d62",
@@ -2036,9 +1995,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 17,
                     "lemma": "\u7684",
@@ -2148,9 +2105,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 18,
                     "lemma": "\u7cbe\u795e",
@@ -2283,9 +2238,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 19,
                     "lemma": "\u63a8\u52a8",
@@ -2362,9 +2315,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 20,
                     "lemma": "\u53cc\u8fb9",
@@ -2488,9 +2439,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 21,
                     "lemma": "\u5173\u7cfb",
@@ -2567,9 +2516,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 22,
                     "lemma": "\u5065\u5eb7",
@@ -2682,9 +2629,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 23,
                     "lemma": "\u7a33\u5b9a",
@@ -2787,9 +2732,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 24,
                     "lemma": "\u53d1\u5c55",
@@ -2846,7 +2789,6 @@
                     "characterOffsetBegin": 60,
                     "characterOffsetEnd": 65,
                     "definitions": {
-                        "best": {},
                         "fallback": {
                             "OTHER": [
                                 {
@@ -2858,9 +2800,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 1,
                     "lemma": "1999\u5e74",
@@ -2994,9 +2934,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 3,
                     "lemma": "\u53cc\u65b9",
@@ -3081,9 +3019,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 4,
                     "lemma": "\u59a5\u5584",
@@ -3208,9 +3144,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 5,
                     "lemma": "\u89e3\u51b3",
@@ -3277,9 +3211,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 6,
                     "lemma": "\u6fb3\u95e8",
@@ -3362,9 +3294,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 7,
                     "lemma": "\u95ee\u9898",
@@ -3483,9 +3413,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 9,
                     "lemma": "\u6811\u7acb",
@@ -3544,9 +3472,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 10,
                     "lemma": "\u4e86",
@@ -3646,9 +3572,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 11,
                     "lemma": "\u56fd",
@@ -3716,9 +3640,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 12,
                     "lemma": "\u4e0e",
@@ -3818,9 +3740,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 13,
                     "lemma": "\u56fd",
@@ -3904,9 +3824,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 14,
                     "lemma": "\u901a\u8fc7",
@@ -4007,9 +3925,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 15,
                     "lemma": "\u53cb\u597d",
@@ -4128,9 +4044,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 16,
                     "lemma": "\u534f\u5546",
@@ -4255,9 +4169,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 17,
                     "lemma": "\u89e3\u51b3",
@@ -4336,9 +4248,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 18,
                     "lemma": "\u5386\u53f2",
@@ -4423,9 +4333,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 19,
                     "lemma": "\u9057\u7559",
@@ -4508,9 +4416,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 20,
                     "lemma": "\u95ee\u9898",
@@ -4579,9 +4485,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 21,
                     "lemma": "\u7684",
@@ -4689,9 +4593,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 22,
                     "lemma": "\u5178\u8303",
@@ -4748,7 +4650,6 @@
                     "characterOffsetBegin": 101,
                     "characterOffsetEnd": 106,
                     "definitions": {
-                        "best": {},
                         "fallback": {
                             "OTHER": [
                                 {
@@ -4760,9 +4661,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 1,
                     "lemma": "2005\u5e74",
@@ -4946,8 +4845,7 @@
                                     "upos": "n."
                                 }
                             ]
-                        },
-                        "third": {}
+                        }
                     },
                     "index": 2,
                     "lemma": "\u4e2d",
@@ -5013,9 +4911,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 3,
                     "lemma": "\u8461",
@@ -5139,9 +5035,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 4,
                     "lemma": "\u5efa\u7acb",
@@ -5274,9 +5168,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 5,
                     "lemma": "\u5168\u9762",
@@ -5363,9 +5255,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 6,
                     "lemma": "\u6218\u7565",
@@ -5472,9 +5362,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 7,
                     "lemma": "\u4f19\u4f34",
@@ -5598,9 +5486,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 8,
                     "lemma": "\u5173\u7cfb",
@@ -5659,9 +5545,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 9,
                     "lemma": "\u4ee5\u6765",
@@ -5792,9 +5676,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 11,
                     "lemma": "\u53cc\u65b9",
@@ -5903,9 +5785,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 12,
                     "lemma": "\u9ad8\u5c42",
@@ -5964,9 +5844,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 13,
                     "lemma": "\u4e92\u8bbf",
@@ -6061,9 +5939,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 14,
                     "lemma": "\u9891\u7e41",
@@ -6154,9 +6030,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 16,
                     "lemma": "\u653f\u6cbb",
@@ -6215,9 +6089,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 17,
                     "lemma": "\u4e92\u4fe1",
@@ -6336,9 +6208,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 18,
                     "lemma": "\u4e0d\u65ad",
@@ -6415,9 +6285,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 19,
                     "lemma": "\u52a0\u6df1",
@@ -6498,9 +6366,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 21,
                     "lemma": "\u5404",
@@ -6606,9 +6472,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 22,
                     "lemma": "\u9886\u57df",
@@ -6685,9 +6549,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 23,
                     "lemma": "\u4e92\u5229",
@@ -6824,9 +6686,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 24,
                     "lemma": "\u5408\u4f5c",
@@ -6933,9 +6793,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 25,
                     "lemma": "\u6210\u679c",
@@ -7078,9 +6936,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 26,
                     "lemma": "\u663e\u8457",
@@ -7168,9 +7024,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 1,
                     "lemma": "\u4e0d\u4e45\u524d",
@@ -7258,9 +7112,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 3,
                     "lemma": "\u6211",
@@ -7356,9 +7208,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 4,
                     "lemma": "\u6210\u529f",
@@ -7451,9 +7301,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 5,
                     "lemma": "\u8bbf\u95ee",
@@ -7512,9 +7360,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 6,
                     "lemma": "\u8d35\u56fd",
@@ -7595,9 +7441,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 8,
                     "lemma": "\u540c",
@@ -7663,9 +7507,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 9,
                     "lemma": "\u4f60",
@@ -7765,9 +7607,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 10,
                     "lemma": "\u8fdb\u884c",
@@ -7894,9 +7734,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 11,
                     "lemma": "\u6df1\u5165",
@@ -7997,9 +7835,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 12,
                     "lemma": "\u53cb\u597d",
@@ -8116,9 +7952,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 13,
                     "lemma": "\u4ea4\u6d41",
@@ -8241,9 +8075,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 15,
                     "lemma": "\u5171\u540c",
@@ -8328,9 +8160,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 16,
                     "lemma": "\u89c4\u5212",
@@ -8389,9 +8219,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 17,
                     "lemma": "\u4e86",
@@ -8571,8 +8399,7 @@
                                     "upos": "n."
                                 }
                             ]
-                        },
-                        "third": {}
+                        }
                     },
                     "index": 18,
                     "lemma": "\u4e2d",
@@ -8638,9 +8465,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 19,
                     "lemma": "\u8461",
@@ -8763,9 +8588,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 20,
                     "lemma": "\u5173\u7cfb",
@@ -8868,9 +8691,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 21,
                     "lemma": "\u53d1\u5c55",
@@ -8973,9 +8794,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 22,
                     "lemma": "\u65b0",
@@ -9043,9 +8862,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 23,
                     "lemma": "\u7684",
@@ -9111,9 +8928,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 24,
                     "lemma": "\u84dd\u56fe",
@@ -9209,9 +9024,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 1,
                     "lemma": "\u6211",
@@ -9305,9 +9118,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 2,
                     "lemma": "\u9ad8\u5ea6",
@@ -9426,9 +9237,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 3,
                     "lemma": "\u91cd\u89c6",
@@ -9609,8 +9418,7 @@
                                     "upos": "n."
                                 }
                             ]
-                        },
-                        "third": {}
+                        }
                     },
                     "index": 4,
                     "lemma": "\u4e2d",
@@ -9676,9 +9484,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 5,
                     "lemma": "\u8461",
@@ -9801,9 +9607,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 6,
                     "lemma": "\u5173\u7cfb",
@@ -9906,9 +9710,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 7,
                     "lemma": "\u53d1\u5c55",
@@ -9979,9 +9781,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 9,
                     "lemma": "\u613f",
@@ -10049,9 +9849,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 10,
                     "lemma": "\u540c",
@@ -10117,9 +9915,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 11,
                     "lemma": "\u4f60",
@@ -10177,9 +9973,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 12,
                     "lemma": "\u4e00\u9053",
@@ -10327,9 +10121,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 13,
                     "lemma": "\u52aa\u529b",
@@ -10400,9 +10192,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 15,
                     "lemma": "\u4ee5",
@@ -10488,9 +10278,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 16,
                     "lemma": "\u4e24",
@@ -10590,9 +10378,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 17,
                     "lemma": "\u56fd",
@@ -10660,9 +10446,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 18,
                     "lemma": "\u5efa\u4ea4",
@@ -10744,9 +10528,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 20,
                     "lemma": "\u5468\u5e74",
@@ -10805,9 +10587,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 21,
                     "lemma": "\u4e3a",
@@ -10909,9 +10689,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 22,
                     "lemma": "\u65b0",
@@ -10995,9 +10773,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 23,
                     "lemma": "\u8d77\u70b9",
@@ -11142,9 +10918,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 25,
                     "lemma": "\u63a8\u52a8",
@@ -11325,8 +11099,7 @@
                                     "upos": "n."
                                 }
                             ]
-                        },
-                        "third": {}
+                        }
                     },
                     "index": 26,
                     "lemma": "\u4e2d",
@@ -11392,9 +11165,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 27,
                     "lemma": "\u8461",
@@ -11526,9 +11297,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 28,
                     "lemma": "\u5168\u9762",
@@ -11615,9 +11384,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 29,
                     "lemma": "\u6218\u7565",
@@ -11724,9 +11491,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 30,
                     "lemma": "\u4f19\u4f34",
@@ -11850,9 +11615,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 31,
                     "lemma": "\u5173\u7cfb",
@@ -11888,7 +11651,6 @@
                     "characterOffsetBegin": 236,
                     "characterOffsetEnd": 238,
                     "definitions": {
-                        "best": {},
                         "fallback": {
                             "OTHER": [
                                 {
@@ -11900,9 +11662,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 32,
                     "lemma": "\u8fc8\u4e0a",
@@ -12005,9 +11765,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 33,
                     "lemma": "\u65b0",
@@ -12097,9 +11855,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 34,
                     "lemma": "\u53f0\u9636",
@@ -12220,9 +11976,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 36,
                     "lemma": "\u66f4",
@@ -12358,9 +12112,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 37,
                     "lemma": "\u597d",
@@ -12418,9 +12170,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 38,
                     "lemma": "\u9020\u798f",
@@ -12507,9 +12257,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 39,
                     "lemma": "\u4e24",
@@ -12609,9 +12357,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 40,
                     "lemma": "\u56fd",
@@ -12669,9 +12415,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 41,
                     "lemma": "\u548c",
@@ -12757,9 +12501,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 42,
                     "lemma": "\u4e24",
@@ -12859,9 +12601,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 43,
                     "lemma": "\u56fd",
@@ -12948,9 +12688,7 @@
                                     "upos": "OTHER"
                                 }
                             ]
-                        },
-                        "second": {},
-                        "third": {}
+                        }
                     },
                     "index": 44,
                     "lemma": "\u4eba\u6c11",

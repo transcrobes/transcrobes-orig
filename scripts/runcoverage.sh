@@ -4,7 +4,7 @@ set -e
 source scripts/runsetup.sh
 export PYTHONPATH=$PYTHONPATH:tests
 
-FILE=test.env
+FILE=.env.test
 if [ -f "$FILE" ]; then
     source $FILE
 fi

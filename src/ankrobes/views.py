@@ -3,6 +3,7 @@ import logging
 import re
 
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 from django.utils.html import strip_tags
 from rest_framework.decorators import api_view
 
@@ -11,6 +12,10 @@ from enrich.data import managers
 from utils import default_definition, get_username_lang_pair
 
 logger = logging.getLogger(__name__)
+
+
+def notrobes(request):
+    return render(request, "ankrobes/notrobes.html")
 
 
 ## Normal views
@@ -30,10 +35,11 @@ def set_word(request):
 
 
 def _push_note_to_ankrobes(request, review_in):
+    # raise Exception('just for fun')
     data = {}
     if request.method == "POST":
         logger.debug(f"Received to notes set_word_known: {request.data}")
-
+        print(f"{request.data=}")
         username = request.user.username
         with Ankrobes(username) as userdb:
             ci = userdb.clean_inputs(request.data)

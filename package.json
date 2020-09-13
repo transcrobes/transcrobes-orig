@@ -1,0 +1,48 @@
+{
+  "name": "transcrobes",
+  "version": "0.0.9",
+  "description": "Transcrobes is the central project for the Transcrobes project (https://transcrob.es) and houses the central API for interacting with the system.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --config webpack.config.dev.js --mode development",
+    "devserver": "webpack-dev-server --config webpack.config.dev.js --mode=development",
+    "prod": "webpack --mode=production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/transcrobes/transcrobes.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/transcrobes/transcrobes/issues"
+  },
+  "homepage": "https://gitlab.com/transcrobes/transcrobes#readme",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "file-loader": "^6.1.0",
+    "html-webpack-plugin": "^4.4.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {
+    "axios": "^0.20.0",
+    "css-loader": "^4.3.0",
+    "lodash": "^4.17.20",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "style-loader": "^1.2.1",
+    "survey-react": "^1.8.3"
+  }
+}

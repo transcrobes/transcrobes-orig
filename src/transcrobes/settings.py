@@ -6,7 +6,7 @@ import os
 import djankiserv.unki
 from djankiserv.unki.database import PostgresAnkiDataModel
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 INSTALLED_APPS = [
     # core
@@ -19,7 +19,9 @@ INSTALLED_APPS = [
     "corsheaders",
     # community
     "rest_framework",
+    "django_filters",
     "django_k8s",  # allows for a more elegant init-container to check for migrations and db availability
+    "django_extensions",
     "djankiserv.apps.DjankiservConfig",
     # local
     "enrich.apps.EnrichConfig",
@@ -35,6 +37,7 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.BasicAuthentication",
@@ -56,7 +59,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "transcrobes.urls"
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -89,7 +91,13 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../static/")
+# STATIC_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build/static/")
+STATIC_ROOT = "build/static"
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
 LL = "ERROR"
 
 # Logging
@@ -215,14 +223,14 @@ LANG_PAIRS = {
             {
                 "classname": "zhhans_en.translate.abc.ZHHANS_EN_ABCDictTranslator",
                 "config": {
-                    "path": os.getenv("TRANSCROBES_ZH_EN_ABC_DICT_PATH", "/opt/transcrobes/abc_zh_en_dict.txt"),
+                    "path": os.getenv("TRANSCROBES_ZH_EN_ABC_DICT_PATH", "/opt/transcrobes/zh_en_abc_dict.txt"),
                     "inmem": os.getenv("TRANSCROBES_ZH_EN_ABC_DICT_INMEM", "false").lower() == "true",
                 },
             },
             {
                 "classname": "zhhans_en.translate.ccc.ZHHANS_EN_CCCedictTranslator",
                 "config": {
-                    "path": os.getenv("TRANSCROBES_ZH_EN_CEDICT_PATH", "/opt/transcrobes/cedict.txt"),
+                    "path": os.getenv("TRANSCROBES_ZH_EN_CEDICT_PATH", "/opt/transcrobes/zh_en_cedict.txt"),
                     "inmem": os.getenv("TRANSCROBES_ZH_EN_CEDICT_INMEM", "false").lower() == "true",
                 },
             },
@@ -231,14 +239,14 @@ LANG_PAIRS = {
             {
                 "classname": "enrichers.zhhans.metadata.hsk.ZH_HSKMetadata",
                 "config": {
-                    "path": os.getenv("TRANSCROBES_ZH_HSK_LISTS_PATH", "/opt/transcrobes/hsk{}.txt"),
+                    "path": os.getenv("TRANSCROBES_ZH_HSK_LISTS_PATH", "/opt/transcrobes/zh_hsk{}.txt"),
                     "inmem": os.getenv("TRANSCROBES_ZH_HSK_LISTS_INMEM", "false").lower() == "true",
                 },
             },
             {
                 "classname": "enrichers.zhhans.metadata.subtlex.ZH_SubtlexMetadata",
                 "config": {
-                    "path": os.getenv("TRANSCROBES_ZH_SUBTLEX_FREQ_PATH", "/opt/transcrobes/subtlex-ch.utf8.txt"),
+                    "path": os.getenv("TRANSCROBES_ZH_SUBTLEX_FREQ_PATH", "/opt/transcrobes/zh_subtlex.utf8.txt"),
                     "inmem": os.getenv("TRANSCROBES_ZH_SUBTLEX_FREQ_INMEM", "false").lower() == "true",
                 },
             },
@@ -252,63 +260,6 @@ LANG_PAIRS = {
                 "to_script": "Latn",
                 "api_host": os.getenv("TRANSCROBES_BING_API_HOST", "api.cognitive.microsofttranslator.com"),
                 "api_key": os.getenv("TRANSCROBES_BING_SUBSCRIPTION_KEY", "a_super_api_key"),
-            },
-        },
-    },
-    "en:zh-Hans": {
-        "enrich": {"classname": "enrichers.en.CoreNLP_EN_Enricher", "config": {}},
-        "parse": {
-            "classname": "enrich.parse.HTTPCoreNLPProvider",
-            "config": {
-                "base_url": f'http://{os.getenv("TRANSCROBES_EN_CORENLP_HOST", "corenlp-en")}',
-                "params": '{"annotators":"lemma","outputFormat":"json"}',
-            },
-        },
-        "word_lemmatizer": {
-            "classname": "enrichers.en.SpaCy_EN_WordLemmatizer",
-            "config": {
-                # 'model_name': 'en_core_web_sm',  # TODO: Not currently used
-            },
-        },
-        "default": {
-            "classname": "enrich.translate.bing.BingTranslator",
-            "config": {
-                "from": "en",
-                "to": "zh-Hans",
-                "api_host": os.getenv("TRANSCROBES_BING_API_HOST", "api.cognitive.microsofttranslator.com"),
-                "api_key": os.getenv("TRANSCROBES_BING_SUBSCRIPTION_KEY", "a_super_api_key"),
-            },
-            "transliterator": {
-                "classname": "enrichers.en.transliterate.cmu.CMU_EN_Transliterator",
-                "config": {
-                    "path": os.getenv("TRANSCROBES_EN_CMU_DICT_PATH", "/opt/transcrobes/cmudict-0.7b.txt"),
-                    "inmem": os.getenv("TRANSCROBES_EN_CMU_DICT_INMEM", "false").lower() == "true",
-                },
-            },
-        },
-        "secondary": [
-            {
-                "classname": "en_zhhans.translate.abc.EN_ZHHANS_ABCDictTranslator",
-                "config": {
-                    "path": os.getenv("TRANSCROBES_EN_ZH_ABC_DICT_PATH", "/opt/transcrobes/abc_en_zh_dict.txt"),
-                    "inmem": os.getenv("TRANSCROBES_EN_ZH_ABC_DICT_INMEM", "false").lower() == "true",
-                },
-            },
-        ],
-        "metadata": [
-            {
-                "classname": "enrichers.en.metadata.subtlex.EN_SubtlexMetadata",
-                "config": {
-                    "path": os.getenv("TRANSCROBES_EN_SUBTLEX_FREQ_PATH", "/opt/transcrobes/subtlex-en-us.utf8.txt"),
-                    "inmem": os.getenv("TRANSCROBES_EN_SUBTLEX_FREQ_INMEM", "false").lower() == "true",
-                },
-            },
-        ],
-        "transliterate": {
-            "classname": "enrichers.en.transliterate.cmu.CMU_EN_Transliterator",
-            "config": {
-                "path": os.getenv("TRANSCROBES_EN_CMU_DICT_PATH", "/opt/transcrobes/cmudict-0.7b.txt"),
-                "inmem": os.getenv("TRANSCROBES_EN_CMU_DICT_INMEM", "false").lower() == "true",
             },
         },
     },

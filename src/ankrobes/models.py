@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import json
 import pkgutil
 
@@ -7,8 +6,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from djankiserv.unki.collection import Collection
-
-# from ankrobes.resources import json  # noqa: 401  # pylint: disable=W0611
 
 
 class Transcrober(models.Model):

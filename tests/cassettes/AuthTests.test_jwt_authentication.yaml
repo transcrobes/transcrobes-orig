@@ -1,0 +1,161 @@
+interactions:
+- request:
+    body: "[{\"Text\": \"\u597D\"}]"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      Content-type:
+      - application/json
+      Ocp-Apim-Subscription-Key:
+      - a_very_secret_key
+      User-Agent:
+      - python-requests/2.24.0
+      X-ClientTraceId:
+      - 427b3894-13bf-4429-aea3-1c83b29e07f3
+    method: POST
+    uri: https://api.cognitive.microsofttranslator.com/dictionary/lookup?api-version=3.0&from=zh-Hans&to=en
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEAMWZW08TQRiG/0uvidk57cE7o954oReiXhgvVrrUhrKLS4mgMangAaJ4PlTiIQSP
+        UcGA8YBQ/0y3S/+F47azCvNNZ7ONabjqw+7b4Zt33vlmOH2p4AfhuFspX/SKx4OpcMQr7C9Er7cL
+        Q4VieXKi4s7sodXQ9ScrbrUc+JOF/af/fX/YDUtelT9ZCoLiX4G9eCKYHHZL/POBQ0f4x5HAHy0X
+        Pf/Pdxj7sIkd/kjojZanTwVhkT/GnznrjowN9/hib7q6d9i7mD81fnjaHZ+oePxVxIYKo6F3fop/
+        58zBYMrnzyHDsKl5eQhQ3VlYg4RTrNUmhoFtULr5fbH98KkknWKttGU6DqgcN25Dg06xftAYY1CZ
+        vx+9ugrVuYMzlENVja16/LYmV0Pg/Mo7jTlwCgXW28NG1uUze7SFrYMxdwZwexenbj967MRRye6I
+        sQG4HWNEKVyp5VtymRKmrxGyLVjzVx2svsAZFqcNu7y1vtzcvCkpp1ir7BC4DK367fipPOQUa4Up
+        RaoRR9c24o2f0KDT3+idTm2lHS94lQpgxy7+J3xPym5EFA3CjgRbBhw2T9Zk0YRpRW1EGRwzm4/k
+        jEmYvuyODfulPbvS/DEvyaZYr2wROG77332wYouIHryRa5sw/YSZJlyH6N6crJkw/SKnPTwdjIEB
+        q49XA9EBGNr687eA2/LyarS6JG/LAmeIQqbwSf7gNpkyq/pLV26T/7MhYMaUVvHLfOpls3Rxz97T
+        GETnaRkErlLfzSGmtmJit2abm6vyxAqcoX8w4Gztu+00HbiHaH+oR9e+yAErsF6YKtrZz1utx8Am
+        I/AuYShemSIJX2/Hz+TFk2J9biOk9Pho2Yc83sW9PW5TMgCXm5ajcMz2UutjQ3aMwHovIgOe2Xi9
+        Ef+8LisLrM9ayyawMiSbVVORifyUw/d06PDTwfp+hykKvA5Udz1TaZkFj7XvjYFh9VZfCj23Cl0e
+        dHlvd5vIzOvu5tbL6NVbYAa6WD+3jqWYA0g3qygiquTqYzVSDMds9O0dOFaB9TNrO/Caaa3clw2T
+        MP0Kt5jChy+uQKNNcZaDB9yntW8sQsop1isbxFFafIa/JRu8Q3v3swa1cF5/t+pr8ZJ8cZPiDNcr
+        hCpss/ZD9kzC9CdwRBSa+e3N3Q1PK08oqKVKcYZpZYrR5j+oIubAbdpO7avcIydMr4kVNybR9oP4
+        qiyb4gzRoW69XfDiwd1973Do8DBga5rf1gu11rMFeU4FzrAl8x4Ozu32nOzBDsuwd2IE53bzey2a
+        vwH09V2c4fRjKK6q+zqyEvUNZ1gunYP2ZMF7XirxJMx/x5k/WDBRti+fVviBW3aMwHrHmAzD91Wt
+        53PR/HtZWmC9NGFYsXLvbMilSFiGqzCsqMRz+bqmw/T+dhicsX14kFiWotW5O9+uzcqyAuvN4BiK
+        0d7Z2GkAHhM4w38GCOHrhv/8BiWRL6BLGwAA
+    headers:
+      Access-Control-Expose-Headers:
+      - X-RequestId
+      - X-Metered-Usage
+      Content-Encoding:
+      - gzip
+      Content-Length:
+      - '1110'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 22 Sep 2020 01:14:10 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Metered-Usage:
+      - '1'
+      X-RequestId:
+      - DTLK.SG1P.00BD.0922T0114.1C32599
+    status:
+      code: 200
+      message: OK
+- request:
+    body: "[{\"Text\": \"\u597D\"}]"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      Content-type:
+      - application/json
+      Ocp-Apim-Subscription-Key:
+      - a_very_secret_key
+      User-Agent:
+      - python-requests/2.24.0
+      X-ClientTraceId:
+      - bba178be-9d69-44e9-89f2-007017bd5cb1
+    method: POST
+    uri: https://api.cognitive.microsofttranslator.com/transliterate?api-version=3.0&from=zh-Hans&to=en&language=zh-Hans&fromScript=Hans&toScript=Latn
+  response:
+    body:
+      string: "[{\"text\":\"h\u01CEo\",\"script\":\"Latn\"}]"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-RequestId
+      - X-Metered-Usage
+      Content-Length:
+      - '33'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 22 Sep 2020 01:14:10 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Metered-Usage:
+      - '1'
+      X-RequestId:
+      - TLIT.SG1P.00BA.0922T0114.1B21136
+    status:
+      code: 200
+      message: OK
+- request:
+    body: "[{\"Text\": \"\u597D\"}]"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '17'
+      Content-type:
+      - application/json
+      Ocp-Apim-Subscription-Key:
+      - a_very_secret_key
+      User-Agent:
+      - python-requests/2.24.0
+      X-ClientTraceId:
+      - 62479d24-bb44-4e9d-a061-8ebebe9ed13c
+    method: POST
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+  response:
+    body:
+      string: '[{"translations":[{"text":"Good.","to":"en","alignment":{"proj":"0:0-0:4"}}]}]'
+    headers:
+      Access-Control-Expose-Headers:
+      - X-RequestId
+      - X-Metered-Usage
+      Content-Length:
+      - '78'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 22 Sep 2020 01:14:10 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-MT-System:
+      - Microsoft
+      X-Metered-Usage:
+      - '1'
+      X-RequestId:
+      - TRAN.SG1P.00BD.0922T0114.1C325C5
+    status:
+      code: 200
+      message: OK
+version: 1

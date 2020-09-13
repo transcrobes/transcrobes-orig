@@ -66,13 +66,17 @@ class Enricher(ABC):
                 # From here we attempt translation and create ankrobes entries
                 ank_entry = userdb.sanitise_ankrobes_entry(userdb.get_word(w))
                 t["ankrobes_entry"] = ank_entry
-                t["definitions"] = {
-                    "best": manager.default().get_standardised_defs(t),
-                    "fallback": manager.default().get_standardised_fallback_defs(t),
-                }
-                for p in manager.secondary():
-                    t["definitions"][p.name()] = p.get_standardised_defs(t)
+                t["definitions"] = {}
+                best = manager.default().get_standardised_defs(t)
+                if best:
+                    t["definitions"]["best"] = best
 
+                for p in manager.secondary():
+                    sec = p.get_standardised_defs(t)
+                    if sec:
+                        t["definitions"][p.name()] = sec
+
+                t["definitions"]["fallback"] = manager.default().get_standardised_fallback_defs(t)
                 t["normalized_pos"] = self.get_simple_pos(t)
 
                 # TODO: decide whether we really don't want to make a best guess for words we know

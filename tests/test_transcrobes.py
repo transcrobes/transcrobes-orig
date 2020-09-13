@@ -5,9 +5,10 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from vcr_unittest import VCRMixin
 
 
-class AuthTests(APITestCase):
+class AuthMixin(VCRMixin):
     databases = "__all__"
     USERNAME = "a_username"
     PASSWORD = "a_pass_word"
@@ -17,6 +18,7 @@ class AuthTests(APITestCase):
     ##
 
     def setUp(self):
+        super().setUp()
         self.user = User.objects.create_user(username=self.USERNAME, password=self.PASSWORD)
 
     def tearDown(self):
@@ -29,7 +31,7 @@ class AuthTests(APITestCase):
         # basic, session and token should all work, non authenticated or incorrectly authenticated should all fail
 
         url = reverse("word_definitions")
-        data = {"": "好"}
+        data = {"data": "好"}
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -43,7 +45,7 @@ class AuthTests(APITestCase):
 
     def test_jwt_authentication(self):
         url = reverse("word_definitions")
-        data = {"": "好"}
+        data = {"data": "好"}
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -53,8 +55,8 @@ class AuthTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
         token_url = reverse("token_obtain_pair")
-        data = {"username": self.USERNAME, "password": self.PASSWORD}
-        response = self.client.post(token_url, data)
+        auth = {"username": self.USERNAME, "password": self.PASSWORD}
+        response = self.client.post(token_url, auth)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -67,7 +69,7 @@ class AuthTests(APITestCase):
 
     def test_session_authentication(self):
         url = reverse("word_definitions")
-        data = {"": "好"}
+        data = {"data": "好"}
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -79,6 +81,10 @@ class AuthTests(APITestCase):
         self.client.login(username=self.USERNAME, password=self.PASSWORD)
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class AuthTests(AuthMixin, APITestCase):
+    pass
 
 
 # # FIXME: these definitely need doing !!!

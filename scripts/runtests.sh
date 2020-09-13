@@ -4,12 +4,12 @@ set -e
 source scripts/runsetup.sh
 export PYTHONPATH=$PYTHONPATH:tests
 
-FILE=test.env
+FILE=.env.test
 if [ -f "$FILE" ]; then
     source $FILE
 fi
 
-pylint --ignore requirements.txt,transcrobes.egg-info,cmu src/*
+pylint --ignore requirements.txt,requirements.ci.txt,transcrobes.egg-info,cmu src/*
 pylint tests/*
 
 # pre-commit also has flake8 linter

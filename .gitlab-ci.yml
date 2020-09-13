@@ -1,25 +1,38 @@
 image: python:3.8-slim
 
 variables:
-  POSTGRES_DB: tc_db
+  POSTGRES_DATABASE: tc_db
   POSTGRES_USER: tc_user
   POSTGRES_PASSWORD: tc_pass
-  POSTGRES_DATABASE: tc_db
   POSTGRES_HOST: db
   POSTGRES_PORT: 5432
+
+  TC_POSTGRES_DB: tc_db
+  TC_POSTGRES_USER: tc_user
+  TC_POSTGRES_PASSWORD: tc_pass
+  TC_POSTGRES_HOST: db
+  TC_POSTGRES_PORT: 5432
+  TC_DJANKISERV_USERDB_NAME: tc_db
+  TC_DJANKISERV_USERDB_USER: tc_user
+  TC_DJANKISERV_USERDB_PASSWORD: tc_pass
+  TC_DJANKISERV_USERDB_HOST: db
+  TC_DJANKISERV_USERDB_PORT: 5432
+
+  TRANSCROBES_ZH_CORENLP_HOST: localhost:9000
+  TRANSCROBES_ZH_EN_ABC_DICT_PATH: tests/assets/zhhans_en/zh_en_abc_dict.test.txt
   DJANGO_SETTINGS_MODULE: 'transcrobes.settings'
-  CORENLP_HOST: corenlp  # TODO: not yet used in tests
-  ANKROBES_HOST: ankrobes  # TODO: not yet used in tests
-  BING_SUBSCRIPTION_KEY: a_great_key  # TODO: not yet used in tests
+  TRANSCROBES_ZH_EN_ABC_DICT_INMEM: 'true'
+  TRANSCROBES_ZH_EN_CEDICT_PATH: tests/assets/zhhans_en/zh_en_cedict.test.txt
+  TRANSCROBES_ZH_EN_CEDICT_INMEM: 'true'
+  TRANSCROBES_ZH_HSK_LISTS_PATH: 'tests/assets/enrichers/zh_hsk{}.txt'
+  TRANSCROBES_ZH_HSK_LISTS_INMEM: 'true'
+  TRANSCROBES_ZH_SUBTLEX_FREQ_PATH: tests/assets/enrichers/zh_subtlex.utf8.test.txt
+  TRANSCROBES_ZH_SUBTLEX_FREQ_INMEM: 'true'
+
   PYTHONDONTWRITEBYTECODE: 1
   GIT_SUBMODULE_STRATEGY: recursive
-  CONTAINER_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_COMMIT_SHORT_SHA}
-  CONTAINER_IMAGE_LATEST: ${CI_REGISTRY}/${CI_PROJECT_PATH}:latest
-  CONTAINER_IMAGE_TAG: ${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_COMMIT_TAG}
-  EXT_REG_IMG: ${EXT_REG_REGISTRY}/${EXT_REG_ORGANISATION}/${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}
-  EXT_REG_IMG_LATEST: ${EXT_REG_REGISTRY}/${EXT_REG_ORGANISATION}/${CI_PROJECT_NAME}:latest
-  EXT_REG_IMG_TAG: ${EXT_REG_REGISTRY}/${EXT_REG_ORGANISATION}/${CI_PROJECT_NAME}:${CI_COMMIT_TAG}
   APP_PATH: /app
+  EXT_REG_BASE: ${EXT_REG_REGISTRY}/${EXT_REG_ORGANISATION}/${CI_PROJECT_NAME}
 
 cache:
   paths:
@@ -36,30 +49,14 @@ test:
       alias: db
 
   before_script:
-    - apt update && apt install -y gcc git && apt -y autoremove && apt -y clean && rm -rf /var/lib/apt/lists/*
-    - pip install -r requirements.ci.txt
+    - apt update && apt install -y gcc git libmariadb-dev && apt -y autoremove && apt -y clean && rm -rf /var/lib/apt/lists/*
+    - pip install -r src/requirements.ci.txt
 
   variables:
-    DATABASE_URL: "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_DB"
+    DATABASE_URL: "postgresql://$TC_POSTGRES_USER:$TC_POSTGRES_PASSWORD@postgres:5432/$TC_POSTGRES_DB"
 
   script:
-    - ./runtests.sh
-
-coverage:
-  stage: test
-  services:
-    - name: postgres:12
-      alias: db
-
-  before_script:
-    - apt update && apt install -y gcc git && apt -y autoremove && apt -y clean && rm -rf /var/lib/apt/lists/*
-    - pip install -r requirements.ci.txt
-
-  variables:
-    DATABASE_URL: "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_DB"
-
-  script:
-    - ./runcoverage.sh
+    - ./scripts/runtests.sh
   coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
   artifacts:
     paths:
@@ -68,22 +65,23 @@ coverage:
 
 release-latest:
   stage: release
-  image: docker:latest
+  image: transcrobes/tcbuild:0.0.1
   services:
    - docker:dind
 
   script:
+    - npm install
+    - npm run prod
+    - pip install -r src/requirements.txt
+    - python3 src/manage.py collectstatic --noinput
     - export DOCKER_HOST=tcp://docker:2375/
-    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
-    - docker build --pull -t ${CONTAINER_IMAGE} .
-    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
-    - docker push ${CONTAINER_IMAGE}
-    - docker push ${CONTAINER_IMAGE_LATEST}
+    - docker build -f images/main/Dockerfile --pull -t ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} .
+    - docker build -f images/static/Dockerfile --pull -t ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} .
     - docker login -u ${EXT_REG_USER} -p ${EXT_REG_PASSWORD} ${EXT_REG_REGISTRY}
-    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG}
-    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG_LATEST}
-    - docker push ${EXT_REG_IMG}
-    - docker push ${EXT_REG_IMG_LATEST}
+    - docker tag ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}:latest
+    - docker push ${EXT_REG_BASE}
+    - docker tag ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}-static:latest
+    - docker push ${EXT_REG_BASE}-static
   only:
     - master
   except:
@@ -91,24 +89,26 @@ release-latest:
 
 release-tag:
   stage: release
-  image: docker:latest
+  image: transcrobes/tcbuild:0.0.1
   services:
    - docker:dind
   script:
+    - npm install
+    - npm run prod
+    - pip install -r src/requirements.txt
+    - python3 src/manage.py collectstatic --noinput
     - export DOCKER_HOST=tcp://docker:2375/
     - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
-    - docker build --pull -t ${CONTAINER_IMAGE} .
-    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_TAG}
-    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
-    - docker push ${CONTAINER_IMAGE}
-    - docker push ${CONTAINER_IMAGE_TAG}
-    - docker push ${CONTAINER_IMAGE_LATEST}
+    - docker build -f images/main/Dockerfile --pull -t ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} .
+    - docker build -f images/static/Dockerfile --pull -t ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} .
+
     - docker login -u ${EXT_REG_USER} -p ${EXT_REG_PASSWORD} ${EXT_REG_REGISTRY}
-    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG}
-    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG_LATEST}
-    - docker tag ${CONTAINER_IMAGE} ${EXT_REG_IMG_TAG}
-    - docker push ${EXT_REG_IMG}
-    - docker push ${EXT_REG_IMG_LATEST}
-    - docker push ${EXT_REG_IMG_TAG}
+    - docker tag ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}:latest
+    - docker tag ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}:tag
+    - docker push ${EXT_REG_BASE}
+    - docker tag ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}-static:latest
+    - docker tag ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}-static:tag
+    - docker push ${EXT_REG_BASE}-static
+
   only:
     - tags
