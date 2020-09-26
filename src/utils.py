@@ -7,7 +7,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 
 def default_definition(manager, w):
-
     t = {"word": w, "pos": "NN", "lemma": w}  # fake pos, here we don't care
     note_defs = note_format(manager.default().get_standardised_defs(t), w)
     if not note_defs:
@@ -18,7 +17,6 @@ def default_definition(manager, w):
 
         if not note_defs:
             note_defs = note_format(manager.default().get_standardised_fallback_defs(t), w)
-    print(note_defs)
     return note_defs[0]  # the fallback *always* has at least (exactly?) one
 
 

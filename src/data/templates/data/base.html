@@ -5,9 +5,13 @@
   <head>
 	<meta charset="utf-8">
 	<title>{% block title %}{% endblock title %}</title>
-    <link rel="icon" href="{% static 'img/favicon.ico'%}"/>
-    <link href="{% static 'data/css/bootstrap.min.css'%}" rel="stylesheet" type="text/css"/>
+    <link rel="icon" href="{% static 'img/favicon.ico'%}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'data/css/bootstrap.min.css'%} "/>
 	<link rel="stylesheet" type="text/css" href="{% static 'data/css/custom.css' %}" />
+    <script>
+      const cookies = document.cookie.split('; ').reduce((acc, c) => {const [key, val] = c.split('='); acc[key] = val; return acc;}, {});
+      const csrftoken = cookies["csrftoken"];
+    </script>
   </head>
   <body>
     <div class="container" id="wrap">
@@ -22,9 +26,6 @@
         <p><a href="{% url 'home' %}">Return home</a></p>
         </div>
     </div>
-    <script type="text/javascript" src="{% static 'data/js/jquery.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'data/js/jquery-ui.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'data/js/bootstrap.min.js' %}"></script>
 	{% block extrajs %}	{% endblock %}
   </body>
 </html>

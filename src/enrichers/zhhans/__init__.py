@@ -200,10 +200,8 @@ class CoreNLP_ZHHANS_Enricher(Enricher):
             #     t['pinyin'] = deq.popleft() + deq.popleft() + deq.popleft()
             #     continue
             if not w.replace("…", ""):  # only contains the ...
-                print("starting to replace")
                 t["pinyin"] = deq.popleft()
                 while deq and deq[0] == ".":
-                    print(deq)
                     t["pinyin"] += deq.popleft()
                 continue
 

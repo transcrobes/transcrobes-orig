@@ -14,7 +14,7 @@ const surveyUserUrl = `/data/api/usersurveys/?user__username=${username}&survey_
 
 const cookies = document.cookie.split('; ').reduce((acc, c) => {const [key, val] = c.split('='); acc[key] = val; return acc;}, {});
 
-const data = {
+const getData = {
     credentials: "include",
     method:      "GET",
     headers: {
@@ -28,7 +28,7 @@ const data = {
 function sendDataToServer(survey, options) {
     //Write survey results into database
     console.log("Survey results: " + JSON.stringify(survey.data));
-    const data = {
+    const postData = {
         credentials: "include",
         method:      "POST",
         body: JSON.stringify({ survey: surveyUrl, data: survey.data }),
@@ -39,9 +39,9 @@ function sendDataToServer(survey, options) {
         },
     };
 
-    fetch('/data/api/usersurveys/', data)
+    fetch('/data/api/usersurveys/', postData)
         .then(res => res.json())
-        .then(data =>
+        .then(() =>
             options.showDataSavingSuccess()
         ).catch((err) => {
             console.log(err);
@@ -50,8 +50,8 @@ function sendDataToServer(survey, options) {
 }
 
 Promise.all([
-    fetch(surveyUrl, data).then(resp => resp.json()),
-    fetch(surveyUserUrl, data).then(resp => resp.json())]).
+    fetch(surveyUrl, getData).then(resp => resp.json()),
+    fetch(surveyUserUrl, getData).then(resp => resp.json())]).
     then((values) => {
         console.log(values);
 

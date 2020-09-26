@@ -107,13 +107,15 @@ class VocabList(LoginRequiredMixin, TemplateView):
 
         # FIXME: sql injection fun!!! ???
         # FIXME: this should allow for re-running the tool!
-        sql = f"""
-        select source_text from enrichers_zh_subtlexlookup sub
-            left join {username}.notes n on sub.source_text = n.word where n.word is null
-        order by sub.id
-        limit %(window_size)s
-        offset %(start)s
-        """
+        sql = fr"""
+            select source_text from enrichers_zh_subtlexlookup sub
+                left join {username}.notes n
+                    on sub.source_text = regexp_replace(regexp_replace(substring(n.flds from 0 for position(chr(31) in n.flds)), E'(?x)<[^>]*?(\s alt \s* = \s* ([\\'"]) ([^>]*?) \\2) [^>]*? >', E'\\3'), E'(?x)(< [^>]*? >)', '', 'g')
+            where regexp_replace(regexp_replace(substring(n.flds from 0 for position(chr(31) in n.flds)), E'(?x)<[^>]*?(\s alt \s* = \s* ([\\'"]) ([^>]*?) \\2) [^>]*? >', E'\\3'), E'(?x)(< [^>]*? >)', '', 'g') is null
+            order by sub.id
+            limit %(window_size)s
+            offset %(start)s
+        """  # noqa: E501
 
         page_words = None
         with connection.cursor() as cursor:

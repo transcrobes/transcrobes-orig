@@ -39,7 +39,6 @@ def _push_note_to_ankrobes(request, review_in):
     data = {}
     if request.method == "POST":
         logger.debug(f"Received to notes set_word_known: {request.data}")
-        print(f"{request.data=}")
         username = request.user.username
         with Ankrobes(username) as userdb:
             ci = userdb.clean_inputs(request.data)

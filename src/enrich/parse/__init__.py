@@ -52,7 +52,6 @@ class SocketCoreNLPProvider(ParseProvider):
         # TODO: we should either just iterate on the xml directly or tell xmltodict what
         # structure to use - double-handling is stupid
         m = xmltodict.parse(doc, dict_constructor=dict, attr_prefix="", cdata_key="originalText")
-        print(m)
         for s in m["doc"]["sentence"]:
             wInd = 1
             sentence = {"index": sInd, "tokens": []}

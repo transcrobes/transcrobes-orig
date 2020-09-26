@@ -143,7 +143,6 @@ class CoreNLP_EN_Enricher(Enricher):
         return True
 
     def _cleaned_sentence(self, sentence):
-        # print(f' the sentence be: {sentence}')
         out_string = ""
         for t in sentence["tokens"]:
             if self.is_clean(t):
