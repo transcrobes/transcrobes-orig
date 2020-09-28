@@ -9,8 +9,8 @@ const surveyId = root.dataset.surveyId;
 const username = root.dataset.username;
 //const
 
-const surveyUrl = `/data/api/surveys/${surveyId}/`;
-const surveyUserUrl = `/data/api/usersurveys/?user__username=${username}&survey__id=${surveyId}`;
+const surveyUrl = `/api/surveys/${surveyId}/`;
+const surveyUserUrl = `/api/usersurveys/?user__username=${username}&survey__id=${surveyId}`;
 
 const cookies = document.cookie.split('; ').reduce((acc, c) => {const [key, val] = c.split('='); acc[key] = val; return acc;}, {});
 
@@ -62,4 +62,4 @@ Promise.all([
         ReactDOM.render(
             <Survey.Survey model={model} onComplete={sendDataToServer}/>,
             root)
-    });
+   });

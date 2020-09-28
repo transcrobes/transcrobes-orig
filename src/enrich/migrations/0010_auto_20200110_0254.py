@@ -10,10 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveConstraint(
-            model_name="bingapilookup",
-            name="unique_trans",
-        ),
+        migrations.RemoveConstraint(model_name="bingapilookup", name="unique_trans",),
         migrations.AddConstraint(
             model_name="bingapilookup",
             constraint=models.UniqueConstraint(fields=("source_text", "from_lang", "to_lang"), name="unique_trans_lkp"),

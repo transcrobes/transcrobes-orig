@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    //survey: ['./src/assets/survey.app.jsx' ],
+    survey: ['./src/assets/survey.app.jsx' ],
     notrobes: ['./src/assets/notrobes.app.jsx']
   },
   output: {

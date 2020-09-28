@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-
 import logging
 import os
+from datetime import timedelta
 
 import djankiserv.unki
 from djankiserv.unki.database import PostgresAnkiDataModel
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = str(os.getenv("TRANSCROBES_DEBUG")).lower() == "true"
 
 INSTALLED_APPS = [
     # core
@@ -18,9 +21,14 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     # community
+    "registration",
+    "anymail",
+    "widget_tweaks",
+    # "simple_history",
     "rest_framework",
     "django_filters",
     "django_k8s",  # allows for a more elegant init-container to check for migrations and db availability
+    "django_prometheus",
     "django_extensions",
     "djankiserv.apps.DjankiservConfig",
     # local
@@ -46,8 +54,14 @@ REST_FRAMEWORK = {
 }
 CORS_ALLOW_ALL_ORIGINS = True  # TODO: think about restricting this
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+}
+
 # TODO: fix the csrf thing - is this fixed now???
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -56,6 +70,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "transcrobes.urls"
@@ -91,7 +106,6 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-# STATIC_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build/static/")
 STATIC_ROOT = "build/static"
 
 STATICFILES_DIRS = [
@@ -122,9 +136,13 @@ LOGGING = {
 if os.getenv("DJANGO_LOG_LEVEL"):
     logging.disable(os.getenv("DJANGO_LOG_LEVEL"))
 
+if DEBUG:
+    MIDDLEWARE.append("request_logging.middleware.LoggingMiddleware")
+    LOGGING["loggers"]["django.request"] = {"handlers": ["console"], "level": "DEBUG", "propagate": False}
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django_prometheus.db.backends.postgresql",
         "NAME": os.getenv("TC_POSTGRES_DATABASE", "transcrobes"),
         "USER": os.getenv("TC_POSTGRES_USER", "your_user"),
         "PASSWORD": os.getenv("TC_POSTGRES_PASSWORD", "your_password"),
@@ -132,7 +150,7 @@ DATABASES = {
         "PORT": os.getenv("TC_POSTGRES_PORT", "5432"),
     },
     "userdata": {
-        "ENGINE": os.getenv("TC_DJANKISERV_USERDB_ENGINE", "django.db.backends.postgresql"),
+        "ENGINE": os.getenv("TC_DJANKISERV_USERDB_ENGINE", "django_prometheus.db.backends.postgresql"),
         "NAME": os.getenv("TC_DJANKISERV_USERDB_NAME", "transcrobes"),
         "USER": os.getenv("TC_DJANKISERV_USERDB_USER", "your_user"),
         "PASSWORD": os.getenv("TC_DJANKISERV_USERDB_PASSWORD", "your_password"),
@@ -143,44 +161,62 @@ DATABASES = {
 
 djankiserv.unki.AnkiDataModel = PostgresAnkiDataModel
 
-# MUST be behind ssl proxy
-# FIXME - remove the 'or'
+PROMETHEUS_EXPORT_MIGRATIONS = False
+
+# MUST be behind ssl proxy for both security and for both djankiserv and brocrobes to work
 ALLOWED_HOSTS = " ".join(os.getenv("TRANSCROBES_PUBLIC_HOSTS", "*").split(",")).split()
+
+if os.getenv("TRANSCROBES_POD_IP"):
+    ALLOWED_HOSTS.append(os.getenv("TRANSCROBES_POD_IP"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("TRANSCROBES_SECRET_KEY", "not_a_very_good_secret")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.getenv("TRANSCROBES_DEBUG")).lower() == "true"
-
 # pilot
-LOGIN_URL = "login"
-LOGOUT_URL = "logout"
+LOGIN_URL = "/accounts/login/"
+LOGOUT_URL = "/accounts/logout/"
 LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
 INTERNAL_IPS = ("127.0.0.1",)
 
 # if you change this, it must also be changed in the images/static/Dockerfile
 STATIC_ROOT = "build/static"
 
+# Email: anymail via mailgun and defaults
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.emailbackend, or...
+ANYMAIL = {
+    "MAILGUN_API_KEY": os.getenv("TRANSCROBES_MAILGUN_API_KEY"),  # noqa:F405
+    "DEBUG_API_REQUESTS": str(os.getenv("TRANSCROBES_DEBUG", "false")).lower() == "true",  # noqa:F405
+}
+
+DEFAULT_FROM_EMAIL = os.getenv("TRANSCROBES_DEFAULT_FROM_EMAIL")
+SERVER_EMAIL = os.getenv("TRANSCROBES_SERVER_EMAIL")
+
+# registration
+ACCOUNT_ACTIVATION_DAYS = int(os.getenv("TRANSCROBES_ACCOUNT_ACTIVATION_DAYS", "1"))  # One day
+REGISTRATION_OPEN = str(os.getenv("TRANSCROBES_REGISTRATION_OPEN")).lower() == "true"
+REGISTRATION_AUTO_LOGIN = True
+
+## DJANKISERV
 # This is required as Django will add a slash and redirect to that by default, and djankiserv doesn't support that
 APPEND_SLASH = False
 
 DJANKISERV_SYNC_URLBASE = "sync/"  # this is not actually currently configurable, due to hardcoding in the clients
 DJANKISERV_SYNC_MEDIA_URLBASE = "msync/"  # this is not actually configurable, due to hardcoding in the clients
-DJANKISERV_API_URLBASE = "dapi/"
-
-DJANKISERV_DATA_ROOT = os.getenv("DJANKISERV_DATA_ROOT", "/tmp")
-
-# FIXME: change the envvar
-DJANKISERV_DATA_ROOT = os.getenv("TRANSCROBES_ANKROBES_DATA_ROOT", "/tmp")
+DJANKISERV_API_URLBASE = "dapi/"  # TODO: turn this into an envvar
+DJANKISERV_DATA_ROOT = os.getenv("TRANSCROBES_DJANKISERV_DATA_ROOT", "/tmp")
 
 # DEBUG STUFF
-DJANKISERV_DEBUG = os.getenv("DJANKISERV_DEBUG", "False").lower() == "true"
+DJANKISERV_DEBUG = str(os.getenv("DJANKISERV_DEBUG", os.getenv("TRANSCROBES_DEBUG", "false"))).lower() == "true"
 
 DJANKISERV_GENERATE_TEST_ASSETS = False
 DJANKISERV_GENERATE_TEST_ASSETS_DIR = "/tmp/asrv/"
 TEST_RUNNER = "tests.CleanupTestRunner"
+
+KAFKA_BROKER = os.getenv("TRANSCROBES_KAFKA_BROKER", "localhost:9092")
+KAFKA_CONSUMER_TIMEOUT_MS = int(os.getenv("TRANSCROBES_KAFKA_CONSUMER_TIMEOUT_MS", "5000"))
+KAFKA_STATS_LOOP_SLEEP = int(os.getenv("TRANSCROBES_KAFKA_STATS_LOOP_SLEEP", "10"))
+KAFKA_MAX_POLL_RECORDS = int(os.getenv("TRANSCROBES_KAFKA_MAX_POLL_RECORDS", "500"))  # 500 is default
 
 # From here the values are sensible and can be kept if desired
 

@@ -37,9 +37,6 @@ class Migration(migrations.Migration):
                     models.DateTimeField(blank=True, help_text="keep empty for indefinite activation", null=True),
                 ),
             ],
-            options={
-                "ordering": ("status", "-activate_date"),
-                "abstract": False,
-            },
+            options={"ordering": ("status", "-activate_date"), "abstract": False},
         ),
     ]

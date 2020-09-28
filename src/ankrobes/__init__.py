@@ -121,19 +121,8 @@ class Ankrobes:
 
         return json_notes
 
-    @staticmethod
-    def _search_regex(word):
-        # construct a regexp that will match words mixed in with html
-        regexp = "^(?:<[^>]+>)*"
-        for i in word:
-            regexp += "{}(?:<[^>]+>)*".format(i)
-        regexp += "$"
-        return regexp
-
     def _cards(self, word, deck_name="transcrobes"):
         logging.debug("Looking for card ids for word '%s'", word)
-
-        regexp = self._search_regex(word)
 
         sql = f"""
         SELECT c.id as card_id, n.id as note_id, c.type as type
@@ -141,10 +130,10 @@ class Ankrobes:
                 INNER JOIN {self._username}.cards c on c.did = a.key::bigint
                 INNER JOIN {self._username}.notes n on c.nid = n.id
             WHERE json_extract_path_text(a.value, 'name') = %(deck_name)s
-                AND substring(n.flds from 0 for position(chr(31) in n.flds)) ~* %(regexp)s
+                AND simplified(n.flds) = %(word)s
             """
 
-        res = self.col.db.execute(sql, deck_name=deck_name, regexp=regexp)
+        res = self.col.db.execute(sql, deck_name=deck_name, word=word)
         j = res.fetchall()
         if not j:
             return {}
@@ -159,19 +148,15 @@ class Ankrobes:
 
     def _card_types(self, word, deck_name="transcrobes"):
         logging.debug("Looking for card types for word '%s'", word)
-
-        # construct a regexp that will match words mixed in with html
-        regexp = self._search_regex(word)
-
         sql = f"""
         SELECT count(0) as icount, n.id as note_id, c.type as type
             FROM json_each((SELECT decks FROM {self._username}.col)::json) a
                 INNER JOIN {self._username}.cards c on c.did = a.key::bigint
                 INNER JOIN {self._username}.notes n on c.nid = n.id
             WHERE json_extract_path_text(a.value, 'name') = %(deck_name)s
-                AND substring(n.flds from 0 for position(chr(31) in n.flds)) ~* %(regexp)s
+                AND simplified(n.flds) = %(word)s
             GROUP BY n.id, c.type;"""
-        res = self.col.db.execute(sql, deck_name=deck_name, regexp=regexp)
+        res = self.col.db.execute(sql, deck_name=deck_name, word=word)
         j = res.fetchall()
         if not j:
             return {}  # or maybe {0, {0: 0}}  # System doesn't know it at all

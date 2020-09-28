@@ -10,16 +10,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterIndexTogether(name="bingapilookup", index_together={("source_text", "from_lang", "to_lang")},),
         migrations.AlterIndexTogether(
-            name="bingapilookup",
-            index_together={("source_text", "from_lang", "to_lang")},
+            name="bingapitranslation", index_together={("source_text", "from_lang", "to_lang")},
         ),
         migrations.AlterIndexTogether(
-            name="bingapitranslation",
-            index_together={("source_text", "from_lang", "to_lang")},
-        ),
-        migrations.AlterIndexTogether(
-            name="bingapitransliteration",
-            index_together={("source_text", "from_lang", "to_lang")},
+            name="bingapitransliteration", index_together={("source_text", "from_lang", "to_lang")},
         ),
     ]

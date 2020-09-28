@@ -83,8 +83,7 @@ class Migration(migrations.Migration):
             constraint=models.UniqueConstraint(fields=("user", "grammar_rule"), name="user_answer"),
         ),
         migrations.AlterModelOptions(
-            name="sourcetext",
-            options={"verbose_name": "source_text", "verbose_name_plural": "source_texts"},
+            name="sourcetext", options={"verbose_name": "source_text", "verbose_name_plural": "source_texts"},
         ),
         migrations.CreateModel(
             name="Sentence",
@@ -109,25 +108,15 @@ class Migration(migrations.Migration):
                 ("source_subid", models.IntegerField()),
             ],
         ),
-        migrations.RemoveConstraint(
-            model_name="usergrammarrule",
-            name="user_answer",
+        migrations.RemoveConstraint(model_name="usergrammarrule", name="user_answer",),
+        migrations.AddField(
+            model_name="grammarrule", name="hsk_sub_id", field=models.CharField(blank=True, max_length=1000, null=True),
         ),
         migrations.AddField(
-            model_name="grammarrule",
-            name="hsk_sub_id",
-            field=models.CharField(blank=True, max_length=1000, null=True),
-        ),
-        migrations.AddField(
-            model_name="grammarrule",
-            name="topic_id",
-            field=models.IntegerField(default=1),
-            preserve_default=False,
+            model_name="grammarrule", name="topic_id", field=models.IntegerField(default=1), preserve_default=False,
         ),
         migrations.AlterField(
-            model_name="source",
-            name="sub_name",
-            field=models.CharField(blank=True, max_length=100, null=True),
+            model_name="source", name="sub_name", field=models.CharField(blank=True, max_length=100, null=True),
         ),
         migrations.AddConstraint(
             model_name="usergrammarrule",
@@ -139,24 +128,15 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="data.Source"),
         ),
         migrations.AddField(
-            model_name="sentence",
-            name="grammar_rules",
-            field=models.ManyToManyField(to="data.GrammarRule"),
+            model_name="sentence", name="grammar_rules", field=models.ManyToManyField(to="data.GrammarRule"),
         ),
         migrations.AddField(
             model_name="sentence",
             name="text",
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="data.SText"),
         ),
-        migrations.RenameField(
-            model_name="sentence",
-            old_name="order",
-            new_name="sorder",
-        ),
-        migrations.AlterModelOptions(
-            name="sourcetext",
-            options={},
-        ),
+        migrations.RenameField(model_name="sentence", old_name="order", new_name="sorder",),
+        migrations.AlterModelOptions(name="sourcetext", options={},),
         migrations.CreateModel(
             name="UserTextEvaluation",
             fields=[
@@ -167,30 +147,12 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name="grammarrule",
-            name="help_url",
-            field=models.CharField(blank=True, max_length=1000, null=True),
+            model_name="grammarrule", name="help_url", field=models.CharField(blank=True, max_length=1000, null=True),
         ),
-        migrations.AddField(
-            model_name="usergrammarrule",
-            name="nb_checked",
-            field=models.IntegerField(default=0),
-        ),
-        migrations.AddField(
-            model_name="usergrammarrule",
-            name="nb_seen",
-            field=models.IntegerField(default=0),
-        ),
-        migrations.AddField(
-            model_name="usergrammarrule",
-            name="nb_studied",
-            field=models.IntegerField(default=0),
-        ),
-        migrations.AlterField(
-            model_name="usergrammarrule",
-            name="is_known",
-            field=models.BooleanField(null=True),
-        ),
+        migrations.AddField(model_name="usergrammarrule", name="nb_checked", field=models.IntegerField(default=0),),
+        migrations.AddField(model_name="usergrammarrule", name="nb_seen", field=models.IntegerField(default=0),),
+        migrations.AddField(model_name="usergrammarrule", name="nb_studied", field=models.IntegerField(default=0),),
+        migrations.AlterField(model_name="usergrammarrule", name="is_known", field=models.BooleanField(null=True),),
         migrations.AddField(
             model_name="usergrammarrule",
             name="last_checked",
@@ -219,18 +181,13 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddConstraint(
-            model_name="userword",
-            constraint=models.UniqueConstraint(fields=("user", "word"), name="user_word"),
+            model_name="userword", constraint=models.UniqueConstraint(fields=("user", "word"), name="user_word"),
         ),
         migrations.AddField(
-            model_name="usergrammarrule",
-            name="nb_seen_since_last_check",
-            field=models.IntegerField(default=0),
+            model_name="usergrammarrule", name="nb_seen_since_last_check", field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name="usergrammarrule",
-            name="nb_seen_since_last_study",
-            field=models.IntegerField(default=0),
+            model_name="usergrammarrule", name="nb_seen_since_last_study", field=models.IntegerField(default=0),
         ),
         migrations.AddField(
             model_name="usertextevaluation",
@@ -238,25 +195,15 @@ class Migration(migrations.Migration):
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
         migrations.AddField(
-            model_name="userword",
-            name="nb_seen_since_last_check",
-            field=models.IntegerField(default=0),
+            model_name="userword", name="nb_seen_since_last_check", field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name="usergrammarrule",
-            name="last_checked",
-            field=models.DateTimeField(null=True),
+            model_name="usergrammarrule", name="last_checked", field=models.DateTimeField(null=True),
         ),
         migrations.AlterField(
-            model_name="usergrammarrule",
-            name="last_studied",
-            field=models.DateTimeField(null=True),
+            model_name="usergrammarrule", name="last_studied", field=models.DateTimeField(null=True),
         ),
-        migrations.AlterField(
-            model_name="userword",
-            name="last_checked",
-            field=models.DateTimeField(null=True),
-        ),
+        migrations.AlterField(model_name="userword", name="last_checked", field=models.DateTimeField(null=True),),
         migrations.AlterField(
             model_name="usertextevaluation",
             name="difficulty",
@@ -294,11 +241,7 @@ class Migration(migrations.Migration):
             model_name="sentencewords",
             constraint=models.UniqueConstraint(fields=("sentence", "word", "index", "pos"), name="sentence_word"),
         ),
-        migrations.AddField(
-            model_name="userword",
-            name="is_known",
-            field=models.BooleanField(null=True),
-        ),
+        migrations.AddField(model_name="userword", name="is_known", field=models.BooleanField(null=True),),
         migrations.AddConstraint(
             model_name="grammarrule",
             constraint=models.UniqueConstraint(fields=("hsk_id", "hsk_sub_id"), name="hsk_id_sub_id"),

@@ -1,0 +1,37 @@
+<!-- accounts/templates/registration/activation.html -->
+{% extends 'data/unauth-base.html' %}
+
+{% block title %}Account activation failed{% endblock %}
+
+{% block content %}
+<div class="card o-hidden border-0 shadow-lg my-5">
+  <div class="card-body p-0">
+    <!-- Nested Row within Card Body -->
+    <div class="row">
+      <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+      <div class="col-lg-7">
+        <div class="p-5">
+          <div class="text-center">
+            <h1 class="h4 text-gray-900 mb-4">Transcrobes account activation failed</h1>
+          </div>
+          <div class="text-center">
+            <p>Sorry, it looks like activation of your account failed. Please contact Anton via email on anton@transcrob.es and he will help you finish the process!</p>
+          </div>
+          <div class="text-center">
+            <p>{{ activation_error }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% comment %}
+**registration/activate.html**
+
+Used if account activation fails. With the default setup, has the following context:
+
+``activation_key``
+    The activation key used during the activation attempt.
+{% endcomment %}

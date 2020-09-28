@@ -8,12 +8,13 @@ from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import ActivatorModel, TimeStampedModel, TitleSlugDescriptionModel
 
-from enrich.models import BingAPILookup
+from enrich.models import BingAPILookup, BingAPITranslation
 
 
 class Survey(ActivatorModel, TitleSlugDescriptionModel, TimeStampedModel):
     survey_json = models.JSONField()
     users = models.ManyToManyField(User, through="UserSurvey")
+    is_obligatory = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title}"
@@ -98,10 +99,7 @@ class UserTextEvaluation(models.Model):
         (HARD, "Hard"),
         (VERY_HARD, "Very hard"),
     ]
-    difficulty = models.IntegerField(
-        choices=DIFFICULTY_CHOICES,
-        default=OK,
-    )
+    difficulty = models.IntegerField(choices=DIFFICULTY_CHOICES, default=OK,)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.ForeignKey(SText, on_delete=models.CASCADE)
     date_read = models.DateTimeField(default=timezone.now)
@@ -157,13 +155,25 @@ class UserSentenceEvaluation(models.Model):
         (HARD, "Hard"),
         (VERY_HARD, "Very hard"),
     ]
-    difficulty = models.IntegerField(
-        choices=DIFFICULTY_CHOICES,
-        default=OK,
-    )
+    difficulty = models.IntegerField(choices=DIFFICULTY_CHOICES, default=OK,)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     sentence = models.ForeignKey(Sentence, on_delete=models.CASCADE)
     date_read = models.DateTimeField(default=timezone.now)
+
+
+class UserSentence(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    # FIXME: this is a horrible hack due to the fact that we know all sentences get translated on Bing
+    # so they will be checked in all analyses. This will likely cause huge issues later and a
+    # bespoke class/table for this should be created!!!
+    sentence = models.ForeignKey(BingAPITranslation, on_delete=models.CASCADE)
+
+    nb_seen = models.IntegerField(default=0)
+    last_seen = models.DateTimeField(default=timezone.now)
+    nb_seen_since_last_check = models.IntegerField(default=0)  # FIXME: done in a trigger???
+
+    nb_translated = models.IntegerField(default=0)
+    last_translated = models.DateTimeField(default=timezone.now)
 
 
 class UserWord(models.Model):
@@ -193,8 +203,8 @@ class UserWord(models.Model):
     last_checked = models.DateTimeField(null=True)
     # FIXME: these are intended to come from sentence (see 'sids' in the view translations, NOT from normal
     # lookups, which are what the *_checked correspond to
-    # nb_translated = models.IntegerField(default=0)
-    # last_translated = models.DateTimeField(default=timezone.now)
+    nb_translated = models.IntegerField(null=True)
+    last_translated = models.DateTimeField(null=True)
 
     class Meta:
         constraints = [

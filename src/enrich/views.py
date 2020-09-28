@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from ankrobes import Ankrobes
 from enrich.data import managers
-from utils import get_username_lang_pair, note_format
+from utils import note_format
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +27,11 @@ def enrich_json(request):
     logger.debug("Received to enrich json: %s", request.data)
     outdata = {}
     if request.method == "POST":
-        username, lang_pair = get_username_lang_pair(request)
-        manager = managers.get(lang_pair)
+        manager = managers.get(request.user.transcrober.lang_pair())
         if not manager:
             return Response(
-                f"Server does not support language pair {lang_pair}", status=status.HTTP_501_NOT_IMPLEMENTED
+                f"Server does not support language pair {request.user.transcrober.lang_pair()}",
+                status=status.HTTP_501_NOT_IMPLEMENTED,
             )
         text = request.data.get("data")
         if not text:
@@ -40,7 +40,7 @@ def enrich_json(request):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        outdata = manager.enricher().enrich_to_json(text, username, manager)
+        outdata = manager.enricher().enrich_to_json(text, request.user, manager)
 
     return do_response(Response(outdata))
 
@@ -103,12 +103,14 @@ def enrich_pilot_json(request):
     logger.debug("Received to enrich json: %s", request.body.decode("utf-8"))
     outdata = {}
     if request.method == "POST":
-        username, lang_pair = get_username_lang_pair(request)
-        manager = managers.get(lang_pair)
+        manager = managers.get(request.user.transcrober.lang_pair())
         if not manager:
-            return HttpResponse(f"Server does not support language pair {lang_pair}", status=501)
+            return Response(
+                f"Server does not support language pair {request.user.transcrober.lang_pair()}",
+                status=status.HTTP_501_NOT_IMPLEMENTED,
+            )
 
-        outdata = manager.enricher().enrich_to_json(request.body.decode("utf-8"), username, manager)
+        outdata = manager.enricher().enrich_to_json(request.body.decode("utf-8"), request.user, manager)
 
     return do_response(JsonResponse(outdata))
 
@@ -120,10 +122,11 @@ def text_to_std_parsed(request):
 
     outdata = {}
     if request.method == "POST":
-        _username, lang_pair = get_username_lang_pair(request)
-        manager = managers.get(lang_pair)
+        manager = managers.get(request.user.transcrober.lang_pair())
         if not manager:
-            return HttpResponse(f"Server does not support language pair {lang_pair}", status=501)
+            return HttpResponse(
+                f"Server does not support language pair {request.user.transcrober.lang_pair()}", status=501
+            )
 
         logging.info(f"{manager.from_lang} to {manager.to_lang} with {manager.parser().__class__.__name__}")
         outdata = json.dumps(manager.parser().parse(data), ensure_ascii=False)
@@ -132,39 +135,22 @@ def text_to_std_parsed(request):
 
 
 @api_view(["POST", "OPTIONS"])
-def bing_api(request, _method):
-    # FIXME: what am I supposed to do here?
-    raise Exception("this is wrong, its supposed to call the api")
-
-    # username, lang_pair = get_username_lang_pair(request)
-    # manager = managers.get(lang_pair)
-    # if not manager:
-    #     return HttpResponse(f"Server does not support language pair {lang_pair}", status=501)
-
-    # response = HttpResponse(manager.default().translate(request.body.decode("utf-8")))
-    # response["Access-Control-Allow-Origin"] = "*"
-    # response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
-    # return response
-
-
-@api_view(["POST", "OPTIONS"])
 def lemma_defs(request):
     data = request.body.decode("utf-8")
     logger.debug("Received text: %s to transform to model", data)
 
     if request.method == "POST":
-        _username, lang_pair = get_username_lang_pair(request)
-        manager = managers.get(lang_pair)
+        manager = managers.get(request.user.transcrober.lang_pair())
         if not manager:
-            return HttpResponse(f"Server does not support language pair {lang_pair}", status=501)
+            return HttpResponse(
+                f"Server does not support language pair {request.user.transcrober.lang_pair()}", status=501
+            )
 
         logging.info(f"{manager.from_lang} to {manager.to_lang} with {manager.parser().__class__.__name__}")
 
         # FIXME: iterate on all lookup providers for each lemma returned (plus the original?)
         w = request.body.decode("utf-8")
         lemmas = manager.word_lemmatizer().lemmatize(w)
-        # print(f"lemmas are: {lemmas}")
-        # print(f"count of secondary is: {len(manager.secondary()[0])}")
         data = {}
         for lemma in lemmas:
             t = {"word": lemma, "pos": "NN", "lemma": lemma}  # fake pos, here we don't care

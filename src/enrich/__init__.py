@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-
 import logging
 from abc import ABC, abstractmethod
 
+import stats
 from ankrobes import Ankrobes
 
 default_app_config = "enrich.apps.EnrichConfig"
@@ -45,27 +45,30 @@ class Enricher(ABC):
         text += sentence["tokens"][-1].get("after", "")
         return text
 
-    def _enrich_model(self, model, username, manager):
-        userdb = Ankrobes(username)
+    def _enrich_model(self, model, user, manager):
+        userdb = Ankrobes(user.username)
+        token_stats = {}
 
         for s in model["sentences"]:
             self._add_transliterations(s, manager.transliterator())
 
             logger.debug("Looking for tokens to translate in %s", s)
-
-            s["translation"], s["alignment"] = manager.default().translate(self._text_from_sentence(s).strip())
+            original_sentence = self._text_from_sentence(s).strip()
+            s["translation"], s["alignment"] = manager.default().translate(original_sentence)
+            s["cleaned"] = original_sentence  # used to be _cleaned_sentence
 
             for t in s["tokens"]:
                 w = t["word"]
-                if not self.is_clean(t):
-                    continue
-
-                if not self.needs_enriching(t):
+                if not self.is_clean(t) or not self.needs_enriching(t):
                     continue
 
                 # From here we attempt translation and create ankrobes entries
                 ank_entry = userdb.sanitise_ankrobes_entry(userdb.get_word(w))
                 t["ankrobes_entry"] = ank_entry
+                if w not in token_stats:
+                    token_stats[w] = [0, bool(ank_entry)]
+                token_stats[w][0] += 1
+
                 t["definitions"] = {}
                 best = manager.default().get_standardised_defs(t)
                 if best:
@@ -91,6 +94,8 @@ class Enricher(ABC):
                 for p in manager.metadata():
                     t["stats"].append(p.metas_as_string(w))
 
+        return model, token_stats
+
     ##
     ## Public methods
     ##
@@ -104,10 +109,12 @@ class Enricher(ABC):
             return False
         return True
 
-    def enrich_to_json(self, html, username, manager):
-        model = manager.parser().parse(html)
-
+    def enrich_to_json(self, html, user, manager):
         logging.debug("Attempting to enrich: '%s'", html)
-        self._enrich_model(model, username, manager)
+
+        model = manager.parser().parse(html)
+        model, token_stats = self._enrich_model(model, user, manager)
+
+        stats.KAFKA_PRODUCER.send("vocab", {"user_id": user.id, "tstats": token_stats})
 
         return model

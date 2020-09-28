@@ -1,0 +1,25 @@
+<!-- templates/data/survey.html-->
+{% extends 'data/base.html' %}
+{% load static %}
+
+{% block title %}Survey {{ survey.name }}{% endblock %}
+
+{% block extrajs %}
+
+{{ survey.survey_json|json_script:"surveyTemplate" }}
+{{ user_survey.data|json_script:"userSurvey" }}
+
+<script type="text/javascript">
+const surveyTemplate = JSON.parse(document.getElementById('surveyTemplate').textContent);
+const userSurvey = JSON.parse(document.getElementById('userSurvey').textContent);
+
+</script>
+
+<script src="{% static 'survey-bundle.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+  <div id="root" data-survey-id="{{ survey.id }}" data-user-id="{{ user }}" data-usersurvey-id="{{ user_survey.id }}" />
+
+{% endblock %}

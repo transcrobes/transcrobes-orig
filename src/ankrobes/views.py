@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.utils.html import strip_tags
 from rest_framework.decorators import api_view
 
+import stats
 from ankrobes import Ankrobes
 from enrich.data import managers
 from utils import default_definition, get_username_lang_pair
@@ -35,11 +36,11 @@ def set_word(request):
 
 
 def _push_note_to_ankrobes(request, review_in):
-    # raise Exception('just for fun')
     data = {}
     if request.method == "POST":
         logger.debug(f"Received to notes set_word_known: {request.data}")
         username = request.user.username
+
         with Ankrobes(username) as userdb:
             ci = userdb.clean_inputs(request.data)
             status = userdb.set_word_known(
@@ -48,6 +49,15 @@ def _push_note_to_ankrobes(request, review_in):
                 meanings=ci["meanings"],
                 tags=ci["tags"],
                 review_in=review_in,
+            )
+
+            stats.KAFKA_PRODUCER.send(
+                "actions",
+                {
+                    "user_id": request.user.id,
+                    "type": "add_note" if review_in == 0 else "set_word_known",
+                    "data": {"target_word": ci["simplified"], "target_sentence": ""},
+                },
             )
 
         data = {"status": "ok" if status else "ko"}
@@ -61,9 +71,15 @@ def _push_note_to_ankrobes(request, review_in):
     return response
 
 
-# PROD end
+@api_view(["POST", "OPTIONS"])
+def get_word(request):
+    with Ankrobes(request.user.username) as userdb:
+        w = request.data
+        data = userdb.get_word(w)
+        data = Ankrobes.sanitise_ankrobes_entry(data)
+        return JsonResponse(data, safe=False)
 
-# BOOTSTRAP testing start
+
 @api_view(["POST", "OPTIONS"])
 def add_words_to_ankrobes(request):
     data = {}
@@ -104,7 +120,7 @@ def add_words_to_ankrobes(request):
     return response
 
 
-# BOOTSTRAP testing end
+# PROD end
 
 # TESTING start
 @api_view(["POST", "OPTIONS"])
@@ -139,15 +155,6 @@ def helloapi(request):
     response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type, Authorization"
 
     return response
-
-
-@api_view(["POST", "OPTIONS"])
-def get_word(request):
-    with Ankrobes(request.user.username) as userdb:
-        w = request.data
-        data = userdb.get_word(w)
-        data = Ankrobes.sanitise_ankrobes_entry(data)
-        return JsonResponse(data, safe=False)
 
 
 # TESTING end

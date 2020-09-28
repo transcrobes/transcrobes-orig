@@ -11,7 +11,8 @@ def asset_path(package, resource):
 
 class CleanupTestRunner(DiscoverRunner):
     def teardown_databases(self, old_config, **kwargs):
-        connections["userdata"].close()
+        if "userdata" in connections:
+            connections["userdata"].close()
         connection.close()
 
         super().teardown_databases(old_config, **kwargs)

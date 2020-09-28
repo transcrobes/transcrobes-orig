@@ -29,9 +29,6 @@ class Migration(migrations.Migration):
                 ("survey", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="data.survey")),
                 ("user", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-                "get_latest_by": "modified",
-                "abstract": False,
-            },
+            options={"get_latest_by": "modified", "abstract": False},
         ),
     ]

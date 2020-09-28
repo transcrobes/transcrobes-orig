@@ -8,4 +8,10 @@ if [ -f "$FILE" ]; then
     source $FILE
 fi
 
-python src/manage.py $@
+if [ -f "manage.py" ]; then
+    echo "Running manage.py at the root"
+    python manage.py $@
+else
+    echo "Running manage.py in the src directory"
+    python src/manage.py $@
+fi

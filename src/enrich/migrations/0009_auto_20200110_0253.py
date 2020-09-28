@@ -10,16 +10,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterIndexTogether(
-            name="bingapilookup",
-            index_together=set(),
-        ),
-        migrations.AlterIndexTogether(
-            name="bingapitranslation",
-            index_together=set(),
-        ),
-        migrations.AlterIndexTogether(
-            name="bingapitransliteration",
-            index_together=set(),
-        ),
+        migrations.AlterIndexTogether(name="bingapilookup", index_together=set(),),
+        migrations.AlterIndexTogether(name="bingapitranslation", index_together=set(),),
+        migrations.AlterIndexTogether(name="bingapitransliteration", index_together=set(),),
     ]

@@ -12,12 +12,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterModelOptions(
-            name="usersurvey",
-            options={},
-        ),
-        migrations.AlterUniqueTogether(
-            name="usersurvey",
-            unique_together={("user", "survey")},
-        ),
+        migrations.AlterModelOptions(name="usersurvey", options={},),
+        migrations.AlterUniqueTogether(name="usersurvey", unique_together={("user", "survey")},),
     ]

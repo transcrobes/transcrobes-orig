@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from djankiserv.unki.collection import Collection
+from libgravatar import Gravatar
 
 
 class Transcrober(models.Model):
@@ -17,6 +18,13 @@ class Transcrober(models.Model):
 
     def lang_pair(self):
         return f"{self.from_lang}:{self.to_lang}"
+
+    def get_gravatar(self):
+        return Gravatar(self.user.email).get_image()[5:]  # remove the 'http:'
+
+    def get_full_name(self):
+        full_name = f"{self.user.first_name} {self.user.last_name}"
+        return self.user.username if not full_name.strip() else full_name
 
     def init_collection(self):
         # FIXME: these files are currently for Chinese, need to make generic

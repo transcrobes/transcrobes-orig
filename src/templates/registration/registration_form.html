@@ -1,0 +1,63 @@
+<!-- accounts/templates/django-registration/registration_form.html -->
+{% extends 'data/unauth-base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}New registration{% endblock %}
+
+{% block content %}
+<div class="card o-hidden border-0 shadow-lg my-5">
+  <div class="card-body p-0">
+    <!-- Nested Row within Card Body -->
+    <div class="row">
+      <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+      <div class="col-lg-7">
+        <div class="p-5">
+          <div class="text-center">
+            <h1 class="h4 text-gray-900 mb-4">Create a Transcrobes account!</h1>
+          </div>
+          <form method="post" class="user">
+            {% csrf_token %}
+            <div class="form-group">
+			  {% render_field form.username class+="form-control form-control-user" aria-describedby="usernameHelp" placeholder="Username" %}
+            </div>
+            <div class="form-group">
+              {{ form.username.help_text }}
+            </div>
+            {% if form.username.errors %}
+            <div class="form-group form-error">
+              {{ form.username.errors }}
+            </div>
+            {% endif %}
+            <div class="form-group">
+			  {% render_field form.email class+="form-control form-control-user" aria-describedby="emailHelp" placeholder="Email" %}
+            </div>
+            <div class="form-group">
+				{% render_field form.password1 class+="form-control form-control-user" aria-describedby="passwordHelp" placeholder="Password"%}
+            </div>
+            <div class="form-group">
+              {{ form.password1.help_text }}
+            </div>
+            {% if form.password1.errors %}
+            <div class="form-group form-error">
+              {{ form.password1.errors }}
+            </div>
+            {% endif %}
+            <div class="form-group">
+				{% render_field form.password2 class+="form-control form-control-user" aria-describedby="passwordHelp" placeholder="Repeat Password"%}
+            </div>
+            <button type="submit" class="btn btn-primary btn-user btn-block">Register Account</button>
+          </form>
+          <hr>
+          <div class="text-center">
+            <a class="small" href="{% url 'password_reset' %}">Forgot Password?</a>
+          </div>
+          <div class="text-center">
+            <a class="small" href="{% url 'login' %}">Already have an account? Login!</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

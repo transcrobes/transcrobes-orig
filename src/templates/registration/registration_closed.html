@@ -1,0 +1,25 @@
+<!-- accounts/templates/django-registration/registration_disallowed.html -->
+{% extends 'data/unauth-base.html' %}
+
+{% block title %}Registration closed{% endblock %}
+
+{% block content %}
+<div class="card o-hidden border-0 shadow-lg my-5">
+  <div class="card-body p-0">
+    <!-- Nested Row within Card Body -->
+    <div class="row">
+      <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+      <div class="col-lg-7">
+        <div class="p-5">
+          <div class="text-center">
+            <h1 class="h4 text-gray-900 mb-4">Transcrobes registration closed</h1>
+          </div>
+          <div class="text-center">
+            <p>Sorry, Transcrobes is not currently accepting new registrations. Because the live service is managed as a personally-funded PhD research project by the PhD candidate (Anton MELSER) and the system uses quite a lot of computing resources, it is not currently possible to allow unlimited numbers of learners to use the platform. If you are interested in taking part in the research, please contact me (Anton) via email on anton@transcrob.es and I may be able to squeeze you in if you can show you are motivated enough!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

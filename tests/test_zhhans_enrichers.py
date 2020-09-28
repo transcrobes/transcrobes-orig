@@ -5,6 +5,7 @@ import os
 import pkgutil
 import re
 import sys
+from unittest import mock
 
 from django.contrib.auth.models import User
 from rest_framework.test import APITransactionTestCase
@@ -15,6 +16,7 @@ from enrich.apis import bing as bing_api
 from enrich.data import managers
 
 # for finding assets path via the module
+from .assets import zhhans_enrichers  # noqa: F401  # pylint: disable=W0611
 from .assets.enrichers import notes  # noqa: F401  # pylint: disable=W0611
 from .assets.enrichers.guess import after, before  # noqa: F401  # pylint: disable=W0611
 
@@ -209,12 +211,19 @@ class CoreNLP_ZHHANS_EnricherMixin(VCRMixin):
 
 
 class FullEnrichMixin(VCRMixin):
-    def test_enrich_to_json(self):
+    @mock.patch("stats.KafkaProducer")
+    def test_enrich_to_json(self, MockKafkaProducer):
+        """
+            This is the "big daddy" test that takes many seconds and tests a signficant proportion
+            of the actively used code in the project. If this test passes, the project should basically "work"
+            and if it doesn't, nothing useful will.
+        """
         intxt_txt = pkgutil.get_data("tests.assets.enrichers.nlp", "in.txt").decode("utf-8")
 
         # test with no known entries
-        model = self.manager.enricher().enrich_to_json(intxt_txt, self.user.username, self.manager)
+        model = self.manager.enricher().enrich_to_json(intxt_txt, self.user, self.manager)
         enriched = pkgutil.get_data("tests.assets.enrichers.bing", "enriched_model_no_notes.json").decode("utf-8")
+
         self.assertEqual(model, json.loads(enriched))
 
         notes_dir = os.path.dirname(sys.modules["tests.assets.enrichers.notes"].__file__)
@@ -230,11 +239,26 @@ class FullEnrichMixin(VCRMixin):
                         review_in=0,
                     )
 
-        model = self.manager.enricher().enrich_to_json(intxt_txt, self.user.username, self.manager)
+        model = self.manager.enricher().enrich_to_json(intxt_txt, self.user, self.manager)
         enriched_notes = pkgutil.get_data("tests.assets.enrichers.bing", "enriched_model_with_notes.json").decode(
             "utf-8"
         )
         self.assertEqual(model, json.loads(enriched_notes))
+
+        # Here we can't just compare the calls, as there will be a user_id in there. This user_id
+        # will change depending on when in the test run the users are created, so will break tests
+        # with reordering them, adding, etc. Here we go into the call and pull out the invariant bit
+        self.assertEqual("vocab", MockKafkaProducer.mock_calls[1][1][0])
+        self.assertEqual(
+            MockKafkaProducer.mock_calls[1][1][1]["tstats"],
+            json.loads(pkgutil.get_data("tests.assets.zhhans_enrichers", "stats_no_notes.json").decode("utf-8")),
+        )
+
+        self.assertEqual("vocab", MockKafkaProducer.mock_calls[2][1][0])
+        self.assertEqual(
+            MockKafkaProducer.mock_calls[2][1][1]["tstats"],
+            json.loads(pkgutil.get_data("tests.assets.zhhans_enrichers", "stats_w_notes.json").decode("utf-8")),
+        )
 
 
 class SetupAPITransactionTestCase(APITransactionTestCase):

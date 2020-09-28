@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Notrobes from "./components/notrobes.jsx";
-
+import "./css/notrobes.css";
 
 const root = document.getElementById("root");
 

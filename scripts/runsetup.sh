@@ -1,5 +1,3 @@
-# FIXME: including subdirs of an already included package is a Bad Thing TM, don't
-
 export PYTHONPATH=$PYTHONPATH:src
 
 # execute dev workstation-specific init (like making sure the db is running, etc.)

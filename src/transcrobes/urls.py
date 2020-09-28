@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from django.urls import include, path
-from django.views.generic.base import TemplateView  # new
 from rest_framework_simplejwt import views as jwt_views
 
 from utils import TranscrobesTokenObtainPairView
@@ -14,8 +13,7 @@ urlpatterns = [
     # liveness
     path("hello", views.hello, name="hello"),
     # podname
-    path("pod_name", views.pod_name, name="pod_name"),  # FIXME: why are there two of these?
-    path("pname", views.pod_name, name="pname"),
+    path("pod_name", views.pod_name, name="pod_name"),
     # JWT auth
     path("api/token/", TranscrobesTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", jwt_views.TokenRefreshView.as_view(), name="token_refresh"),
@@ -26,15 +24,11 @@ urlpatterns = [
     # enricher
     path("enrich/", include("enrich.urls")),
     # ankrobes
-    path("notes/", include("ankrobes.urls")),  # TODO: this should be renamed to `ankrobes`
-    # FIXME: PILOT and new stuff
-    path("", TemplateView.as_view(template_name="home.html"), name="home"),  # new
-    path("data/", include("data.urls")),
-    path("accounts/", include("accounts.urls")),  # new
+    path("notes/", include("ankrobes.urls")),  # TODO: this should probably be renamed to `ankrobes`
+    path("", include("data.urls")),
+    path("accounts/", include("registration.backends.default.urls")),
     path("accounts/", include("django.contrib.auth.urls")),  # new
-    # browable rest api
+    # browsable rest api
     path("api-auth/", include("rest_framework.urls")),
+    path("", include("django_prometheus.urls")),
 ]
-
-# if "survey" in settings.INSTALLED_APPS:
-#     urlpatterns += [url(r"^survey/", include("survey.urls"))]

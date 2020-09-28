@@ -10,9 +10,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name="usersurvey",
-            name="data",
-            field=models.JSONField(null=True),
-        ),
+        migrations.AlterField(model_name="usersurvey", name="data", field=models.JSONField(null=True),),
     ]

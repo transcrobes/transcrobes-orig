@@ -1,30 +1,59 @@
-<!-- templates/data/survey.html-->
-{% extends 'base.html' %}
-{% load static %}
+<!-- templates/data/surveys.html-->
+{% extends 'data/base.html' %}
 
-{% block title %}A survey for your responding pleasure{% endblock %}
+{% block title %}Research Surveys{% endblock %}
 
 {% block content %}
 
-{% if user.is_authenticated %}
-  Hi {{ user.username }}!
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Surveys</h1>
+</div>
 
-  <!--<p><a href="/survey/1">Tell the system what you already know (again)</a></p>-->
-  <p><a href="{% url 'surveys' %}">Get started reading!</a></p>
+{% if new_surveys %}
+<div class="row">
+  <!-- Unanswered Surveys -->
+  <div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+      <!-- Card Header - Dropdown -->
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">New surveys</h6>
+      </div>
+      <!-- Card Body -->
 
-  <p><a href="{% url 'logout' %}">logout</a></p>
+      <div class="card-body">
+        <ul>
+          {% for survey in new_surveys %}
+            <li><a href="{% url 'ui-survey-detail' survey_id=survey.id %}">{{ survey.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
 
-  <ul>
-  {% for survey in surveys %}
-      <li><a href="{% url 'survey' survey_id=survey.id %}">Get started reading!</a></li>
-  {% endfor %}
-  </ul>
+{% if answered_surveys %}
+<div class="row">
+  <!-- Answered Surveys -->
+  <div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+      <!-- Card Header - Dropdown -->
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Answered surveys</h6>
+      </div>
+      <!-- Card Body -->
 
-{% else %}
-  <p>You are not logged in. Please log in or send and email to anton.melser@my.cityu.edu.hk for an account</p>
-  <a href="{% url 'login' %}">login</a>
-  <!--<p><a href="{% url 'signup' %}">sign up</a></p>-->
-
+      <div class="card-body">
+        <ul>
+          {% for survey in answered_surveys %}
+            <li><a href="{% url 'ui-survey-detail' survey_id=survey.id %}">{{ survey.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 {% endif %}
 
 {% endblock %}

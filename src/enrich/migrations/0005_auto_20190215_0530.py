@@ -11,24 +11,16 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="bingapilookup",
-            name="from_lang",
-            field=models.CharField(default="zh-Hans", max_length=20),
+            model_name="bingapilookup", name="from_lang", field=models.CharField(default="zh-Hans", max_length=20),
         ),
         migrations.AddField(
-            model_name="bingapilookup",
-            name="to_lang",
-            field=models.CharField(default="en", max_length=20),
+            model_name="bingapilookup", name="to_lang", field=models.CharField(default="en", max_length=20),
         ),
         migrations.AddField(
-            model_name="bingapitranslation",
-            name="from_lang",
-            field=models.CharField(default="zh-Hans", max_length=20),
+            model_name="bingapitranslation", name="from_lang", field=models.CharField(default="zh-Hans", max_length=20),
         ),
         migrations.AddField(
-            model_name="bingapitranslation",
-            name="to_lang",
-            field=models.CharField(default="en", max_length=20),
+            model_name="bingapitranslation", name="to_lang", field=models.CharField(default="en", max_length=20),
         ),
         migrations.AddField(
             model_name="bingapitransliteration",
@@ -36,8 +28,6 @@ class Migration(migrations.Migration):
             field=models.CharField(default="zh-Hans", max_length=20),
         ),
         migrations.AddField(
-            model_name="bingapitransliteration",
-            name="to_lang",
-            field=models.CharField(default="en", max_length=20),
+            model_name="bingapitransliteration", name="to_lang", field=models.CharField(default="en", max_length=20),
         ),
     ]

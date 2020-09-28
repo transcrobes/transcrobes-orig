@@ -9,8 +9,8 @@ const surveyId = root.dataset.surveyId;
 const userSurveyId = root.dataset.usersurveyId;
 const username = root.dataset.user;
 
-const surveyUrl = `/data/api/surveys/${surveyId}/`;
-const surveyUserUrl = `/data/api/usersurveys/?user__username=${username}&survey__id=${surveyId}`;
+const surveyUrl = `/api/surveys/${surveyId}/`;
+// const surveyUserUrl = `/api/usersurveys/?user__username=${username}&survey__id=${surveyId}`;
 
 const get_headers = {
     credentials: "include",
@@ -28,8 +28,7 @@ function sendDataToServer(survey, options) {
     console.log("Survey results: " + JSON.stringify(survey.data));
 
     const amethod = userSurveyId ? 'PUT' : 'POST';
-    const url = userSurveyId ? `/data/api/usersurveys/${userSurveyId}/` : "/data/api/usersurveys/";
-
+    const url = userSurveyId ? `/api/usersurveys/${userSurveyId}/` : "/api/usersurveys/";
     const data = {
         credentials: "include",
         method:      amethod,
@@ -42,10 +41,13 @@ function sendDataToServer(survey, options) {
     };
 
     fetch(url, data)
-        .then(res => res.json())
-        .then(data =>
-            options.showDataSavingSuccess()
-        ).catch((err) => {
+        .then(response => {
+            if (response.ok) {
+                options.showDataSavingSuccess();
+            } else {
+                throw new Error(response.json());
+            }
+        }).catch((err) => {
             console.log(err);
             options.showDataSavingError();
         });
