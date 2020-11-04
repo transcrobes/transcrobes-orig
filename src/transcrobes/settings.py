@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "corsheaders",
     # community
     "registration",
@@ -55,8 +56,8 @@ REST_FRAMEWORK = {
 CORS_ALLOW_ALL_ORIGINS = True  # TODO: think about restricting this
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.getenv("TRANSCROBES_JWT_ACCESS_TOKEN_LIFETIME_MINS", "10"))),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=int(os.getenv("TRANSCROBES_JWT_REFRESH_TOKEN_LIFETIME_DAYS", "1"))),
 }
 
 # TODO: fix the csrf thing - is this fixed now???
@@ -114,6 +115,7 @@ STATICFILES_DIRS = [
 
 LL = "ERROR"
 
+PROMETHEUS_EXPORT_MIGRATIONS = False
 # Logging
 LOGGING = {
     "version": 1,
@@ -160,8 +162,7 @@ DATABASES = {
 }
 
 djankiserv.unki.AnkiDataModel = PostgresAnkiDataModel
-
-PROMETHEUS_EXPORT_MIGRATIONS = False
+SITE_ID = 1
 
 # MUST be behind ssl proxy for both security and for both djankiserv and brocrobes to work
 ALLOWED_HOSTS = " ".join(os.getenv("TRANSCROBES_PUBLIC_HOSTS", "*").split(",")).split()
