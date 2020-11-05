@@ -40,7 +40,7 @@ class SurveyView(LoginRequiredMixin, TemplateView):
 
 
 class OnboardedTemplateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    ONBOARDING_SURVEY_ID = 1
+    ONBOARDING_SURVEY_ID = 1  # TODO: this is hard-coded in a couple of places - NASTY!!!
 
     def test_func(self):
         return self.request.user.usersurvey_set.filter(survey__id=self.ONBOARDING_SURVEY_ID).exists()

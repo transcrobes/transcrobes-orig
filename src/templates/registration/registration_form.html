@@ -19,7 +19,7 @@
           <form method="post" class="user">
             {% csrf_token %}
             <div class="form-group">
-			  {% render_field form.username class+="form-control form-control-user" aria-describedby="usernameHelp" placeholder="Username" %}
+			        {% render_field form.username class+="form-control form-control-user" aria-describedby="usernameHelp" placeholder="Username" %}
             </div>
             <div class="form-group">
               {{ form.username.help_text }}
@@ -30,10 +30,10 @@
             </div>
             {% endif %}
             <div class="form-group">
-			  {% render_field form.email class+="form-control form-control-user" aria-describedby="emailHelp" placeholder="Email" %}
+			        {% render_field form.email class+="form-control form-control-user" aria-describedby="emailHelp" placeholder="Email" %}
             </div>
             <div class="form-group">
-				{% render_field form.password1 class+="form-control form-control-user" aria-describedby="passwordHelp" placeholder="Password"%}
+				      {% render_field form.password1 class+="form-control form-control-user" aria-describedby="passwordHelp" placeholder="Password"%}
             </div>
             <div class="form-group">
               {{ form.password1.help_text }}
@@ -44,8 +44,13 @@
             </div>
             {% endif %}
             <div class="form-group">
-				{% render_field form.password2 class+="form-control form-control-user" aria-describedby="passwordHelp" placeholder="Repeat Password"%}
+              {% render_field form.password2 class+="form-control form-control-user" aria-describedby="passwordHelp" placeholder="Repeat Password"%}
             </div>
+            {% if form.password2.errors %}
+            <div class="form-group form-error">
+              {{ form.password2.errors }}
+            </div>
+            {% endif %}
             <button type="submit" class="btn btn-primary btn-user btn-block">Register Account</button>
           </form>
           <hr>

@@ -93,8 +93,8 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Progress:</h6>
-            <a class="collapse-item" href="{% url 'home' %}">Vocabulary</a>
-            <a class="collapse-item" href="{% url 'home' %}">Grammar</a>
+            <a class="collapse-item" href="{% url 'coming-soon' %}">Vocabulary</a>
+            <a class="collapse-item" href="{% url 'coming-soon' %}">Grammar</a>
             <div class="collapse-divider"></div>
             <!--<h6 class="collapse-header">Goals:</h6>
             <a class="collapse-item" href="blank.html">Blank Page</a>-->
@@ -111,7 +111,7 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">System:</h6>
-            <a class="collapse-item" href="{% url 'home' %}">Fix system data</a>
+            <a class="collapse-item" href="{% url 'coming-soon' %}">Fix system data</a>
           </div>
         </div>
       </li>
@@ -142,7 +142,7 @@
 
       <!-- Nav Item - Tables -->
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'home' %}">
+        <a class="nav-link" href="{% url 'settings' %}">
           <i class="fas fa-fw fa-wrench"></i>
           <span>Settings</span></a>
       </li>
@@ -217,7 +217,7 @@
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{% url 'settings' %}">
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>

@@ -1,0 +1,21 @@
+<!-- templates/ankrobes/notrobes.html-->
+{% extends 'data/base.html' %}
+{% load static %}
+
+{% block title %}Coming soon{% endblock %}
+
+{% block content %}
+<div id="root" />
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+    <div class="text-center">
+      <h1 class="mb-5" data-text="Coming Soon" style="text-align:center">Coming Soon</h1>
+      <p class="lead text-gray-800 mb-5">We're frantically developing new stuff for you!</p>
+      <p class="text-gray-500 mb-0">It looks like you found a page we haven't made available yet... But it'll be here soon!</p>
+      <a href="{% url 'home' %}">&larr; Back to Dashboard</a>
+    </div>
+
+  </div>
+  <!-- /.container-fluid -->
+</div>
+{% endblock %}

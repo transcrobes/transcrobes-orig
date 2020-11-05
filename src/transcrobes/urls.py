@@ -30,5 +30,6 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),  # new
     # browsable rest api
     path("api-auth/", include("rest_framework.urls")),
+    # metrics
     path("", include("django_prometheus.urls")),
 ]

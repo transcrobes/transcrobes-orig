@@ -25,4 +25,13 @@ urlpatterns += [
     # Backoffice
     path("", views.OnboardedTemplateView.as_view(template_name="data/home.html"), name="home"),
     path("vocab/", views.VocabList.as_view(template_name="data/vocab-list.html"), name="vocab-list"),
+    path(
+        "coming-soon/", views.OnboardedTemplateView.as_view(template_name="data/coming-soon.html"), name="coming-soon"
+    ),
+    path("settings/", views.OnboardedTemplateView.as_view(template_name="data/settings.html"), name="settings"),
+    path(
+        "change-password/",
+        views.OnboardedTemplateView.as_view(template_name="registration/password_change_form.html"),
+        name="change-password",
+    ),
 ]
