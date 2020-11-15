@@ -2,7 +2,6 @@
 import json
 import logging
 
-from django.http import HttpResponse, JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -112,7 +111,7 @@ def enrich_pilot_json(request):
 
         outdata = manager.enricher().enrich_to_json(request.body.decode("utf-8"), request.user, manager)
 
-    return do_response(JsonResponse(outdata))
+    return do_response(Response(outdata))
 
 
 @api_view(["POST", "OPTIONS"])
@@ -124,14 +123,15 @@ def text_to_std_parsed(request):
     if request.method == "POST":
         manager = managers.get(request.user.transcrober.lang_pair())
         if not manager:
-            return HttpResponse(
-                f"Server does not support language pair {request.user.transcrober.lang_pair()}", status=501
+            return Response(
+                f"Server does not support language pair {request.user.transcrober.lang_pair()}",
+                status=status.HTTP_501_NOT_IMPLEMENTED,
             )
 
         logging.info(f"{manager.from_lang} to {manager.to_lang} with {manager.parser().__class__.__name__}")
         outdata = json.dumps(manager.parser().parse(data), ensure_ascii=False)
 
-    return do_response(HttpResponse(outdata))
+    return do_response(Response(outdata))
 
 
 @api_view(["POST", "OPTIONS"])
@@ -142,8 +142,9 @@ def lemma_defs(request):
     if request.method == "POST":
         manager = managers.get(request.user.transcrober.lang_pair())
         if not manager:
-            return HttpResponse(
-                f"Server does not support language pair {request.user.transcrober.lang_pair()}", status=501
+            return Response(
+                f"Server does not support language pair {request.user.transcrober.lang_pair()}",
+                status=status.HTTP_501_NOT_IMPLEMENTED,
             )
 
         logging.info(f"{manager.from_lang} to {manager.to_lang} with {manager.parser().__class__.__name__}")
@@ -166,7 +167,7 @@ def lemma_defs(request):
                 "fallback": manager.default().get_standardised_fallback_defs(t),
             }
 
-    return do_response(JsonResponse(data))
+    return do_response(Response(data))
 
 
 # END TESTING

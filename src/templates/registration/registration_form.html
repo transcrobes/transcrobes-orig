@@ -32,6 +32,12 @@
             <div class="form-group">
 			        {% render_field form.email class+="form-control form-control-user" aria-describedby="emailHelp" placeholder="Email" %}
             </div>
+
+            {% if form.email.errors %}
+            <div class="form-group form-error">
+              {{ form.email.errors }}
+            </div>
+            {% endif %}
             <div class="form-group">
 				      {% render_field form.password1 class+="form-control form-control-user" aria-describedby="passwordHelp" placeholder="Password"%}
             </div>
@@ -49,6 +55,24 @@
             {% if form.password2.errors %}
             <div class="form-group form-error">
               {{ form.password2.errors }}
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+              <div class="checkbox">
+                <label>
+                  {{ form.tos }} I have read and agree to the <a href="{% url 'tos' %}" target="_blank">Terms of Service</a>
+                </label>
+              </div>
+            </div>
+            {% if form.tos.help_text %}
+            <div class="form-group">
+              {{ form.tos.help_text }}
+            </div>
+            {% endif %}
+            {% if form.tos.errors %}
+            <div class="form-group form-error">
+              {{ form.tos.errors }}
             </div>
             {% endif %}
             <button type="submit" class="btn btn-primary btn-user btn-block">Register Account</button>

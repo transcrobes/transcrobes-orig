@@ -38,11 +38,8 @@ INSTALLED_APPS = [
     "en_zhhans.apps.EnZhhansConfig",
     "zhhans_en.apps.ZhhansEnConfig",
     "enrichers.apps.EnrichersConfig",
-    "accounts.apps.AccountsConfig",
     "data.apps.DataConfig",
 ]
-
-# INSTALLED_APPS += ["bootstrapform", "survey"]
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
@@ -164,9 +161,13 @@ DATABASES = {
 djankiserv.unki.AnkiDataModel = PostgresAnkiDataModel
 SITE_ID = 1
 
-# MUST be behind ssl proxy for both security and for both djankiserv and brocrobes to work
-ALLOWED_HOSTS = " ".join(os.getenv("TRANSCROBES_PUBLIC_HOSTS", "*").split(",")).split()
+# WARNING!!! MUST be behind ssl proxy for both security and for both djankiserv and brocrobes to work
+ALLOWED_HOSTS = " ".join(os.getenv("TRANSCROBES_SYSTEM_HOSTS", "*").split(",")).split()
+ALLOWED_HOSTS += " ".join(os.getenv("TRANSCROBES_NODE_HOSTS", "").split(",")).split()
 
+HA_HOST = os.getenv("TRANSCROBES_HA_HOST")
+if HA_HOST:
+    ALLOWED_HOSTS.append(HA_HOST)
 if os.getenv("TRANSCROBES_POD_IP"):
     ALLOWED_HOSTS.append(os.getenv("TRANSCROBES_POD_IP"))
 
@@ -178,6 +179,7 @@ LOGIN_URL = "/accounts/login/"
 LOGOUT_URL = "/accounts/logout/"
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
+REGISTRATION_FORM = "transcrobes.forms.RestrictiveRegistrationForm"
 INTERNAL_IPS = ("127.0.0.1",)
 
 # if you change this, it must also be changed in the images/static/Dockerfile

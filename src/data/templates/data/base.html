@@ -213,7 +213,7 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{% url 'coming-soon' %}">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
@@ -221,7 +221,7 @@
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Settings
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{% url 'coming-soon' %}">
                   <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                   Activity Log
                 </a>
@@ -286,23 +286,17 @@
     </div>
   </div>
 
-  <!-- Bootstrap core JavaScript
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  -->
+  <!-- Bootstrap core JavaScript -->
   <script src="{% static 'data/js/jquery.min.js' %}"></script>
   <script src="{% static 'data/js/bootstrap.bundle.min.js' %}"></script>
 
-  <!-- Core plugin JavaScript
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>-->
+  <!-- Core plugin JavaScript -->
   <script src="{% static 'data/js/jquery.easing.min.js' %}"></script>
 
-  <!-- Custom scripts for all pages
-  <script src="js/sb-admin-2.min.js"></script>-->
+  <!-- Custom scripts for all pages -->
   <script src="{% static 'data/js/sb-admin-2.min.js' %}"></script>
 
-  <!-- Page level plugins
-  <script src="vendor/chart.js/Chart.min.js"></script>-->
+  <!-- Page level plugins -->
   <script src="{% static 'data/js/Chart.min.js' %}"></script>
 
   <!-- Page level custom scripts -->

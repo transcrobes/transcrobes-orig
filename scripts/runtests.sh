@@ -17,4 +17,4 @@ pre-commit run --all-files --verbose
 
 coverage run --source='src' src/manage.py test --verbosity=1 tests $1
 
-coverage report -m --skip-covered --skip-empty --fail-under 66
+coverage report -m --skip-covered --skip-empty --fail-under 60
