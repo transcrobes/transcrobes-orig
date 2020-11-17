@@ -33,6 +33,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
   APP_PATH: /app
   EXT_REG_BASE: ${EXT_REG_REGISTRY}/${EXT_REG_ORGANISATION}/${CI_PROJECT_NAME}
+  TRANSCROBES_DOCKER_REPO: ${EXT_REG_REGISTRY}/${EXT_REG_ORGANISATION}
 
 cache:
   paths:
@@ -63,52 +64,18 @@ test:
       - build
     expire_in: 30 days
 
-release-latest:
+release:
   stage: release
   image: transcrobes/tcbuild:0.0.1
   services:
    - docker:dind
 
   script:
-    - npm install
-    - npm run prod
     - pip install -r src/requirements.txt
-    - python3 src/manage.py collectstatic --noinput
     - export DOCKER_HOST=tcp://docker:2375/
-    - docker build -f images/main/Dockerfile --pull -t ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} .
-    - docker build -f images/static/Dockerfile --pull -t ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} .
     - docker login -u ${EXT_REG_USER} -p ${EXT_REG_PASSWORD} ${EXT_REG_REGISTRY}
-    - docker tag ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}:latest
-    - docker push ${EXT_REG_BASE}
-    - docker tag ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}-static:latest
-    - docker push ${EXT_REG_BASE}-static
+    - npm install
+    - sh scripts/buildimages.sh
   only:
     - master
-  except:
-    - tags
-
-release-tag:
-  stage: release
-  image: transcrobes/tcbuild:0.0.1
-  services:
-   - docker:dind
-  script:
-    - npm install
-    - npm run prod
-    - pip install -r src/requirements.txt
-    - python3 src/manage.py collectstatic --noinput
-    - export DOCKER_HOST=tcp://docker:2375/
-    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
-    - docker build -f images/main/Dockerfile --pull -t ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} .
-    - docker build -f images/static/Dockerfile --pull -t ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} .
-
-    - docker login -u ${EXT_REG_USER} -p ${EXT_REG_PASSWORD} ${EXT_REG_REGISTRY}
-    - docker tag ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}:latest
-    - docker tag ${EXT_REG_BASE}:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}:tag
-    - docker push ${EXT_REG_BASE}
-    - docker tag ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}-static:latest
-    - docker tag ${EXT_REG_BASE}-static:${CI_COMMIT_SHORT_SHA} ${EXT_REG_BASE}-static:tag
-    - docker push ${EXT_REG_BASE}-static
-
-  only:
     - tags

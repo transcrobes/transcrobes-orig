@@ -11,6 +11,6 @@ docker push ${MAIN_IMAGE}
 
 STATIC_IMAGE=${TRANSCROBES_DOCKER_REPO}/transcrobes-static:$TAG
 npm run prod
-python src/manage.py collectstatic --noinput
+python3 src/manage.py collectstatic --noinput
 docker build -f images/static/Dockerfile . -t ${STATIC_IMAGE}
 docker push ${STATIC_IMAGE}
