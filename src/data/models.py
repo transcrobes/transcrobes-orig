@@ -99,7 +99,10 @@ class UserTextEvaluation(models.Model):
         (HARD, "Hard"),
         (VERY_HARD, "Very hard"),
     ]
-    difficulty = models.IntegerField(choices=DIFFICULTY_CHOICES, default=OK,)
+    difficulty = models.IntegerField(
+        choices=DIFFICULTY_CHOICES,
+        default=OK,
+    )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     text = models.ForeignKey(SText, on_delete=models.CASCADE)
     date_read = models.DateTimeField(default=timezone.now)
@@ -155,7 +158,10 @@ class UserSentenceEvaluation(models.Model):
         (HARD, "Hard"),
         (VERY_HARD, "Very hard"),
     ]
-    difficulty = models.IntegerField(choices=DIFFICULTY_CHOICES, default=OK,)
+    difficulty = models.IntegerField(
+        choices=DIFFICULTY_CHOICES,
+        default=OK,
+    )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     sentence = models.ForeignKey(Sentence, on_delete=models.CASCADE)
     date_read = models.DateTimeField(default=timezone.now)

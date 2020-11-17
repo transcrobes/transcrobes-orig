@@ -15,8 +15,16 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(model_name="userword", name="last_translated", field=models.DateTimeField(null=True),),
-        migrations.AddField(model_name="userword", name="nb_translated", field=models.IntegerField(null=True),),
+        migrations.AddField(
+            model_name="userword",
+            name="last_translated",
+            field=models.DateTimeField(null=True),
+        ),
+        migrations.AddField(
+            model_name="userword",
+            name="nb_translated",
+            field=models.IntegerField(null=True),
+        ),
         migrations.CreateModel(
             name="UserSentence",
             fields=[

@@ -10,6 +10,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.DeleteModel(name="HSKLookup",),
-        migrations.DeleteModel(name="SubtlexLookup",),
+        migrations.DeleteModel(
+            name="HSKLookup",
+        ),
+        migrations.DeleteModel(
+            name="SubtlexLookup",
+        ),
     ]

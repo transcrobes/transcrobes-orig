@@ -11,10 +11,14 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name="bingapilookup", name="source_text", field=models.CharField(db_index=True, max_length=2000),
+            model_name="bingapilookup",
+            name="source_text",
+            field=models.CharField(db_index=True, max_length=2000),
         ),
         migrations.AlterField(
-            model_name="bingapitranslation", name="source_text", field=models.CharField(db_index=True, max_length=2000),
+            model_name="bingapitranslation",
+            name="source_text",
+            field=models.CharField(db_index=True, max_length=2000),
         ),
         migrations.AlterField(
             model_name="bingapitransliteration",

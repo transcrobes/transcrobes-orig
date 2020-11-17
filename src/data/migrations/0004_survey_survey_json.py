@@ -11,6 +11,9 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="survey", name="survey_json", field=models.JSONField(default=""), preserve_default=False,
+            model_name="survey",
+            name="survey_json",
+            field=models.JSONField(default=""),
+            preserve_default=False,
         ),
     ]

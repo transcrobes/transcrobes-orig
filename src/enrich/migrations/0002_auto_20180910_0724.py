@@ -19,5 +19,8 @@ class Migration(migrations.Migration):
             ],
             options={"abstract": False},
         ),
-        migrations.RenameModel(old_name="BingRequest", new_name="BingAPILookup",),
+        migrations.RenameModel(
+            old_name="BingRequest",
+            new_name="BingAPILookup",
+        ),
     ]

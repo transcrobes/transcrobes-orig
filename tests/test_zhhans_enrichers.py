@@ -214,9 +214,9 @@ class FullEnrichMixin(VCRMixin):
     @mock.patch("stats.KafkaProducer")
     def test_enrich_to_json(self, MockKafkaProducer):
         """
-            This is the "big daddy" test that takes many seconds and tests a signficant proportion
-            of the actively used code in the project. If this test passes, the project should basically "work"
-            and if it doesn't, nothing useful will.
+        This is the "big daddy" test that takes many seconds and tests a signficant proportion
+        of the actively used code in the project. If this test passes, the project should basically "work"
+        and if it doesn't, nothing useful will.
         """
         intxt_txt = pkgutil.get_data("tests.assets.enrichers.nlp", "in.txt").decode("utf-8")
 
