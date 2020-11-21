@@ -175,7 +175,7 @@ def update_model_add_notes(request):
                     continue  # not adding all and we don't know the word so we are not adding it
 
                 # TODO: decide how to best deal with when to next review
-                review_in = 0
+                review_in = 1
 
                 defin = default_definition(manager, word)
                 if not userdb.set_word_known(
