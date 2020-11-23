@@ -2,6 +2,8 @@
 import json
 import logging
 
+from django.core.cache import caches
+
 from enrich.apis.bing import BingAPI
 from enrich.models import BingAPILookup, BingAPITranslation
 from enrich.translate import Translator
@@ -16,6 +18,7 @@ class BingTranslator(Translator, BingAPI):
     def __init__(self, config, transliterator):
         super().__init__(config)
         self._transliterator = transliterator
+        self._inmem = config["inmem"]
 
     # override Translator
     @staticmethod
@@ -45,7 +48,7 @@ class BingTranslator(Translator, BingAPI):
         return std_format
 
     def get_standardised_fallback_defs(self, token):
-        result = self._ask_bing_translate(token["lemma"])
+        result = self._ask_bing_translate(token["lemma"], is_fallback=True)
         jresult = json.loads(result)
 
         std_format = [
@@ -63,7 +66,7 @@ class BingTranslator(Translator, BingAPI):
 
     # override ???
     def translate(self, text):
-        result = self._ask_bing_translate(text)
+        result = self._ask_bing_translate(text, is_fallback=False)
         jresult = json.loads(result)
 
         translation = jresult[0]["translations"][0]["text"]
@@ -74,24 +77,35 @@ class BingTranslator(Translator, BingAPI):
         return {**self.default_params(), **{"includeAlignment": True}}
 
     def _ask_bing_lookup(self, content):
+        val = None
+        if self._inmem:
+            val = caches["bing_lookup"].get(content)
+            if val:
+                return val
+
         found = BingAPILookup.objects.filter(source_text=content, from_lang=self.from_lang, to_lang=self.to_lang)
         logger.debug("Found %s elements in db for %s", len(found), content)
         if len(found) == 0:
-            # print("looking up", content)
             bing_json = self._ask_bing_api(content, LOOKUP_PATH, self.default_params())
             bing = BingAPILookup(
                 source_text=content, response_json=bing_json, from_lang=self.from_lang, to_lang=self.to_lang
             )
-
             bing.save()
-            # with open(f'{bing.pk}.{content}.json', 'w') as bing_lookup:
-            #     bing_lookup.write(bing_json)
+            val = bing.response_json
+        else:
+            val = found.first().response_json  # TODO: be better, just being dumb for the moment
 
-            return bing.response_json
+        if self._inmem:
+            caches["bing_lookup"].set(content, val)
+        return val
 
-        return found.first().response_json  # TODO: be better, just being dumb for the moment
+    def _ask_bing_translate(self, content, is_fallback=False):
+        val = None
+        if self._inmem and is_fallback:
+            val = caches["bing_translate"].get(content)
+            if val:
+                return val
 
-    def _ask_bing_translate(self, content):
         found = BingAPITranslation.objects.filter(source_text=content, from_lang=self.from_lang, to_lang=self.to_lang)
         logger.debug("Found %s elements in db for %s", len(found), content)
         if len(found) == 0:
@@ -100,9 +114,10 @@ class BingTranslator(Translator, BingAPI):
                 source_text=content, response_json=bing_json, from_lang=self.from_lang, to_lang=self.to_lang
             )
             bing.save()
-            # with open(f'{bing.pk}.{content}.json', 'w') as bing_lookup:
-            #     bing_lookup.write(bing_json)
+            val = bing.response_json
+        else:
+            val = found.first().response_json  # TODO: be better, just being dumb for the moment
 
-            return bing.response_json
-
-        return found.first().response_json
+        if self._inmem and is_fallback:
+            caches["bing_translate"].set(content, val)
+        return val

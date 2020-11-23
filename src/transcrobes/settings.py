@@ -221,6 +221,32 @@ KAFKA_CONSUMER_TIMEOUT_MS = int(os.getenv("TRANSCROBES_KAFKA_CONSUMER_TIMEOUT_MS
 KAFKA_STATS_LOOP_SLEEP = int(os.getenv("TRANSCROBES_KAFKA_STATS_LOOP_SLEEP", "10"))
 KAFKA_MAX_POLL_RECORDS = int(os.getenv("TRANSCROBES_KAFKA_MAX_POLL_RECORDS", "500"))  # 500 is default
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "TIMEOUT": None,
+        "OPTIONS": {"MAX_ENTRIES": 1000000},
+    },
+    "bing_lookup": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "TIMEOUT": None,
+        "LOCATION": "bing_lookup",
+        "OPTIONS": {"MAX_ENTRIES": 1000000},
+    },
+    "bing_translate": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "TIMEOUT": None,
+        "LOCATION": "bing_translate",
+        "OPTIONS": {"MAX_ENTRIES": 1000000},
+    },
+    "bing_transliterate": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "TIMEOUT": None,
+        "LOCATION": "bing_transliterate",
+        "OPTIONS": {"MAX_ENTRIES": 1000000},
+    },
+}
+
 # From here the values are sensible and can be kept if desired
 
 # TODO: give the option of doing an import to a configmap mounted file
@@ -245,6 +271,7 @@ LANG_PAIRS = {
                 "to": "en",
                 "api_host": os.getenv("TRANSCROBES_BING_API_HOST", "api.cognitive.microsofttranslator.com"),
                 "api_key": os.getenv("TRANSCROBES_BING_SUBSCRIPTION_KEY", "a_super_api_key"),
+                "inmem": os.getenv("TRANSCROBES_BING_TRANSLATOR_INMEM", "false").lower() == "true",
             },
             "transliterator": {
                 "classname": "enrich.transliterate.bing.BingTransliterator",
@@ -255,6 +282,7 @@ LANG_PAIRS = {
                     "to_script": "Latn",
                     "api_host": os.getenv("TRANSCROBES_BING_API_HOST", "api.cognitive.microsofttranslator.com"),
                     "api_key": os.getenv("TRANSCROBES_BING_SUBSCRIPTION_KEY", "a_super_api_key"),
+                    "inmem": os.getenv("TRANSCROBES_BING_TRANSLITERATOR_INMEM", "false").lower() == "true",
                 },
             },
         },
@@ -299,6 +327,7 @@ LANG_PAIRS = {
                 "to_script": "Latn",
                 "api_host": os.getenv("TRANSCROBES_BING_API_HOST", "api.cognitive.microsofttranslator.com"),
                 "api_key": os.getenv("TRANSCROBES_BING_SUBSCRIPTION_KEY", "a_super_api_key"),
+                "inmem": os.getenv("TRANSCROBES_BING_TRANSLITERATOR_INMEM", "false").lower() == "true",
             },
         },
     },
