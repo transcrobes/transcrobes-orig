@@ -125,14 +125,9 @@ class Ankrobes:
         logging.debug("Looking for card ids for word '%s'", word)
 
         sql = f"""
-        SELECT c.id as card_id, n.id as note_id, c.type as type
-            FROM json_each((SELECT decks FROM {self._username}.col)::json) a
-                INNER JOIN {self._username}.cards c on c.did = a.key::bigint
-                INNER JOIN {self._username}.notes n on c.nid = n.id
-            WHERE json_extract_path_text(a.value, 'name') = %(deck_name)s
-                AND simplified(n.flds) = %(word)s
-            """
-
+        SELECT card_id, note_id, type from {self._username}.user_vocabulary
+            WHERE word = %(word)s
+        """
         res = self.col.db.execute(sql, deck_name=deck_name, word=word)
         j = res.fetchall()
         if not j:
@@ -149,13 +144,11 @@ class Ankrobes:
     def _card_types(self, word, deck_name="transcrobes"):
         logging.debug("Looking for card types for word '%s'", word)
         sql = f"""
-        SELECT count(0) as icount, n.id as note_id, c.type as type
-            FROM json_each((SELECT decks FROM {self._username}.col)::json) a
-                INNER JOIN {self._username}.cards c on c.did = a.key::bigint
-                INNER JOIN {self._username}.notes n on c.nid = n.id
-            WHERE json_extract_path_text(a.value, 'name') = %(deck_name)s
-                AND simplified(n.flds) = %(word)s
-            GROUP BY n.id, c.type;"""
+        SELECT count(0) as icount, note_id, type from {self._username}.user_vocabulary
+            WHERE word = %(word)s
+            GROUP BY note_id, type
+        """
+
         res = self.col.db.execute(sql, deck_name=deck_name, word=word)
         j = res.fetchall()
         if not j:

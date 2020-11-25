@@ -2,8 +2,10 @@
 import base64
 import json
 
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.backends import TokenBackend
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
 def default_definition(manager, w):
@@ -74,7 +76,6 @@ def get_username_lang_pair(request):
     return request.user.username, request.user.transcrober.lang_pair()
 
 
-# FIXME: do we really need to implement the create and update methods of parent class BaseSerializer???
 class TranscrobesTokenObtainPairSerializer(TokenObtainPairSerializer):  # pylint: disable=W0223
     @classmethod
     def get_token(cls, user):
@@ -83,8 +84,31 @@ class TranscrobesTokenObtainPairSerializer(TokenObtainPairSerializer):  # pylint
         token["username"] = user.username
         token["lang_pair"] = user.transcrober.lang_pair()
 
+        # FIXME: this is a nasty hack that should be replaced with something well architected
+        # this will refresh the materialised view "user_vocabulary", so that getting the notes
+        # in the API will be up-to-date
+        user.transcrober.refresh_vocabulary()
+
         return token
 
 
 class TranscrobesTokenObtainPairView(TokenObtainPairView):
     serializer_class = TranscrobesTokenObtainPairSerializer
+
+
+# FIXME: actually, we should probably just not use the refresh token and force
+# a proper reauth token for every expiration. Alas, the Chrome extension updates are
+# a huge pain, so nasty hack here for the moment
+class TranscrobesTokenRefreshSerializer(TokenRefreshSerializer):  # pylint: disable=W0223
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # FIXME: Are we Ok not verifying here?
+        valid_data = TokenBackend(algorithm="HS256").decode(data["access"], verify=False)
+        User.objects.get(id=valid_data["user_id"]).transcrober.refresh_vocabulary()
+
+        return data
+
+
+class TranscrobesTokenRefreshView(TokenRefreshView):
+    serializer_class = TranscrobesTokenRefreshSerializer

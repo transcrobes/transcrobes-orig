@@ -33,10 +33,38 @@ class Transcrober(models.Model):
         deck_conf = json.loads(pkgutil.get_data("ankrobes.resources.json", "default_deck_conf.json").decode("utf-8"))
         tmodels = json.loads(pkgutil.get_data("ankrobes.resources.json", "default_model.json").decode("utf-8"))
 
-        Collection(self.user.username, settings.DJANKISERV_DATA_ROOT).db.execute(
-            f"update {self.user.username}.col set conf = %s, decks = %s, dconf = %s, models = %s",
-            json.dumps(conf),
-            json.dumps(decks),
-            json.dumps(deck_conf),
-            json.dumps(tmodels),
-        )
+        with Collection(self.user.username, settings.DJANKISERV_DATA_ROOT) as col:
+            col.db.execute(
+                f"update {self.user.username}.col set conf = %s, decks = %s, dconf = %s, models = %s",
+                json.dumps(conf),
+                json.dumps(decks),
+                json.dumps(deck_conf),
+                json.dumps(tmodels),
+            )
+            # FIXME: this should definitely not be done here! But probably neither should
+            # the above, so just leave this hack for the moment
+            sql = f"""
+            CREATE MATERIALIZED VIEW {self.user.username}.user_vocabulary AS
+            SELECT c.id as card_id, n.id as note_id, c.type as type, simplified(n.flds) as word
+                FROM json_each((SELECT decks FROM {self.user.username}.col)::json) a
+                    INNER JOIN {self.user.username}.cards c on c.did = a.key::bigint
+                    INNER JOIN {self.user.username}.notes n on c.nid = n.id
+                WHERE json_extract_path_text(a.value, 'name') = 'transcrobes';
+            """
+            col.db.execute(sql)
+            sql = f"""
+            CREATE INDEX {self.user.username}_vocabulary_idx
+                ON {self.user.username}.user_vocabulary (word)"""
+            col.db.execute(sql)
+
+            # this is so we can refresh "concurrently"
+            sql = f"""
+            CREATE UNIQUE INDEX {self.user.username}_vocabulary_card_idx
+                ON {self.user.username}.user_vocabulary (card_id)"""
+            col.db.execute(sql)
+
+    def refresh_vocabulary(self):
+        with Collection(self.user.username, settings.DJANKISERV_DATA_ROOT) as col:
+            sql = f"""
+            REFRESH MATERIALIZED VIEW CONCURRENTLY {self.user.username}.user_vocabulary"""
+            col.db.execute(sql)

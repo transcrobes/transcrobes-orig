@@ -5,7 +5,7 @@ crc32c==2.2
 django==3.1.3
 django-anymail==8.1
 django-cors-headers==3.5.0
-django-extensions==3.0.9
+django-extensions==3.1.0
 django-filter==2.4.0
 django-k8s==0.2.9
 django-prometheus==2.1.0
