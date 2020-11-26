@@ -55,12 +55,14 @@ class AnkrobesTests(TestCase):
     # def _cleaned_note():
 
     def _get_word(self, lword):
+        self.user.transcrober.refresh_vocabulary()
         with Ankrobes(self.user.username) as userdb:
             return userdb.get_word(lword)[0]
 
     def _clean_note(self, lword):
         with Ankrobes(self.user.username) as userdb:
             userdb.delete_note(lword)
+        self.user.transcrober.refresh_vocabulary()
 
     def _get_test_note(self, clean):
         in_note = self._in_note()
@@ -77,6 +79,7 @@ class AnkrobesTests(TestCase):
                 tags=in_note["Tags"],
                 review_in=0,
             )
+        self.user.transcrober.refresh_vocabulary()
         return note_id
 
     ##
@@ -258,6 +261,8 @@ class AnkrobesTests(TestCase):
         # Delete the note
         with Ankrobes(self.user.username) as userdb:
             userdb.delete_note(in_note["Simplified"])
+
+        self.user.transcrober.refresh_vocabulary()
 
         # Now it should be gone again
         with Ankrobes(self.user.username) as userdb:

@@ -35,6 +35,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ("ankrobes", "0001_initial"),
         ("auth", "0012_alter_user_first_name_max_length"),
+        ("data", "0011_auto_20201005_1455"),
     ]
 
     operations = [

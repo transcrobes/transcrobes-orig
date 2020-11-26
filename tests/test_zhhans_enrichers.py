@@ -239,6 +239,8 @@ class FullEnrichMixin(VCRMixin):
                         review_in=0,
                     )
 
+        self.user.transcrober.refresh_vocabulary()
+
         model = self.manager.enricher().enrich_to_json(intxt_txt, self.user, self.manager)
         enriched_notes = pkgutil.get_data("tests.assets.enrichers.bing", "enriched_model_with_notes.json").decode(
             "utf-8"
