@@ -23,6 +23,7 @@ urlpatterns += [
     # AJAX endpoints, FIXME this should probably be in ankrobes
     path("update_model/", views.update_model, name="update_model"),
     path("update_model_add_notes/", views.update_model_add_notes, name="update_model_add_notes"),
+    path("user_event/", views.user_event, name="user_event"),
     # Backoffice
     path("", views.OnboardedTemplateView.as_view(template_name="data/home.html"), name="home"),
     path("vocab/", views.VocabList.as_view(template_name="data/vocab-list.html"), name="vocab-list"),
