@@ -6,9 +6,9 @@ import threading
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from data.stats import vocab_runner
+from data.stats import actions_runner, vocab_runner
 
-# from data.stats import actions_runner, vocab_runner
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -21,35 +21,26 @@ class Command(BaseCommand):
     # wasting time on possibly poorly adapted solutions
 
     def handle(self, *args, **options):
-        logging.info(
-            "Starting stats processors with parameters {settings.KAFKA_BROKER=}, "
-            "{settings.KAFKA_CONSUMER_TIMEOUT_MS=}, "
-            "{settings.KAFKA_STATS_LOOP_SLEEP=}, "
-            "{settings.KAFKA_MAX_POLL_RECORDS=}"
+        logger.info(
+            f"Starting stats processors with parameters {settings.KAFKA_BROKER=}, "
+            f"{settings.KAFKA_CONSUMER_TIMEOUT_MS=}, "
+            f"{settings.KAFKA_STATS_LOOP_SLEEP_SECS=}, "
+            f"{settings.KAFKA_MAX_POLL_RECORDS=}"
         )
         threads = []
 
-        vrunner = threading.Thread(
-            name="vocab_runner",
-            target=vocab_runner.run_updates(
-                settings.KAFKA_BROKER,
-                settings.KAFKA_CONSUMER_TIMEOUT_MS,
-                settings.KAFKA_STATS_LOOP_SLEEP,
-                settings.KAFKA_MAX_POLL_RECORDS,
-            ),
-        )
-        threads.append(vrunner)
-
-        # arunner = threading.Thread(
-        #     name="actions_runner",
-        #     target=actions_runner.run_updates(
-        #         settings.KAFKA_BROKER,
-        #         settings.KAFKA_CONSUMER_TIMEOUT_MS,
-        #         settings.KAFKA_STATS_LOOP_SLEEP,
-        #         settings.KAFKA_MAX_POLL_RECORDS,
-        #     ),
-        # )
-        # threads.append(arunner)
-
+        for runner in [vocab_runner, actions_runner]:
+            threads.append(
+                threading.Thread(
+                    name=runner.__name__,
+                    target=runner.run_updates,
+                    args=(
+                        settings.KAFKA_BROKER,
+                        settings.KAFKA_CONSUMER_TIMEOUT_MS,
+                        settings.KAFKA_STATS_LOOP_SLEEP_SECS,
+                        settings.KAFKA_MAX_POLL_RECORDS,
+                    ),
+                )
+            )
         for runner in threads:
             runner.start()

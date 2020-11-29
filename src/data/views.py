@@ -7,7 +7,8 @@ from django.db import connection
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView
+from django.views.generic import DetailView, TemplateView
+from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import api_view, permission_classes
@@ -20,6 +21,9 @@ from data.serialisers import SurveySerialiser, UserSerialiser, UserSurveySeriali
 from data.utils import update_user_rules, update_user_words_known
 from enrich.data import managers
 from utils import default_definition
+
+# from .forms import ImportForm
+from .models import Import
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +43,7 @@ class SurveyView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class OnboardedTemplateView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+class OnboardedView(LoginRequiredMixin, UserPassesTestMixin):
     ONBOARDING_SURVEY_ID = 1  # TODO: this is hard-coded in a couple of places - NASTY!!!
 
     def test_func(self):
@@ -48,7 +52,7 @@ class OnboardedTemplateView(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
             return redirect(f"{super().get_login_url()}?next={self.request.path}")
-        return redirect("ui-survey-detail", survey_id=self.ONBOARDING_SURVEY_ID)
+        return redirect("ui_survey_detail", survey_id=self.ONBOARDING_SURVEY_ID)
 
     def get_login_url(self):
         if not self.request.user.is_authenticated:
@@ -56,6 +60,11 @@ class OnboardedTemplateView(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
         return reverse("survey")
 
 
+class OnboardedTemplateView(OnboardedView, TemplateView):
+    pass
+
+
+# FIXME: currently unused, delete if not required!
 class SurveyListView(LoginRequiredMixin, ListView):
     queryset = Survey.objects.prefetch_related("usersurvey_set").filter(is_obligatory=False)
     paginate_by = 10
@@ -111,6 +120,43 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # PROD
 
+
+class ImportCreate(OnboardedView, CreateView):
+    model = Import
+    # exclude = ['user']
+    fields = ("title", "description", "status", "import_file", "process_type")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class ImportList(OnboardedView, ListView):
+    model = Import
+    # exclude = ['user']
+    # fields = ('title', 'description', 'status', 'import_file', )
+
+
+class ImportDetail(OnboardedView, DetailView):
+    model = Import
+    # exclude = ['user']
+    # fields = ('title', 'description', 'status', 'import_file', )
+
+
+# @permission_classes((permissions.IsAuthenticated,))
+# def import_form_upload(request):
+#     if request.method == 'POST':
+#         form = ImportForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+#     else:
+#         form = ImportForm()
+#
+#     return render(request, 'data/list_import.html', {
+#         'form': form
+#     })
+
 # Ideas for improvements
 # - instead of just recording the word as seen/checked, add POS for the actual tokens in the text
 @permission_classes((permissions.IsAuthenticated,))
@@ -121,6 +167,8 @@ def update_model(request):
         rlz = request.data["rules"]
         update_user_words_known(voc, request.user)
         update_user_rules(rlz, request.user)
+        # FIXME: remove nasty hack
+        request.user.transcrober.refresh_vocabulary()
 
     data = {"status": "success"}
     response = JsonResponse(data)
@@ -189,6 +237,9 @@ def update_model_add_notes(request):
                     raise Exception(f"Error updating the user database for {request.user.username}")
 
             logger.info(f"Set {vocab.keys()} for {request.user.username}")
+
+        # FIXME: remove nasty hack
+        request.user.transcrober.refresh_vocabulary()
 
     data = {"status": "success"}
     response = JsonResponse(data)

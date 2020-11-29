@@ -51,6 +51,9 @@ def _push_note_to_ankrobes(request, review_in):
                 review_in=review_in,
             )
 
+            # FIXME: remove nasty hack
+            request.user.transcrober.refresh_vocabulary()
+
             stats.KAFKA_PRODUCER.send(
                 "actions",
                 {
@@ -75,6 +78,10 @@ def _push_note_to_ankrobes(request, review_in):
 def get_word(request):
     with Ankrobes(request.user.username) as userdb:
         w = request.data
+
+        # FIXME: remove nasty hack
+        request.user.transcrober.refresh_vocabulary()
+
         data = userdb.get_word(w)
         data = Ankrobes.sanitise_ankrobes_entry(data)
         return JsonResponse(data, safe=False)
@@ -111,6 +118,10 @@ def add_words_to_ankrobes(request):
                     raise Exception(f"Error updating the user database for {username}")
 
             logger.info(f"Set {words} for {username}")
+
+            # FIXME: remove nasty hack
+            request.user.transcrober.refresh_vocabulary()
+
         data = {"status": "ok"}
 
     response = JsonResponse(data)

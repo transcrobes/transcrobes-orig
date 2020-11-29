@@ -1,17 +1,67 @@
 # -*- coding: utf-8 -*-
+import csv
+import io
 import json
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db import models
+from django.core.validators import FileExtensionValidator
+from django.db import connection, models
 from django.urls import reverse
 from django.utils import timezone
 from django_extensions.db.models import ActivatorModel, TimeStampedModel, TitleSlugDescriptionModel
+from upload_validator import FileTypeValidator
 
 from enrich.models import BingAPILookup, BingAPITranslation
 
+from .validators import validate_file_size
 
-class Survey(ActivatorModel, TitleSlugDescriptionModel, TimeStampedModel):
+
+class DetailedModel(ActivatorModel, TimeStampedModel, TitleSlugDescriptionModel):
+    class Meta:
+        abstract = True
+
+
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/imports/user_<id>/<filename>
+    return "imports/user_{0}/{1}".format(instance.user.id, filename)
+
+
+class Import(DetailedModel):
+    VOCABULARY_ONLY = 1
+    GRAMMAR_ONLY = 2
+    VOCABULARY_GRAMMAR = 3
+    PROCESS_TYPE = [
+        (VOCABULARY_ONLY, "Vocabulary Only"),
+        (GRAMMAR_ONLY, "Grammar Only"),
+        (VOCABULARY_GRAMMAR, "Vocabulary and Grammar"),
+    ]
+
+    process_type = models.IntegerField(choices=PROCESS_TYPE, default=VOCABULARY_ONLY)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    import_file = models.FileField(
+        upload_to=user_directory_path,
+        validators=[
+            FileTypeValidator(allowed_types=["text/plain", "text/csv", "application/csv"]),
+            FileExtensionValidator(allowed_extensions=["txt", "csv"]),
+            validate_file_size,
+        ],
+    )
+
+    # TODO: think about alerting if the object modification time is too old and processed = null
+    processed = models.BooleanField(default=False, null=True)  # False = new, null = processing, True = processed
+
+    # TODO: maybe use a JSONField? It's JSON but we likely don't need the overhead in the db
+    analysis = models.TextField(null=True)
+
+    def __str__(self):
+        return f"{self.title}"
+
+    def get_absolute_url(self):
+        return reverse("import_detail", args=[str(self.id)])
+
+
+class Survey(DetailedModel):
     survey_json = models.JSONField()
     users = models.ManyToManyField(User, through="UserSurvey")
     is_obligatory = models.BooleanField(default=False)
@@ -52,7 +102,7 @@ class GrammarRule(models.Model):
         return f'{self.hsk_id}-{self.hsk_sub_id if self.hsk_sub_id else ""} - {self.name} - {self.rule}'
 
     def get_absolute_url(self):
-        return reverse("rule-detail", kwargs={"pk": self.pk})
+        return reverse("rule_detail", kwargs={"pk": self.pk})
 
     class Meta:
         constraints = [
@@ -83,7 +133,7 @@ class SText(models.Model):
         return nb
 
     def get_absolute_url(self):
-        return reverse("stext-detail", kwargs={"pk": self.pk})
+        return reverse("stext_detail", kwargs={"pk": self.pk})
 
 
 class UserTextEvaluation(models.Model):
@@ -256,3 +306,165 @@ class UserGrammarRule(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["user", "grammar_rule"], name="user_rule"),
         ]
+
+
+class UserList(DetailedModel):
+    # FIXME: implement ordering by different frequencies
+    ABSOLUTE_FREQUENCY = 0
+    IMPORT_FREQUENCY = 1
+    # A mix of the two? With a weight?
+    ORDER_BY_CHOICES = [
+        (ABSOLUTE_FREQUENCY, "Absolute Frequency"),
+        (IMPORT_FREQUENCY, "Frequency in import"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    the_import = models.ForeignKey(Import, on_delete=models.CASCADE)
+
+    # Filters
+    nb_to_take = models.IntegerField(default=-1)  # -1 = all
+    order_by = models.IntegerField(
+        choices=ORDER_BY_CHOICES,
+        default=ABSOLUTE_FREQUENCY,
+    )
+    order_by = IMPORT_FREQUENCY
+
+    # FIXME: should we allow a choice here?
+    only_simplifieds = True
+    # only_simplifieds = models.BooleanField(default=True)
+
+    only_dictionary_words = models.BooleanField(default=True)
+
+    # FIXME: implement
+    minimum_frequency = models.IntegerField(default=-1)  # -1 = all
+
+    # state
+    processed = models.BooleanField(default=False, null=True)  # False = new, null = processing, True = processed
+
+    # actions
+    add_notes = models.BooleanField(default=False)
+    notes_are_known = models.BooleanField(default=False)
+
+    def update_list_words(self, manager):
+        if self.processed is None:  # currently updating elsewhere?
+            return
+
+        import_frequencies = json.loads(self.the_import.analysis)
+        # word_list = []
+        # if self.order_by == IMPORT_FREQUENCY:
+        #     word_list = list(chain.from_iterable(v for k,v in sorted(import_frequencies.items(), reverse=True)))
+        # # elif...:
+        # #     order by other stuff
+        # else:
+        #     word_list = list(chain.from_iterable(import_frequencies.items()))
+
+        if self.only_simplifieds:
+            # new_list = []
+            # https://stackoverflow.com/questions/1366068/whats-the-complete-range-for-chinese-characters-in-unicode
+            # we are missing some here but it's better than nothing
+            #
+            # \u4e00 == 22909 in base10 and \u9fa5 = 40869
+            # these are the values used in enrichers.zhhans.__init__, which we are reusing
+            # FIXME: use a single value for both these!
+            word_list = list()
+            for freq, words in import_frequencies["vocabulary"]["buckets"].items():
+                new_list = []
+                for word in words:
+                    for character in word:
+                        if ord(character) >= 22909 and ord(character) <= 40869:
+                            new_list.append(word)
+                            break
+                word_list += [(freq, word) for word in new_list]
+                # new_frequencies[freq] = new_list
+
+            # for word in word_list:
+            #     for character in word:
+            #         if ord(character) >= 22909 and ord(character) <= 40869:
+            #             new_list.append(word)
+            #             break
+
+            # word_list = new_list
+
+        temp_file = io.StringIO()
+        writer = csv.writer(temp_file, delimiter="\t")
+        for word, freq in word_list:
+            writer.writerow([word, freq, None, None])
+
+        temp_file.seek(0)  # will be empty otherwise!!!
+        with connection.cursor() as cur:
+            temp_table = f"import_{self.id}"
+            sql = f"""
+                CREATE TEMP TABLE {temp_table} (word text,
+                                                import_frequency int,
+                                                word_id int null,
+                                                freq float null,
+                                                user_word_id int null
+                                                )"""
+            # FIXME: this needs some serious optimisation!!!
+
+            cur.execute(sql)
+
+            # Fill database temp table from the CSV
+            cur.copy_from(temp_file, temp_table, null="")
+            # Get the ID for each word from the reference table (currently enrich_bingapilookup)
+            cur.execute(
+                f"""UPDATE {temp_table}
+                                SET word_id = enrich_bingapilookup.id
+                                FROM enrich_bingapilookup
+                                WHERE word = enrich_bingapilookup.source_text"""
+            )
+
+            cur.execute(
+                f"""UPDATE {temp_table}
+                                SET freq = ((enrichers_zh_subtlexlookup.response_json::json->0)::jsonb->>'wcpm')::float
+                                FROM enrichers_zh_subtlexlookup
+                                WHERE word = enrichers_zh_subtlexlookup.source_text"""
+            )
+
+            cur.execute(f"SELECT word FROM import_{self.id} WHERE word_id IS NULL")
+            for word in cur.fetchall():
+                # TODO: this is a nasty hack with a side effect of creating bing_lookups, which are
+                # our reference values
+                token = {"word": word, "pos": "NN", "lemma": word}
+                manager.default().get_standardised_defs(token)
+
+            cur.execute(
+                f"""UPDATE {temp_table}
+                                SET word_id = enrich_bingapilookup.id
+                                FROM enrich_bingapilookup
+                                WHERE word = enrich_bingapilookup.source_text"""
+            )
+
+            cur.execute(
+                f"""INSERT INTO data_userword (user_id, word_id)
+                                SELECT {self.user_id}, word_id from {temp_table}
+                                WHERE word = enrich_bingapilookup.source_text
+                                ON CONFLICT (user_id, word_id) DO NOTHING"""
+            )
+
+            cur.execute(
+                f"""UPDATE {temp_table} tt
+                                SET user_word_id = data_userword.id
+                                FROM data_userword
+                                WHERE tt.word_id = data_userword.word_id"""
+            )
+
+            sql = f"""
+                INSERT INTO data_userlistword (user_list_id, user_word_id)
+                                SELECT {self.id}, id from data_userword dw
+                                inner join {temp_table} tt on dw.id = tt.word_id"""
+
+
+class UserListGrammarRule:
+    user_list = models.ForeignKey(UserList, on_delete=models.CASCADE)
+    user_grammar_rule = models.ForeignKey(UserGrammarRule, on_delete=models.CASCADE)
+
+
+class UserListWord:
+    user_list = models.ForeignKey(UserList, on_delete=models.CASCADE)
+    user_word = models.ForeignKey(UserWord, on_delete=models.CASCADE)
+
+
+class Goal(DetailedModel):
+    user_list = models.ForeignKey(UserList, on_delete=models.CASCADE, null=True)
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)

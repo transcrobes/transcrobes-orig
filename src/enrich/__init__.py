@@ -40,8 +40,8 @@ class Enricher(ABC):
     @staticmethod
     def _text_from_sentence(sentence):
         text = ""
-        for t in sentence["tokens"]:
-            text += t.get("before", "") + t["originalText"]
+        for token in sentence["tokens"]:
+            text += token.get("before", "") + token["originalText"]
         text += sentence["tokens"][-1].get("after", "")
         return text
 
@@ -49,50 +49,53 @@ class Enricher(ABC):
         userdb = Ankrobes(user.username)
         token_stats = {}
 
-        for s in model["sentences"]:
-            self._add_transliterations(s, manager.transliterator())
+        for sentence in model["sentences"]:
+            self._add_transliterations(sentence, manager.transliterator())
 
-            logger.debug("Looking for tokens to translate in %s", s)
-            original_sentence = self._text_from_sentence(s).strip()
-            s["translation"], s["alignment"] = manager.default().translate(original_sentence)
-            s["cleaned"] = original_sentence  # used to be _cleaned_sentence
+            logger.debug("Looking for tokens to translate in %s", sentence)
+            original_sentence = self._text_from_sentence(sentence).strip()
+            sentence["translation"], sentence["alignment"] = manager.default().translate(original_sentence)
+            sentence["cleaned"] = original_sentence  # used to be _cleaned_sentence
 
-            for t in s["tokens"]:
-                w = t["word"]
-                if not self.is_clean(t) or not self.needs_enriching(t):
+            for token in sentence["tokens"]:
+                word = token["word"]
+                if not self.is_clean(token) or not self.needs_enriching(token):
                     continue
 
                 # From here we attempt translation and create ankrobes entries
-                ank_entry = userdb.sanitise_ankrobes_entry(userdb.get_word(w))
-                t["ankrobes_entry"] = ank_entry
-                if w not in token_stats:
-                    token_stats[w] = [0, bool(ank_entry)]
-                token_stats[w][0] += 1
+                ank_entry = userdb.sanitise_ankrobes_entry(userdb.get_word(word))
+                token["ankrobes_entry"] = ank_entry
 
-                t["definitions"] = {}
-                best = manager.default().get_standardised_defs(t)
+                token["definitions"] = {}
+                best = manager.default().get_standardised_defs(token)
                 if best:
-                    t["definitions"]["best"] = best
+                    token["definitions"]["best"] = best
 
-                for p in manager.secondary():
-                    sec = p.get_standardised_defs(t)
-                    if sec:
-                        t["definitions"][p.name()] = sec
+                for provider in manager.secondary():
+                    secondary = provider.get_standardised_defs(token)
+                    # Only add a definition if one is in the definition source
+                    if secondary:
+                        token["definitions"][provider.name()] = secondary
 
-                t["definitions"]["fallback"] = manager.default().get_standardised_fallback_defs(t)
-                t["normalized_pos"] = self.get_simple_pos(t)
+                token["definitions"]["fallback"] = manager.default().get_standardised_fallback_defs(token)
+                token["normalized_pos"] = self.get_simple_pos(token)
 
                 # TODO: decide whether we really don't want to make a best guess for words we know
                 # this might still be very useful though probably not until we have a best-trans-in-context SMT system
                 # that is good
                 # logger.debug("my ank_entry is {}".format(ank_entry))
+
+                if word not in token_stats:
+                    token_stats[word] = [0, 0]
+                token_stats[word][0] += 1
                 if not ank_entry or not ank_entry[0]["Is_Known"]:  # FIXME: Just using the first for now
                     # get the best guess for the definition of the word given the context of the sentence
-                    self._set_best_guess(s, t)
+                    self._set_best_guess(sentence, token)
+                    token_stats[word][1] += 1  # we are proactively showing a best guess, so nb_checked += 1
 
-                t["stats"] = []
-                for p in manager.metadata():
-                    t["stats"].append(p.metas_as_string(w))
+                token["stats"] = []
+                for provider in manager.metadata():
+                    token["stats"].append(provider.metas_as_string(word))
 
         return model, token_stats
 

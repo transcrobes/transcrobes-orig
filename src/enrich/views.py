@@ -2,11 +2,13 @@
 import json
 import logging
 
+from django.core import serializers
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from ankrobes import Ankrobes
+from data.models import UserWord
 from enrich.data import managers
 from utils import note_format
 
@@ -77,15 +79,28 @@ def word_definitions(request):
         with Ankrobes(request.user.username) as userdb:
             notes = userdb.get_word(w)
 
+        modelStats = next(
+            iter(
+                json.loads(
+                    serializers.serialize(
+                        "json",
+                        UserWord.objects.filter(user=request.user, word__source_text=w),
+                        fields=("nb_seen", "last_seen", "nb_checked", "last_checked"),
+                    )
+                )
+            ),
+            None,
+        )
+
         word_stats = []
         for m in manager.metadata():
             word_stats.append(m.metas_as_string(w))
-
         logger.debug("Received get json defs: %s", w)
         data = {
             "defs": [note_format(manager.default().get_standardised_defs(t), w)]
             + [note_format(x.get_standardised_defs(t), w) for x in manager.secondary()],
             "stats": word_stats,
+            "modelStats": [modelStats["fields"]] if modelStats else [],
             "fallback": note_format(manager.default().get_standardised_fallback_defs(t), w),
             "notes": notes,
         }

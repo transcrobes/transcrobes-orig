@@ -125,6 +125,9 @@ ZH_TB_POS_TO_SIMPLE_POS = {
     "URL": "OTHER",
 }
 
+CORENLP_IGNORABLE_POS = ["PU", "OD", "CD", "NT", "URL", "FW"]
+CORENLP_IGNORABLE_POS_SHORT = ["PU", "URL"]
+
 
 class CoreNLP_ZHHANS_Enricher(Enricher):
 
@@ -135,8 +138,8 @@ class CoreNLP_ZHHANS_Enricher(Enricher):
 
     def needs_enriching(self, token):
         # FIXME: this was previously the following, trying to change and see whether it's bad...
-        # if token['pos'] in ['PU', 'OD', 'CD', 'NT', 'URL']:
-        if token["pos"] in ["PU", "URL"]:
+        # if token['pos'] in CORENLP_IGNORABLE_POS:
+        if token["pos"] in CORENLP_IGNORABLE_POS_SHORT:
             logger.debug("'%s' has POS '%s' so not adding to translatables", token["word"], token["pos"])
             return False
 

@@ -18,6 +18,9 @@ const headers = {
 
 headers[auth[0]] = auth[1];
 
+var timeoutId;
+const lookedAtDuration = 2000;  // ms
+
 class Notrobes extends React.Component {
     constructor( props ) {
         super( props );
@@ -45,8 +48,11 @@ class Notrobes extends React.Component {
 
         if( this.cancel ) {
             this.cancel.cancel();
+            if (timeoutId) {
+                window.clearTimeout(timeoutId);
+                timeoutId = null;
+            }
         }
-
         this.cancel = axios.CancelToken.source();
 
         axios.post( searchUrl, { data: query }, {
@@ -62,6 +68,34 @@ class Notrobes extends React.Component {
                     message: resultNotFoundMsg,
                     loading: false
                 } )
+
+                if (!timeoutId) {
+                    // I tried putting this in a function, but failed... :-(
+                    timeoutId = window.setTimeout(function() {
+                        timeoutId = null;
+                        const eventUrl = `${urlBase}/user_event/`;
+                        const eventData = { type: 'bc_word_lookup',
+                          data : {
+                            target_word: query,
+                            target_sentence: ""
+                          }
+                        }
+                        axios.post( eventUrl, eventData, {
+                            headers: headers
+                        } )
+                            .then( res => {
+                                console.log(`Submitted word lookup for ${query}`);
+                            } )
+                            .catch( error => {
+                                if ( axios.isCancel(error) || error ) {
+                                    this.setState({
+                                        loading: false,
+                                        message: `Failed to send the lookup event ${query}. Please check network`
+                                    })
+                                }
+                            } )
+                    }, lookedAtDuration);
+                }
             } )
             .catch( error => {
                 if ( axios.isCancel(error) || error ) {
@@ -69,6 +103,11 @@ class Notrobes extends React.Component {
                         loading: false,
                         message: 'Failed to fetch the data. Please check network'
                     })
+
+                    if (timeoutId) {
+                        window.clearTimeout(timeoutId);
+                        timeoutId = null;
+                    }
                 }
             } )
     };
@@ -87,6 +126,11 @@ class Notrobes extends React.Component {
 
         if ( this.cancel ) {
             this.cancel.cancel();
+
+            if (timeoutId) {
+                window.clearTimeout(timeoutId);
+                timeoutId = null;
+            }
         }
 
         this.cancel = axios.CancelToken.source();
@@ -117,6 +161,9 @@ class Notrobes extends React.Component {
             } )
     };
 
+    mysendEvent(word){
+    }
+
     handleOnInputChange = ( event ) => {
         const query = event.target.value;
         if ( ! query ) {
@@ -138,6 +185,19 @@ class Notrobes extends React.Component {
             stats.map( result => {
                 return (
                     <div key={ result.name } className="meta-item"><span className="meta-item-title"> { result.name }: </span><span className="meta-item-text"> { result.metas } </span>
+
+                    <hr/>
+                    </div>
+                )
+            } )
+        )
+    }
+
+    getModelStats(modelStats) {
+        return (
+            modelStats.map( result => {
+                return (
+                    <div key={ result.last_seen } className="meta-item"><span className="meta-item-title"> Nb. seen: { result.nb_seen } </span><br/><span className="meta-item-text"> Last seen: { result.last_seen } </span><br/><span className="meta-item-text"> Nb. Checked: { result.nb_checked } </span><br/><span className="meta-item-text"> Last Checked: { result.last_checked } </span>
 
                     <hr/>
                     </div>
@@ -182,10 +242,6 @@ class Notrobes extends React.Component {
             console.log(results);
             return (
                 <div className="results-container">
-                    <h6 className="result-heading">Entry stats</h6>
-                    { results.stats.length &&
-                        this.getStats(results.stats)
-                    }
                     <h6 className="result-heading">Entry definitions</h6>
                     { results.defs.length &&
                         this.getDefinitions(results.defs)
@@ -193,6 +249,14 @@ class Notrobes extends React.Component {
                     <h6 className="result-heading">Entry fallback</h6>
                     { results.fallback.length &&
                         this.getDefinitions(results.fallback)
+                    }
+                    <h6 className="result-heading">Entry stats</h6>
+                    { results.stats.length &&
+                        this.getStats(results.stats)
+                    }
+                    <h6 className="result-heading">Entry personal stats</h6>
+                    { results.modelStats.length &&
+                        this.getModelStats(results.modelStats)
                     }
                     <h6 className="result-heading">Existing notes</h6>
                     { results.notes.length &&

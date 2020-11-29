@@ -24,7 +24,7 @@
       <div class="card-body">
         <ul>
           {% for survey in new_surveys %}
-            <li><a href="{% url 'ui-survey-detail' survey_id=survey.id %}">{{ survey.title }}</a></li>
+            <li><a href="{% url 'ui_survey_detail' survey_id=survey.id %}">{{ survey.title }}</a></li>
           {% endfor %}
         </ul>
       </div>
@@ -47,7 +47,7 @@
       <div class="card-body">
         <ul>
           {% for survey in answered_surveys %}
-            <li><a href="{% url 'ui-survey-detail' survey_id=survey.id %}">{{ survey.title }}</a></li>
+            <li><a href="{% url 'ui_survey_detail' survey_id=survey.id %}">{{ survey.title }}</a></li>
           {% endfor %}
         </ul>
       </div>

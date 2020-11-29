@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging
 import os
 from datetime import timedelta
 
@@ -110,7 +109,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-LL = "ERROR"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.getenv("TRANSCROBES_MEDIA_ROOT", "/tmp/media/")
 
 ## Observability
 # Prometheus
@@ -129,16 +129,29 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "verbose"}},
     "loggers": {
         "django": {"handlers": ["console"], "level": os.getenv("DJANGO_LOG_LEVEL", "INFO")},
-        "enrich": {"handlers": ["console"], "level": LL, "propagate": False},
-        "enrich.translator": {"handlers": ["console"], "level": LL, "propagate": False},
-        "enrich.nlp": {"handlers": ["console"], "level": LL, "propagate": False},
-        "notes": {"handlers": ["console"], "level": LL, "propagate": False},
-        "": {"handlers": ["console"], "level": LL, "propagate": False},
+        "data": {
+            "handlers": ["console"],
+            "level": os.getenv("TRANSCROBES_DATA_LOG_LEVEL", "ERROR"),
+            "propagate": False,
+        },
+        "enrich": {
+            "handlers": ["console"],
+            "level": os.getenv("TRANSCROBES_ENRICH_LOG_LEVEL", "ERROR"),
+            "propagate": False,
+        },
+        "enrichers": {
+            "handlers": ["console"],
+            "level": os.getenv("TRANSCROBES_ENRICHERS_LOG_LEVEL", "ERROR"),
+            "propagate": False,
+        },
+        "ankrobes": {
+            "handlers": ["console"],
+            "level": os.getenv("TRANSCROBES_NOTES_LOG_LEVEL", "ERROR"),
+            "propagate": False,
+        },
+        "": {"handlers": ["console"], "level": os.getenv("TRANSCROBES_DEFAULT_LOG_LEVEL", "ERROR"), "propagate": False},
     },
 }
-
-if os.getenv("DJANGO_LOG_LEVEL"):
-    logging.disable(os.getenv("DJANGO_LOG_LEVEL"))
 
 if DEBUG:
     MIDDLEWARE.append("request_logging.middleware.LoggingMiddleware")
@@ -225,7 +238,7 @@ TEST_RUNNER = "tests.CleanupTestRunner"
 # Kafka
 KAFKA_BROKER = os.getenv("TRANSCROBES_KAFKA_BROKER", "localhost:9092")
 KAFKA_CONSUMER_TIMEOUT_MS = int(os.getenv("TRANSCROBES_KAFKA_CONSUMER_TIMEOUT_MS", "5000"))
-KAFKA_STATS_LOOP_SLEEP = int(os.getenv("TRANSCROBES_KAFKA_STATS_LOOP_SLEEP", "10"))
+KAFKA_STATS_LOOP_SLEEP_SECS = int(os.getenv("TRANSCROBES_KAFKA_STATS_LOOP_SLEEP_SECS", "10"))
 KAFKA_MAX_POLL_RECORDS = int(os.getenv("TRANSCROBES_KAFKA_MAX_POLL_RECORDS", "500"))  # 500 is default
 
 CACHES = {
@@ -254,7 +267,30 @@ CACHES = {
     },
 }
 
-# From here the values are sensible and can be kept if desired
+# User list import max file size in KB
+IMPORT_MAX_UPLOAD_SIZE_KB = int(os.getenv("TRANSCROBES_IMPORT_MAX_UPLOAD_SIZE_KB", "5120"))
+
+IMPORT_UPLOAD_SAFETY_MARGIN = 10000
+
+# Django-internal, for uploads, the default is 2.5MB, so if not set put to 5MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = int(os.getenv("TRANSCROBES_DATA_UPLOAD_MAX_MEMORY_SIZE", str(5 * 1024 * 1024)))
+DATA_UPLOAD_MAX_MEMORY_SIZE = (
+    IMPORT_MAX_UPLOAD_SIZE_KB * 1024
+    if IMPORT_MAX_UPLOAD_SIZE_KB * 1024 > DATA_UPLOAD_MAX_MEMORY_SIZE
+    else DATA_UPLOAD_MAX_MEMORY_SIZE
+) + IMPORT_UPLOAD_SAFETY_MARGIN
+
+# The max size of a a chunk of an input/import file to send to the parser (CoreNLP)
+# This needs to be measured against resources, and the larger the chunk, the more memory and time
+# each chunk will require to process. Also:
+# - the CORENLP_TIMEOUT might need to be increased if this is increased
+# - the max number of bytes currently supported by the transcrobes/corenlp-chinese image is
+#   100k, the image will need to have -maxCharLength -1 (for unlimited) or -maxCharLength ??? if more is required
+# WARNING!!! corenlp should have at least 2GB of mem or large values here can quickly overwhelm it, and it
+# will start timing out and having regular OOM
+IMPORT_PARSE_CHUNK_SIZE_BYTES = int(os.getenv("TRANSCROBES_IMPORT_PARSE_CHUNK_SIZE_BYTES", "20000"))
+IMPORT_DETECT_CHUNK_SIZE_BYTES = int(os.getenv("TRANSCROBES_IMPORT_DETECT_CHUNK_SIZE_BYTES", "5000"))
+IMPORT_MAX_CONCURRENT_PARSER_QUERIES = int(os.getenv("TRANSCROBES_IMPORT_MAX_CONCURRENT_PARSER_QUERIES", "10"))
 
 # TODO: give the option of doing an import to a configmap mounted file
 # and configuring from there. That will likely be useful when we have
@@ -294,13 +330,6 @@ LANG_PAIRS = {
             },
         },
         "secondary": [
-            {
-                "classname": "zhhans_en.translate.abc.ZHHANS_EN_ABCDictTranslator",
-                "config": {
-                    "path": os.getenv("TRANSCROBES_ZH_EN_ABC_DICT_PATH", "/opt/transcrobes/zh_en_abc_dict.txt"),
-                    "inmem": os.getenv("TRANSCROBES_ZH_EN_ABC_DICT_INMEM", "false").lower() == "true",
-                },
-            },
             {
                 "classname": "zhhans_en.translate.ccc.ZHHANS_EN_CCCedictTranslator",
                 "config": {
