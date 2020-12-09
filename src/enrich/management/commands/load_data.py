@@ -3,22 +3,23 @@ import os
 
 from django.core.management.base import BaseCommand, CommandError
 
-from en_zhhans.translate.abc import EN_ZHHANS_ABCDictTranslator
-from enrichers.en.metadata.subtlex import EN_SubtlexMetadata
-from enrichers.en.transliterate.cmu import CMU_EN_Transliterator
+# from en_zhhans.translate.abc import EN_ZHHANS_ABCDictTranslator
+# from enrichers.en.metadata.subtlex import EN_SubtlexMetadata
+# from enrichers.en.transliterate.cmu import CMU_EN_Transliterator
 from enrichers.zhhans.metadata.hsk import ZH_HSKMetadata
 from enrichers.zhhans.metadata.subtlex import ZH_SubtlexMetadata
 from zhhans_en.translate.abc import ZHHANS_EN_ABCDictTranslator
 from zhhans_en.translate.ccc import ZHHANS_EN_CCCedictTranslator
 
 DATA_PROVIDERS = {
-    "en_zh_abc_dict": EN_ZHHANS_ABCDictTranslator,
+    # English support removed for the moment
+    # "en_zh_abc_dict": EN_ZHHANS_ABCDictTranslator,
+    # "en_cmu_dict": CMU_EN_Transliterator,
+    # "en_subtlex_freq": EN_SubtlexMetadata,
     "zh_en_abc_dict": ZHHANS_EN_ABCDictTranslator,
     "zh_en_cedict": ZHHANS_EN_CCCedictTranslator,
-    "en_cmu_dict": CMU_EN_Transliterator,
     "zh_hsk_lists": ZH_HSKMetadata,
     "zh_subtlex_freq": ZH_SubtlexMetadata,
-    "en_subtlex_freq": EN_SubtlexMetadata,
 }
 
 
@@ -63,8 +64,7 @@ class Command(BaseCommand):
 
         for prov in to_load:
             dp = prov[0]
-
-            path = os.getenv(f"TRANSCROBES_{dp.upper()}_PATH")
+            path = os.getenv(f"TRANSCROBES_{dp.upper()}_PATH", "")
             self.stdout.write(f"Loading data to DB for {dp} from path {path}")
             loader = DATA_PROVIDERS[dp]({"path": path, "inmem": True})
             loader.load_to_db(loader.dico, force_reload)
