@@ -1,0 +1,35 @@
+<!-- templates/data/list_list.html-->
+{% extends 'data/base.html' %}
+
+{% block title %}Imports{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Imports</h1>
+</div>
+
+<div class="row">
+
+  <div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+      <!-- Card Header - Dropdown -->
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Imports</h6>
+      </div>
+
+      <div class="card-body">
+        <ul>
+          {% for import in object_list %}
+            <li><a href="{% url 'import_detail' survey_id=survey.id %}">{{ survey.title }}dd</a></li>
+          {% empty %}
+            <li>No imports yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
