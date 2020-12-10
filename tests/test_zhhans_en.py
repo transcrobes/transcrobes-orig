@@ -238,13 +238,6 @@ class ZHHANS_EN_CCCedictTranslatorTests(VCRTestCase):
 
     def tearDown(self):
         pass
-        # self.dico = None
-        # # # managers = None
-        # print('here is hello')
-        # print(dir())
-        # print('here is goodby')
-        # print(globals())
-        # print('here is fark')
 
     def test_load(self):
         """
@@ -384,5 +377,3 @@ class ZHHANS_EN_CCCedictTranslatorTests(VCRTestCase):
             self.dico.get_standardised_defs({"word": "龙门石窟", "pos": "NN", "lemma": "龙门石窟"}),
             self.dico.get_standardised_fallback_defs({"word": "龙门石窟", "pos": "NN", "lemma": "龙门石窟"}),
         )
-
-        # del globals()['managers']

@@ -1,0 +1,49 @@
+<!-- templates/data/import_detail.html-->
+{% extends 'data/base.html' %}
+{% load static %}
+
+{% block title %}List {{ userlist.title }}{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Lists</h1>
+</div>
+
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">List Details</h6>
+      </div>
+
+      <div class="card-body">
+        <table border="1px">
+          <tr><th>Field</th><th>Value</th></tr>
+            <tr><td>Title</td><td>{{ userlist.title }}</td></tr>
+            <tr><td>Status</td><td>{{ userlist.processing_status }}</td></tr>
+            <tr><td>Created by</td><td>{{ userlist.user }}</td></tr>
+            <tr><td>Created</td><td>{{ userlist.created }}</td></tr>
+            <tr><td>Modified</td><td>{{ userlist.modified }}</td></tr>
+            <tr><td>Created from import</td><td>{{ userlist.the_import }}</td></tr>
+            <tr><td>Shared with others</td><td>{{ userlist.shared }}</td></tr>
+            <tr><td>Max size</td><td>{{ userlist.nb_to_take }}</td></tr>
+            <tr><td>Real size</td><td>{{ userlist.list_length }}</td></tr>
+            <tr><td>Order</td><td>{{ userlist.order_by }}</td></tr>
+            <tr><td>Only dictionary words</td><td>{{ userlist.only_dictionary_words }}</td></tr>
+            <tr><td>Min import frequency</td><td>{{ userlist.minimum_doc_frequency }}</td></tr>
+            <tr><td>Min absolute frequency</td><td>{{ userlist.minimum_abs_frequency }}</td></tr>
+            <tr><td colspan="2">Actions</td></tr>
+            <tr><td>Add new notes</td><td>{{ userlist.add_notes }}</td></tr>
+            <tr><td>Set notes known</td><td>{{ userlist.notes_are_known }}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p><a href="{% url 'list_list' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Lists</a></p>
+<hr>
+
+{% endblock %}

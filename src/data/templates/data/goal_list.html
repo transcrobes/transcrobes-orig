@@ -1,0 +1,35 @@
+<!-- templates/data/goal_list.html-->
+{% extends 'data/base.html' %}
+
+{% block title %}Goals{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Goals</h1>
+</div>
+
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+      <!-- Card Header - Dropdown -->
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Goals</h6>
+      </div>
+      <p><a href="{% url 'goal_create' from_list=0 %}" class="btn btn-primary btn-user btn-block">Create a goal</a></p>
+      <div class="card-body">
+        <table border="1px">
+          <tr><th>Name</th><th>Created</th><th>Actions</th></tr>
+          {% for goal in object_list %}
+            <tr><td><a href="{% url 'goal_detail' pk=goal.id %}">{{ goal.title }} ({{goal.id}})</a></td><td>{{ goal.created }}</td><td><a href="{% url 'goal_detail' pk=goal.id %}">View</a> <a href="{% url 'goal_update' pk=goal.id %}">Update</a></td></tr>
+          {% empty %}
+            <td colspan="4">No goals yet. <a href="{% url 'goal_create' from_list=0 %}">Create one</a></td>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

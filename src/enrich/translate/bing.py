@@ -27,6 +27,7 @@ class BingTranslator(Translator, BingAPI):
 
     # public override methods
     def get_standardised_defs(self, token):
+        # breakpoint()
         result = self._ask_bing_lookup(token["lemma"])
         jresult = json.loads(result)
         bing = jresult[0]["translations"]
@@ -77,6 +78,9 @@ class BingTranslator(Translator, BingAPI):
         return {**self.default_params(), **{"includeAlignment": True}}
 
     def _ask_bing_lookup(self, content):
+        if not content:  # calling the api with empty string will put rubbish in the DB
+            return None
+
         val = None
         if self._inmem:
             val = caches["bing_lookup"].get(content)
@@ -100,6 +104,9 @@ class BingTranslator(Translator, BingAPI):
         return val
 
     def _ask_bing_translate(self, content, is_fallback=False):
+        if not content:  # calling the api with empty string will put rubbish in the DB
+            return None
+
         val = None
         if self._inmem and is_fallback:
             val = caches["bing_translate"].get(content)

@@ -1,0 +1,31 @@
+<!-- templates/data/create_list.html-->
+{% extends 'data/base.html' %}
+
+{% block title %}Create List{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Create a new List</h1>
+</div>
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <p>When Transcrobes creates a list a number of analysis steps are required, which can take some time depending on how busy the system is. Please be patient while this happens - good things can take a little time! You can check the current status of your lists on the <a href="{% url 'list_list' %}">Lists page</a>.</p>
+</div>
+
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-primary btn-user btn-block" type="submit">Create the list</button>
+    </form>
+
+    <hr>
+    <p><a href="{% url 'list_list' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Lists</a></p>
+
+  </div>
+</div>
+
+{% endblock %}

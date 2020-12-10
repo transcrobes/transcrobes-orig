@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import asyncio
 import json
 import logging
 import socket
 from abc import ABC, abstractmethod
+from urllib.parse import quote
 
-import aiohttp
 import requests
 import xmltodict
 from aiohttp_retry import RetryClient, RetryOptions
@@ -76,7 +75,7 @@ class HTTPCoreNLPProvider(ParseProvider):
 
         params = {"properties": provider_parameters or self._config["params"]}
 
-        r = requests.post(self._config["base_url"], data=text.encode("utf-8"), params=params)
+        r = requests.post(self._config["base_url"], data=quote(text), params=params)
         r.raise_for_status()
 
         logger.debug("Got the following back from CoreNLP via http: %s", r.text)
@@ -91,7 +90,7 @@ class HTTPCoreNLPProvider(ParseProvider):
         async with RetryClient(raise_for_status=False, retry_options=retry_options) as client:
             logger.debug("Starting HTTPCoreNLPProvider aparse of: %s", text)
             params = {"properties": provider_parameters or self._config["params"]}
-            async with client.post(self._config["base_url"], data=text.encode("utf-8"), params=params) as response:
+            async with client.post(self._config["base_url"], data=quote(text), params=params) as response:
                 response.raise_for_status()
                 logger.debug("Finished getting model from CoreNLP via http")
                 return await response.json()

@@ -8,22 +8,19 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import DetailView, TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import api_view, permission_classes
 
 import stats
 from ankrobes import Ankrobes  # FIXME: should probably not do the note creation here, as we are mixing modules...
-from data.models import Survey, UserSurvey
+from data.models import Goal, Import, Survey, UserList, UserSurvey
 from data.permissions import IsOwner
 from data.serialisers import SurveySerialiser, UserSerialiser, UserSurveySerialiser
 from data.utils import update_user_rules, update_user_words_known
 from enrich.data import managers
 from utils import default_definition
-
-# from .forms import ImportForm
-from .models import Import
 
 logger = logging.getLogger(__name__)
 
@@ -64,12 +61,50 @@ class OnboardedTemplateView(OnboardedView, TemplateView):
     pass
 
 
+class HomeView(OnboardedTemplateView):
+    MAX_GOALS_LIST = 6
+
+    @staticmethod
+    def get_goal_display_status(percent):
+        # FIXME: there are clean solutions with things like pandas but... require pandas for this???
+        # we may need it later but for the moment
+
+        # TODO: decide whether "success" should correspond to 95% or 98%, which would mean "scientific" goodness
+
+        if percent < 0.6:
+            return "bg-danger"
+        if percent < 0.75:
+            return "bg-warning"
+        if percent < 0.90:
+            return "bg-info"
+        return "bg-success"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        progresses = []
+        for goal in Goal.objects.filter(user=self.request.user).active():
+            if len(progresses) >= self.MAX_GOALS_LIST:
+                break
+
+            percent = goal.get_progress_percent()
+            if percent:
+                progresses.append(
+                    {
+                        "name": goal.title,
+                        "display_status": self.get_goal_display_status(goal.get_progress_percent()),
+                        "progress_percent": percent,
+                    }
+                )
+        context["goals_progress"] = progresses
+        return context
+
+
 # FIXME: currently unused, delete if not required!
-class SurveyListView(LoginRequiredMixin, ListView):
-    queryset = Survey.objects.prefetch_related("usersurvey_set").filter(is_obligatory=False)
-    paginate_by = 10
-    template_name = "data/survey_list.html"
-    context_object_name = "surveys"
+# class SurveyListView(LoginRequiredMixin, ListView):
+#     queryset = Survey.objects.prefetch_related("usersurvey_set").filter(is_obligatory=False)
+#     paginate_by = 10
+#     template_name = "data/survey_list.html"
+#     context_object_name = "surveys"
 
 
 class UserSurveysView(OnboardedTemplateView):
@@ -77,10 +112,8 @@ class UserSurveysView(OnboardedTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["new_surveys"] = Survey.objects.exclude(usersurvey__user__id=self.request.user.id).filter(
-            is_obligatory=False
-        )
-        context["answered_surveys"] = Survey.objects.filter(usersurvey__user__id=self.request.user.id).filter(
+        context["new_surveys"] = Survey.objects.exclude(usersurvey__user=self.request.user).filter(is_obligatory=False)
+        context["answered_surveys"] = Survey.objects.filter(usersurvey__user=self.request.user).filter(
             is_obligatory=False
         )
 
@@ -118,12 +151,9 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
 
-# PROD
-
-
 class ImportCreate(OnboardedView, CreateView):
     model = Import
-    # exclude = ['user']
+    exclude = ["user"]
     fields = ("title", "description", "status", "import_file", "process_type")
 
     def form_valid(self, form):
@@ -133,29 +163,95 @@ class ImportCreate(OnboardedView, CreateView):
 
 class ImportList(OnboardedView, ListView):
     model = Import
-    # exclude = ['user']
-    # fields = ('title', 'description', 'status', 'import_file', )
+    exclude = ["user"]
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
 
 
 class ImportDetail(OnboardedView, DetailView):
     model = Import
-    # exclude = ['user']
-    # fields = ('title', 'description', 'status', 'import_file', )
 
 
-# @permission_classes((permissions.IsAuthenticated,))
-# def import_form_upload(request):
-#     if request.method == 'POST':
-#         form = ImportForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-#     else:
-#         form = ImportForm()
-#
-#     return render(request, 'data/list_import.html', {
-#         'form': form
-#     })
+class ListCreate(OnboardedView, CreateView):
+    model = UserList
+    exclude = ["user"]
+    fields = (
+        "title",
+        "status",
+        "description",
+        "the_import",
+        "shared",
+        "nb_to_take",
+        "order_by",
+        "only_dictionary_words",
+        "minimum_doc_frequency",
+        "minimum_abs_frequency",
+        "add_notes",
+        "notes_are_known",
+    )
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"].fields["the_import"].queryset = Import.objects.filter(user=self.request.user)
+        return context
+
+
+class ListList(OnboardedView, ListView):
+    model = UserList
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+class ListDetail(OnboardedView, DetailView):
+    model = UserList
+
+
+class GoalCreate(OnboardedView, CreateView):
+    model = Goal
+    exclude = ["user"]
+    fields = ("title", "description", "status", "user_list", "parent")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"].fields["user_list"].queryset = UserList.objects.filter(user=self.request.user)
+        return context
+
+
+class GoalList(OnboardedView, ListView):
+    model = Goal
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user)
+
+
+class GoalDetail(OnboardedView, DetailView):
+    model = Goal
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["progress"] = self.object.get_progress()
+        return context
+
+
+class GoalUpdate(OnboardedView, UpdateView):
+    model = Goal
+    exclude = ["user"]
+    fields = ("title", "description", "status", "user_list", "parent")
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
 
 # Ideas for improvements
 # - instead of just recording the word as seen/checked, add POS for the actual tokens in the text

@@ -3,15 +3,12 @@
 import asyncio
 import json
 import logging
-import threading
 from collections import Counter, defaultdict
 from itertools import chain
 
-import aiohttp
 import magic
 from django.conf import settings
 
-from data.models import Import
 from enrich.data import managers
 from enrichers.zhhans import CORENLP_IGNORABLE_POS
 
@@ -72,6 +69,13 @@ async def vocabulary_from_model(model):
     vocabulary = VocabularyCounter()
     for sentence in model["sentences"]:
         for token in sentence["tokens"]:
+            # WARNING!!!
+            # this has the effect of removing LOTS of Chinese time and number words/expressions
+            # At the moment this looks like a good idea because we really don't want "words" like
+            # 千万分之一, which is a "word" according to CoreNLP. It is entirely predictable from
+            # the parts, and we definitely don't need to consider this something that might need
+            # to be added to Anki, or that it should be included in known word counts, considered
+            # when calculating difficulty
             if token["pos"] not in CORENLP_IGNORABLE_POS:  # TODO: consider making this configurable
                 vocabulary[token["word"]] += 1
     return vocabulary
@@ -151,3 +155,11 @@ def process_import(an_import):
     an_import.analysis = json.dumps(asyncio.run(process(manager, contents, an_import.process_type)), ensure_ascii=False)
     an_import.processed = True
     an_import.save()
+
+
+def process_list(a_list):
+    manager = managers.get(a_list.user.transcrober.lang_pair())
+    if not manager:
+        raise NotImplementedError(f"Server does not support language pair {a_list.user.transcrober.lang_pair()}")
+
+    a_list.update_list_words(manager)

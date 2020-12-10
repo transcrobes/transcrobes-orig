@@ -1,0 +1,42 @@
+<!-- templates/data/goal_detail.html-->
+{% extends 'data/base.html' %}
+{% load static %}
+
+{% block title %}Goal {{ goal.title }}{% endblock %}
+
+{% block content %}
+
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Goals</h1>
+</div>
+
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Goal Details</h6>
+      </div>
+      <a class="btn btn-primary btn-user btn-block" href="{% url 'goal_update' pk=goal.id %}">Update this goal <i class="fas fa-arrow-right"></i></a>
+      <div class="card-body">
+        <table border="1px">
+          <tr><th>Field</th><th>Value</th></tr>
+          <tr><td>Title</td><td>{{ goal.title }}</td></tr>
+          <tr><td>Priority</td><td>{{ goal.priority }}</td></tr>
+          <tr><td>Created</td><td>{{ goal.created }}</td></tr>
+          <tr><td>Modified</td><td>{{ goal.modified }}</td></tr>
+          <tr><td>Associated List</td><td>{{ goal.user_list|default_if_none:"No List"}}</td></tr>
+          <tr><td>Parent</td><td>{{ goal.parent|default:"No Parent" }}</td></tr>
+          <tr><td>Children</td><td>{{ goal.sub_goal_names|join:"<br>"|default:"No Children" }}</td></tr>
+          <tr><td>Progress</td><td>{{ goal.get_progress_percent }}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p><a href="{% url 'goal_list' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Goals</a></p>
+<hr>
+
+{% endblock %}

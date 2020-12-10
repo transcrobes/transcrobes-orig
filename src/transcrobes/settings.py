@@ -331,6 +331,13 @@ LANG_PAIRS = {
         },
         "secondary": [
             {
+                "classname": "zhhans_en.translate.abc.ZHHANS_EN_ABCDictTranslator",
+                "config": {
+                    "path": os.getenv("TRANSCROBES_ZH_EN_ABC_DICT_PATH", "/opt/transcrobes/abc_zh_en_dict.txt"),
+                    "inmem": os.getenv("TRANSCROBES_ZH_EN_ABC_DICT_INMEM", "false").lower() == "true",
+                },
+            },
+            {
                 "classname": "zhhans_en.translate.ccc.ZHHANS_EN_CCCedictTranslator",
                 "config": {
                     "path": os.getenv("TRANSCROBES_ZH_EN_CEDICT_PATH", "/opt/transcrobes/zh_en_cedict.txt"),

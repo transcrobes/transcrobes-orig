@@ -251,12 +251,14 @@ class FullEnrichMixin(VCRMixin):
         # will change depending on when in the test run the users are created, so will break tests
         # with reordering them, adding, etc. Here we go into the call and pull out the invariant bit
         self.assertEqual("vocab", MockKafkaProducer.mock_calls[1][1][0])
+
         self.assertEqual(
             MockKafkaProducer.mock_calls[1][1][1]["tstats"],
             json.loads(pkgutil.get_data("tests.assets.zhhans_enrichers", "stats_no_notes.json").decode("utf-8")),
         )
 
         self.assertEqual("vocab", MockKafkaProducer.mock_calls[2][1][0])
+
         self.assertEqual(
             MockKafkaProducer.mock_calls[2][1][1]["tstats"],
             json.loads(pkgutil.get_data("tests.assets.zhhans_enrichers", "stats_w_notes.json").decode("utf-8")),

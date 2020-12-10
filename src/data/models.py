@@ -2,9 +2,12 @@
 import csv
 import io
 import json
+import logging
+import os
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import connection, models
 from django.urls import reverse
@@ -12,12 +15,22 @@ from django.utils import timezone
 from django_extensions.db.models import ActivatorModel, TimeStampedModel, TitleSlugDescriptionModel
 from upload_validator import FileTypeValidator
 
+from ankrobes import Ankrobes
 from enrich.models import BingAPILookup, BingAPITranslation
+from utils import default_definition  # , SIMPLIFIED_UTF8_ORD_MIN, SIMPLIFIED_UTF8_ORD_MAX
 
 from .validators import validate_file_size
 
+SIMPLIFIED_UTF8_ORD_MIN = 22909
+SIMPLIFIED_UTF8_ORD_MAX = 40869
+
+logger = logging.getLogger(__name__)
+
 
 class DetailedModel(ActivatorModel, TimeStampedModel, TitleSlugDescriptionModel):
+    def __str__(self):
+        return f"{self.title}"
+
     class Meta:
         abstract = True
 
@@ -54,8 +67,51 @@ class Import(DetailedModel):
     # TODO: maybe use a JSONField? It's JSON but we likely don't need the overhead in the db
     analysis = models.TextField(null=True)
 
-    def __str__(self):
-        return f"{self.title}"
+    # shared, can be seen by others, and used as a template for creating their own versions
+    shared = models.BooleanField(default=False, help_text="Allow others to see and use this import?")
+
+    def processing_status(self):
+        if self.processed:
+            return "Processed"
+
+        if self.processed is None:
+            return "Processing"
+
+        return "Waiting"
+
+    def import_file_name(self):
+        return os.path.basename(self.import_file.name)
+
+    # FIXME: document that this is NOT the complete list, and consider adding the complete list instead
+    # In our resulting parse we ignore several catgories of word and therefore none of the nb_useful_*
+    # methods have a complete list. We should probably have *everything* available in terms of stats -
+    # meaning we also take all the CD, NT, etc. pos and filter later for various counts. We almost certainly
+    # won't want them in the lists but the point of having separate Import, UserList and Goal is precisely so
+    # we have freedom around this!!!
+    def nb_useful_types(self):
+        counts = json.loads(self.analysis)["vocabulary"]["counts"]
+        return sum(counts.values())
+
+    def nb_useful_tokens(self):
+        counts = json.loads(self.analysis)["vocabulary"]["counts"]
+        return sum([int(k) * v for k, v in counts.items()])
+
+    def nb_useful_characters_total(self):
+        words = json.loads(self.analysis)["vocabulary"]["buckets"]
+        return sum([int(k) * len("".join(v)) for k, v in words.items()])
+
+    def nb_useful_characters_unique(self):
+        words = json.loads(self.analysis)["vocabulary"]["buckets"]
+        # a long string into a set to get only unique chars
+        all_unique_characters = set("".join(["".join(v) for v in words.values()]))
+        # then make sure that we only count Chinese/Simplified characters
+        return len(
+            [
+                x
+                for x in all_unique_characters
+                if ord(x) >= SIMPLIFIED_UTF8_ORD_MIN and ord(x) <= SIMPLIFIED_UTF8_ORD_MAX
+            ]
+        )
 
     def get_absolute_url(self):
         return reverse("import_detail", args=[str(self.id)])
@@ -65,9 +121,6 @@ class Survey(DetailedModel):
     survey_json = models.JSONField()
     users = models.ManyToManyField(User, through="UserSurvey")
     is_obligatory = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.title}"
 
 
 class UserSurvey(TimeStampedModel):
@@ -309,7 +362,6 @@ class UserGrammarRule(models.Model):
 
 
 class UserList(DetailedModel):
-    # FIXME: implement ordering by different frequencies
     ABSOLUTE_FREQUENCY = 0
     IMPORT_FREQUENCY = 1
     # A mix of the two? With a weight?
@@ -319,75 +371,102 @@ class UserList(DetailedModel):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    the_import = models.ForeignKey(Import, on_delete=models.CASCADE)
+    the_import = models.ForeignKey(Import, on_delete=models.CASCADE, help_text="The import to create the list from")
+
+    # shared, can be seen by others, and used as a template for creating their own versions
+    shared = models.BooleanField(default=False, help_text="Allow others to see and use this list?")
 
     # Filters
-    nb_to_take = models.IntegerField(default=-1)  # -1 = all
+    nb_to_take = models.IntegerField(
+        default=-1, help_text="Maximum number of words in the list, -1 for all"
+    )  # -1 = all
     order_by = models.IntegerField(
         choices=ORDER_BY_CHOICES,
         default=ABSOLUTE_FREQUENCY,
+        help_text="Order of the words (only useful when a maximum number is specified)",
     )
-    order_by = IMPORT_FREQUENCY
+    only_dictionary_words = models.BooleanField(
+        default=True, help_text="Ignore words that don't appear in the main dictionary"
+    )
+    minimum_doc_frequency = models.IntegerField(
+        default=-1,
+        help_text="Min occurrences in the import before the word will be added to the list, -1 for all",
+    )
+    minimum_abs_frequency = models.IntegerField(
+        default=-1,
+        help_text=("Minimum frequency in words per million, see the documentation for more details, -1 for all"),
+    )
 
-    # FIXME: should we allow a choice here?
+    # FIXME: should we allow a choice here? what are some genuinely useful examples?
     only_simplifieds = True
     # only_simplifieds = models.BooleanField(default=True)
-
-    only_dictionary_words = models.BooleanField(default=True)
-
-    # FIXME: implement
-    minimum_frequency = models.IntegerField(default=-1)  # -1 = all
 
     # state
     processed = models.BooleanField(default=False, null=True)  # False = new, null = processing, True = processed
 
     # actions
-    add_notes = models.BooleanField(default=False)
-    notes_are_known = models.BooleanField(default=False)
+    add_notes = models.BooleanField(default=False, help_text="Should Anki notes be added for each word?")
+    notes_are_known = models.BooleanField(default=False, help_text="Should the notes added be set to already known?")
 
-    def update_list_words(self, manager):
-        if self.processed is None:  # currently updating elsewhere?
-            return
+    def get_absolute_url(self):
+        return reverse("list_detail", args=[str(self.id)])
 
-        import_frequencies = json.loads(self.the_import.analysis)
-        # word_list = []
-        # if self.order_by == IMPORT_FREQUENCY:
-        #     word_list = list(chain.from_iterable(v for k,v in sorted(import_frequencies.items(), reverse=True)))
-        # # elif...:
-        # #     order by other stuff
-        # else:
-        #     word_list = list(chain.from_iterable(import_frequencies.items()))
+    def processing_status(self):
+        if self.processed:
+            return "Processed"
 
-        if self.only_simplifieds:
-            # new_list = []
-            # https://stackoverflow.com/questions/1366068/whats-the-complete-range-for-chinese-characters-in-unicode
-            # we are missing some here but it's better than nothing
-            #
-            # \u4e00 == 22909 in base10 and \u9fa5 = 40869
-            # these are the values used in enrichers.zhhans.__init__, which we are reusing
-            # FIXME: use a single value for both these!
-            word_list = list()
-            for freq, words in import_frequencies["vocabulary"]["buckets"].items():
-                new_list = []
-                for word in words:
+        if self.processed is None:
+            return "Processing"
+
+        return "Waiting"
+
+    def list_length(self):
+        return UserListWord.objects.filter(user_list=self).count()
+
+    def filter_words(self, import_frequencies):
+
+        # FIXME: nasty hardcoding
+        # abs_frequency_table = manager.metadata()[1]  # 0 = HSK, 1 = Subtlex
+        word_list = list()
+        for freq, words in import_frequencies["vocabulary"]["buckets"].items():
+            # if freq < self.minimum_doc_frequency:
+            #     continue
+
+            new_list = []
+            for word in words:
+                # if self.minimum_abs_frequency > 0:
+                #     abs_frequency = self.minimum_abs_frequency < abs_frequency_table.get(word)
+                #     # wcpm = word count per million
+                #     if not abs_frequency or abs_frequency[0]['wcpm'] < self.minimum_abs_frequency:
+                #         continue
+
+                if self.only_simplifieds:
+                    # https://stackoverflow.com/questions/1366068/whats-the-complete-range-for-chinese-characters-in-unicode
+                    # we are missing some here but it's better than nothing
+                    #
+                    # \u4e00 == 22909 in base10 and \u9fa5 = 40869
+                    # these are the values used in enrichers.zhhans.__init__, which we are reusing
+                    # FIXME: use a single value for both these!
                     for character in word:
-                        if ord(character) >= 22909 and ord(character) <= 40869:
+                        if ord(character) >= SIMPLIFIED_UTF8_ORD_MIN and ord(character) <= SIMPLIFIED_UTF8_ORD_MAX:
                             new_list.append(word)
                             break
-                word_list += [(freq, word) for word in new_list]
-                # new_frequencies[freq] = new_list
+            word_list += [(freq, word) for word in new_list]
 
-            # for word in word_list:
-            #     for character in word:
-            #         if ord(character) >= 22909 and ord(character) <= 40869:
-            #             new_list.append(word)
-            #             break
+        return word_list
 
-            # word_list = new_list
+    def update_list_words(self, manager):  # noqa:C901 # pylint: disable=R0914,R0915
+        import_frequencies = json.loads(self.the_import.analysis)
+        word_list = self.filter_words(import_frequencies)
+
+        logger.info(
+            f"Processing {len(word_list)} words in update_list_words"
+            f" for UserList {self.id} for user {self.user.username}"
+        )
 
         temp_file = io.StringIO()
         writer = csv.writer(temp_file, delimiter="\t")
-        for word, freq in word_list:
+        for freq, word in word_list:
             writer.writerow([word, freq, None, None])
 
         temp_file.seek(0)  # will be empty otherwise!!!
@@ -397,8 +476,7 @@ class UserList(DetailedModel):
                 CREATE TEMP TABLE {temp_table} (word text,
                                                 import_frequency int,
                                                 word_id int null,
-                                                freq float null,
-                                                user_word_id int null
+                                                freq float null
                                                 )"""
             # FIXME: this needs some serious optimisation!!!
 
@@ -421,50 +499,188 @@ class UserList(DetailedModel):
                                 WHERE word = enrichers_zh_subtlexlookup.source_text"""
             )
 
-            cur.execute(f"SELECT word FROM import_{self.id} WHERE word_id IS NULL")
-            for word in cur.fetchall():
+            sql = f"SELECT word FROM {temp_table} WHERE word_id IS NULL"
+
+            # filtering - this is slow and we have limits, so only get what we really need NOW (we
+            # can always get others later)
+            filters = []
+            if self.minimum_abs_frequency > 0:
+                filters += [f"{temp_table}.freq > {self.minimum_abs_frequency}"]
+            if self.minimum_doc_frequency > 0:
+                filters += [f"{temp_table}.import_frequency > {self.minimum_doc_frequency}"]
+
+            sql += (" AND " + " AND ".join(filters)) if filters else ""
+            cur.execute(sql)
+
+            new_words = cur.fetchall()
+
+            logger.info(
+                f"Creating ref entries for {len(new_words)} system-unknown words in update_list_words"
+                f" for UserList {self.id} for user {self.user.username}"
+            )
+
+            for word in new_words:
                 # TODO: this is a nasty hack with a side effect of creating bing_lookups, which are
                 # our reference values
-                token = {"word": word, "pos": "NN", "lemma": word}
+                token = {"word": word[0], "pos": "NN", "lemma": word[0]}
                 manager.default().get_standardised_defs(token)
 
-            cur.execute(
-                f"""UPDATE {temp_table}
-                                SET word_id = enrich_bingapilookup.id
-                                FROM enrich_bingapilookup
-                                WHERE word = enrich_bingapilookup.source_text"""
-            )
-
-            cur.execute(
-                f"""INSERT INTO data_userword (user_id, word_id)
-                                SELECT {self.user_id}, word_id from {temp_table}
-                                WHERE word = enrich_bingapilookup.source_text
-                                ON CONFLICT (user_id, word_id) DO NOTHING"""
-            )
-
-            cur.execute(
-                f"""UPDATE {temp_table} tt
-                                SET user_word_id = data_userword.id
-                                FROM data_userword
-                                WHERE tt.word_id = data_userword.word_id"""
-            )
+            if new_words:
+                sql = f"""UPDATE {temp_table}
+                          SET word_id = enrich_bingapilookup.id
+                          FROM enrich_bingapilookup
+                          WHERE word = enrich_bingapilookup.source_text
+                              AND from_lang = %s AND to_lang = %s"""
+                cur.execute(sql, self.user.transcrober.from_lang, self.user.transcrober.to_lang)
 
             sql = f"""
-                INSERT INTO data_userlistword (user_list_id, user_word_id)
-                                SELECT {self.id}, id from data_userword dw
-                                inner join {temp_table} tt on dw.id = tt.word_id"""
+                SELECT word_id
+                FROM {temp_table}
+                    INNER JOIN enrich_bingapilookup ON enrich_bingapilookup.id = word_id """
+
+            if self.only_dictionary_words:
+                filters += ["json_array_length(enrich_bingapilookup.response_json::json->0->'translations') > 0"]
+
+            sql += (" WHERE " + " AND ".join(filters)) if filters else ""
+
+            # TODO: make more generic
+            if self.order_by == self.ABSOLUTE_FREQUENCY:
+                sql += f" ORDER BY {temp_table}.freq DESC "
+            else:
+                sql += f" ORDER BY {temp_table}.import_frequency DESC "
+
+            sql += f" LIMIT {self.nb_to_take} " if self.nb_to_take > 0 else ""
+
+            cur.execute(sql)
+
+            new_userwords = []
+            new_userlistwords = []
+            for word_id in cur.fetchall():
+                new_userwords.append(UserWord(user=self.user, word_id=word_id[0]))
+                new_userlistwords.append(UserListWord(user_list=self, word_id=word_id[0]))
+
+            # bulk create using objects
+            # TODO: if this is slow due to ignore_conflicts, maybe update with the id
+            # before doing this and only select those without an id
+            UserWord.objects.bulk_create(new_userwords, ignore_conflicts=True)
+            UserListWord.objects.bulk_create(new_userlistwords, ignore_conflicts=True)  # can there be conflicts?
+
+            logger.info(f"Added {len(new_userlistwords)} list words for user_list_{self.id} for {self.user.username}")
+            if self.add_notes:
+                with Ankrobes(self.user.username) as userdb:
+                    for ulword in UserListWord.objects.filter(user_list=self):
+                        # TODO: decide how to best deal with when to next review
+                        # at least this should maybe have a random date set
+                        review_in = 7 if self.notes_are_known else 0
+
+                        word = ulword.word.source_text
+
+                        defin = default_definition(manager, word)
+                        if not userdb.set_word_known(
+                            simplified=defin["Simplified"],
+                            pinyin=defin["Pinyin"],
+                            meanings=[defin["Meaning"]],
+                            tags=[f"user_list_{self.id}"],  # FIXME: should this add tags, or overwrite?
+                            review_in=review_in,
+                        ):
+                            logger.error(
+                                f"Error setting the word_known status for {word} for user {self.user.username}"
+                            )
+                            raise Exception(f"Error updating the user database for {self.user.username}")
+
+                    logger.info(f"Set {len(new_userlistwords)} notes for user_list_{self.id} for {self.user.username}")
+
+                    # FIXME: remove nasty hack
+                    self.user.transcrober.refresh_vocabulary()
+
+            cur.execute(f"DROP TABLE {temp_table}")
+            self.processed = True
+            self.save()
 
 
-class UserListGrammarRule:
+class UserListGrammarRule(models.Model):
     user_list = models.ForeignKey(UserList, on_delete=models.CASCADE)
-    user_grammar_rule = models.ForeignKey(UserGrammarRule, on_delete=models.CASCADE)
+    grammar_rule = models.ForeignKey(GrammarRule, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user_list", "grammar_rule"], name="user_list_rule"),
+        ]
 
 
-class UserListWord:
+class UserListWord(models.Model):
     user_list = models.ForeignKey(UserList, on_delete=models.CASCADE)
-    user_word = models.ForeignKey(UserWord, on_delete=models.CASCADE)
+    word = models.ForeignKey(BingAPILookup, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user_list", "word"], name="user_list_word"),
+        ]
 
 
 class Goal(DetailedModel):
-    user_list = models.ForeignKey(UserList, on_delete=models.CASCADE, null=True)
-    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_list = models.ForeignKey(UserList, on_delete=models.CASCADE, null=True, blank=True)
+    parent = models.ForeignKey("self", related_name="children", on_delete=models.CASCADE, null=True, blank=True)
+    priority = models.IntegerField(choices=[(i, i) for i in range(1, 10)], default=5)
+
+    def get_absolute_url(self):
+        return reverse("goal_detail", args=[str(self.id)])
+
+    def sub_goal_names(self):
+        return [x.title for x in self.children.active()]
+
+    def get_progress(self):
+        # FIXME: convert to ORM
+        known_words, all_words = 0, 0
+        if self.user_list:
+            sql = """
+                SELECT COUNT(NULLIF(uw.is_known, FALSE)), COUNT(0)
+                FROM data_userlistword uwl
+                    INNER JOIN data_userword uw ON uw.word_id = uwl.word_id
+                WHERE uwl.user_list_id = %s"""
+            with connection.cursor() as cur:
+                cur.execute(sql, (self.user_list.id,))
+                known_words, all_words = cur.fetchone()
+
+        chidlins = self.children.active()
+        if chidlins.count() > 0:
+            sum_progress = [sum(x) for x in zip(*[y.get_progress() for y in chidlins])]
+            known_words += sum_progress[0]
+            all_words += sum_progress[1]
+
+        return known_words, all_words
+
+    # def get_progress_percent(self):
+    #     known_words, all_words = self.get_progress()
+    #     # return f"{(known_words*100/all_words):.0f}" if all_words else ""
+    #     return (known_words*100/all_words) if all_words else None
+
+    def get_progress_percent(self):
+        known_words, all_words = self.get_progress()
+        # return f"{(known_words*100/all_words):.0f}" if all_words else ""
+        return (known_words / all_words) if all_words else None
+
+    # override Model.clean_fields()
+    def clean_fields(self, _exclude=None):
+        if self.has_cycle():
+            raise ValidationError("Cycle detected. A goal cannot have itself as a parent!")
+
+    # override Model.save()
+    def save(self, *args, **kwargs):
+        if self.has_cycle():
+            raise ValidationError("Cycle detected. A goal cannot have itself as a parent!")
+        return super().save(*args, **kwargs)
+
+    def has_cycle(self):
+        if not self.parent:
+            return False
+        if self.parent == self:
+            return True
+        the_parent = self.parent
+        while the_parent:
+            if the_parent == self:
+                return True
+            the_parent = the_parent.parent
+
+        return False

@@ -204,11 +204,31 @@
       </div>
       <div class="card-body">
         <div class="text-center">
-          <a target="_blank" rel="nofollow" href="{% url 'ui_survey_list' %}"><p>Please make sure you have filled out all the Research Surveys!</p> <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="{% static 'data/img/undraw_customer_survey_f9ur.svg' %}" alt="surveys"></a>
+          <a href="{% url 'ui_survey_list' %}"><p>Please make sure you have filled out all the Research Surveys!</p> <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;" src="{% static 'data/img/undraw_customer_survey_f9ur.svg' %}" alt="surveys"></a>
         </div>
       </div>
     </div>
 
+  </div>
+
+  <div class="col-lg-6 mb-4">
+    <!-- Project Card  -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <a href="{% url 'goal_list' %}"><h6 class="m-0 font-weight-bold text-primary">Language goals</h6></a>
+      </div>
+      <div class="card-body">
+        {% for goal in goals_progress %}
+
+        <h4 class="small font-weight-bold">{{ goal.name }} <span class="float-right">{% widthratio goal.progress_percent 1 100 %}%</span></h4>
+        <div class="progress mb-4">
+          <div class="progress-bar {{ goal.display_status }}" role="progressbar" style="width: {% widthratio goal.progress_percent 1 100 %}%" aria-valuenow="{% widthratio goal.progress_percent 1 100 %}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        {% empty %}
+        <a href="{% url 'goal_create' from_list=0 %}"><p>No goals yet, create one now!</p></a>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </div>
 

@@ -1,0 +1,30 @@
+<!-- templates/data/goal_create.html-->
+{% extends 'data/base.html' %}
+
+{% block title %}Create Goal{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Create a new goal</h1>
+</div>
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <p></p>
+</div>
+
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn btn-primary btn-user btn-block" type="submit">Save</button>
+    </form>
+    <hr>
+  <p><a href="{% url 'goal_list' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Goals</a></p>
+  </div>
+</div>
+
+
+{% endblock %}

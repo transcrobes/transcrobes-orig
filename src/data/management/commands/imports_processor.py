@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import asyncio
 import logging
 import threading
 import time
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from data.importer import process_import
-from data.models import Import
+from data.importer import process_import, process_list
+from data.models import Import, UserList
 
 logger = logging.getLogger(__name__)
 
@@ -26,14 +24,9 @@ class Command(BaseCommand):
     # wasting time on possibly poorly adapted solutions
 
     def handle(self, *args, **options):
-        logger.info(f"Starting imports processors")
+        logger.info("Starting imports processors")
 
-        # some_imports = Import.objects.filter(processed=False)
-        # some_imports = Import.objects.filter(id=7)
-        # for an_import in some_imports:
-        #     process_import(an_import)
-
-        # TODO: there is a small chance that parallel runners could take the same import, and end up
+        # TODO: there is a small chance that parallel runners could take the same import/list, and end up
         # both doing work. The risk is pretty minuscule though, and the result only lost processor cycles,
         # so keeping simple for the moment
         while True:
@@ -43,8 +36,6 @@ class Command(BaseCommand):
                 an_import.processed = None
                 an_import.save()
                 logger.info(f"Starting import thread for import {an_import.title} for user {an_import.user.username}")
-                # FIXME: the following is ridiculous, and obviously doesn't work as expected
-                # there is a bug without it though, because
                 threads.append(
                     threading.Thread(
                         name=an_import.title,
@@ -52,6 +43,19 @@ class Command(BaseCommand):
                         args=(an_import,),
                     )
                 )
-            for importer in threads:
-                importer.start()
+
+            logger.info("Checking for userlists to process")
+            for a_list in UserList.objects.filter(processed=False):
+                a_list.processed = None
+                a_list.save()
+                logger.info(f"Starting thread for UserList {a_list.title} for user {a_list.user.username}")
+                threads.append(
+                    threading.Thread(
+                        name=a_list.title,
+                        target=process_list,
+                        args=(a_list,),
+                    )
+                )
+            for runner in threads:
+                runner.start()
             time.sleep(LOOP_CHECK_SLEEP_SECS)

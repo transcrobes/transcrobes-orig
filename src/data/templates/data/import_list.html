@@ -1,0 +1,37 @@
+<!-- templates/data/import_list.html-->
+{% extends 'data/base.html' %}
+
+{% block title %}Imports{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Imports</h1>
+</div>
+
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <div class="card shadow mb-4">
+      <!-- Card Header - Dropdown -->
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Imports</h6>
+      </div>
+
+      <p><a href="{% url 'import_create' %}" class="btn btn-primary btn-user btn-block">Create an import</a></p>
+
+      <div class="card-body">
+        <table border="1px">
+          <tr><th>Name</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+          {% for import in object_list %}
+            <tr><td><a href="{% url 'import_detail' pk=import.id %}">{{ import.title }} ({{import.id}})</a></td><td>{{ import.created }}</td><td>{{ import.processing_status }}</td><td><a href="{% url 'list_create' from_import=import.id %}">Create List</a></td></tr>
+          {% empty %}
+            <td colspan="3">No imports yet. <a href="{% url 'import_create' %}">Create one</a></td>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

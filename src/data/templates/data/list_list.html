@@ -1,32 +1,33 @@
 <!-- templates/data/list_list.html-->
 {% extends 'data/base.html' %}
 
-{% block title %}Imports{% endblock %}
+{% block title %}Lists{% endblock %}
 
 {% block content %}
 
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-  <h1 class="h3 mb-0 text-gray-800">Imports</h1>
+  <h1 class="h3 mb-0 text-gray-800">Lists</h1>
 </div>
 
 <div class="row">
-
   <div class="col-xl-8 col-lg-7">
     <div class="card shadow mb-4">
-      <!-- Card Header - Dropdown -->
       <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Imports</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Lists</h6>
       </div>
 
+      <p><a href="{% url 'list_create' from_import=0 %}" class="btn btn-primary btn-user btn-block">Create a list</a></p>
+
       <div class="card-body">
-        <ul>
-          {% for import in object_list %}
-            <li><a href="{% url 'import_detail' survey_id=survey.id %}">{{ survey.title }}dd</a></li>
+        <table border="1px">
+          <tr><th>Name</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+          {% for alist in object_list %}
+            <tr><td><a href="{% url 'list_detail' pk=alist.id %}">{{ alist.title }} ({{alist.id}})</a></td><td>{{ alist.created }}</td><td>{{ alist.processing_status }}</td><td><a href="{% url 'goal_create' from_list=alist.id %}">Create Goal</a></td></tr>
           {% empty %}
-            <li>No imports yet.</li>
+            <td colspan="4">No lists yet. <a href="{% url 'list_create' from_import=0 %}">Create one</a></td>
           {% endfor %}
-        </ul>
+        </table>
       </div>
     </div>
   </div>

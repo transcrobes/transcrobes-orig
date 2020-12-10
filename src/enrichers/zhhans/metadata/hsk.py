@@ -22,7 +22,6 @@ class ZH_HSKMetadata(PersistenceProvider, Metadata):
     def _load(self):
         dico = {}
         logger.info("Starting population of hsk")
-
         for i in range(1, 7):
             if not os.path.isfile(self._config["path"].format(i)):
                 logger.error(f"Should have loaded the file {self._config['path']} but it doesn't exist")

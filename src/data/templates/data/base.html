@@ -73,9 +73,33 @@
             <a class="collapse-item" href="{% url 'notrobes' %}">Lookup/Add</a>
             <a class="collapse-item" href="{% url 'vocab_list' %}">Mass update</a>
           </div>
-          <!--<div class="bg-white py-2 collapse-inner rounded">
+          <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Import:</h6>
-          </div>-->
+            <a class="collapse-item" href="{% url 'import_create' %}">New Import</a>
+            <a class="collapse-item" href="{% url 'import_list' %}">Imports</a>
+          </div>
+        </div>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGoals" aria-expanded="true" aria-controls="collapseGoals">
+          <i class="fas fa-fw fa-table"></i>
+          <span>Goals</span>
+        </a>
+        <div id="collapseGoals" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Lists:</h6>
+            <a class="collapse-item" href="{% url 'list_create' from_import=0 %}">New List</a>
+            <a class="collapse-item" href="{% url 'list_list' %}">Lists</a>
+          </div>
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Goals:</h6>
+            <a class="collapse-item" href="{% url 'goal_create' from_list=0 %}">New Goal</a>
+            <a class="collapse-item" href="{% url 'goal_list' %}">Goals</a>
+          </div>
         </div>
       </li>
 
