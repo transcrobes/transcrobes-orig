@@ -112,7 +112,12 @@ STATICFILES_DIRS = [
 
 LL = "ERROR"
 
-PROMETHEUS_EXPORT_MIGRATIONS = False
+## Observability
+# Prometheus
+PROMETHEUS_EXPORT_MIGRATIONS = False  # https://github.com/korfuri/django-prometheus/issues/34
+PROMETHEUS_MULTIPROC_MODE = True  # default is False
+PROMETHEUS_MULTIPROC_DIR = "/tmp/transcrobes_prometheus"
+
 # Logging
 LOGGING = {
     "version": 1,
@@ -216,6 +221,8 @@ DJANKISERV_GENERATE_TEST_ASSETS = False
 DJANKISERV_GENERATE_TEST_ASSETS_DIR = "/tmp/asrv/"
 TEST_RUNNER = "tests.CleanupTestRunner"
 
+## Stats
+# Kafka
 KAFKA_BROKER = os.getenv("TRANSCROBES_KAFKA_BROKER", "localhost:9092")
 KAFKA_CONSUMER_TIMEOUT_MS = int(os.getenv("TRANSCROBES_KAFKA_CONSUMER_TIMEOUT_MS", "5000"))
 KAFKA_STATS_LOOP_SLEEP = int(os.getenv("TRANSCROBES_KAFKA_STATS_LOOP_SLEEP", "10"))
