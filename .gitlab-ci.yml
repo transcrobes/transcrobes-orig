@@ -50,7 +50,7 @@ test:
       alias: db
 
   before_script:
-    - apt update && apt install -y gcc git libmariadb-dev && apt -y autoremove && apt -y clean && rm -rf /var/lib/apt/lists/*
+    - apt update && apt install -y gcc git libmagic1 && apt -y autoremove && apt -y clean && rm -rf /var/lib/apt/lists/*
     - pip install -r src/requirements.ci.txt
 
   variables:

@@ -27,10 +27,10 @@ django = "^3.1.2"
 kafka-python = "^2.0.2"
 crc32c = "^2.1"
 django-prometheus = "^2.1.0"
-djankiserv = "^0.0.6"
 django-upload-validator = "^1.1.5"
 aiohttp = {extras = ["speedups"], version = "^3.7.3"}
 aiohttp-retry = "^2.1"
+djankiserv = "0.0.7"
 
 [tool.poetry.dev-dependencies]
 requests-mock = "^1.8.0"
