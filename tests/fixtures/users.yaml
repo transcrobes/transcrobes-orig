@@ -1,0 +1,15 @@
+- model: auth.user
+  pk: 1
+  fields:
+    username: john
+    password: pbkdf2_sha256$150000$otryKPGnOOI1$QW04zYhYq1ibIIrWzP7r0hVrp1hBJyeqkSGHxuWUkrQ=
+    is_superuser: true
+    is_staff: true
+    first_name: John
+    last_name: Doe
+    email: somewhere.over@therainbow.com
+- model: auth.user
+  pk: 2
+  fields:
+    username: paul
+    password: pbkdf2_sha256$150000$P58ixl2nqsj3$wxyc/MskyEzS/AgOhTSCB3A7jyvngfYsauiojF/byRg=

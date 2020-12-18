@@ -1,0 +1,89 @@
+version: '3.8'
+
+# Development environment: do not adapt for production except if you really know what you are doing
+
+services:
+  transcrobes_server:
+    container_name: transcrobes_server
+    build:
+      context: ./
+      dockerfile: ./images/main/Dockerfile
+    volumes:
+      - ./src:/app
+      - ./scripts:/app/scripts
+      - ./tests:/app/tests
+    entrypoint: ["/bin/bash", "/app/scripts/rundockerdev.sh"]
+    ports:
+      - 8003:8002
+    environment:
+      - APP_PATH=/app
+      - TRANSCROBES_KAFKA_BROKER=kafka:9092
+      - TRANSCROBES_ZH_CORENLP_HOST=corenlpZh
+      - TRANSCROBES_BING_API_HOST=api.cognitive.microsofttranslator.com
+      - TRANSCROBES_ZH_EN_CEDICT_PATH=/app/tests/assets/zhhans_en/zh_en_cedict.test.txt
+      - TRANSCROBES_ZH_EN_ABC_DICT_PATH=/app/tests/assets/zhhans_en/zh_en_abc_dict.test.txt
+      - TRANSCROBES_ZH_HSK_LISTS_PATH=/app/tests/assets/enrichers/zh_hsk{}.txt
+      - TRANSCROBES_ZH_SUBTLEX_FREQ_PATH=/app/tests/assets/enrichers/zh_subtlex.utf8.test.txt
+      - TC_POSTGRES_HOST=transcrobes_databases
+      - TC_DJANKISERV_USERDB_HOST=transcrobes_databases
+      - TRANSCROBES_ZH_EN_ABC_DICT_INMEM=true
+      - TRANSCROBES_ZH_EN_CEDICT_INMEM=true
+      - TRANSCROBES_ZH_HSK_LISTS_INMEM=true
+      - TRANSCROBES_ZH_SUBTLEX_FREQ_INMEM=true
+      - TRANSCROBES_DEBUG=true
+    networks:
+      - transcrobes_net
+    env_file:
+      - .env
+
+# Databases
+
+  transcrobes_databases:
+    image: postgres:11-alpine
+    volumes:
+      - default:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=your_user
+      - POSTGRES_PASSWORD=your_password
+      - POSTGRES_DB=transcrobes
+    networks:
+      - transcrobes_net
+
+# NLP ressources
+
+  corenlpZh:
+    image: transcrobes/corenlp-chinese:4.1.0
+    networks:
+        - transcrobes_net
+    ports:
+      - 9000:9001
+
+# Broker
+
+  kafka:
+    image: bitnami/kafka:2.6.0-debian-10-r78
+    networks:
+      - transcrobes_net
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper_server:2181
+    volumes:
+      - kafka_volume:/bitnami/kafka
+    ports:
+      - 9092:9092
+
+  zookeeper_server:
+    container_name: zookeeper_server
+    image: bitnami/zookeeper:3.6.2-debian-10-r58
+    networks:
+      - transcrobes_net
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+
+volumes:
+  default:
+  kafka_volume:
+
+networks:
+  transcrobes_net:
