@@ -1,5 +1,6 @@
 <!-- templates/data/goal_create.html-->
 {% extends 'data/base.html' %}
+{% load widget_tweaks %}
 
 {% block title %}Create Goal{% endblock %}
 
@@ -10,21 +11,62 @@
   <h1 class="h3 mb-0 text-gray-800">Create a new goal</h1>
 </div>
 
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-  <p></p>
-</div>
-
 <div class="row">
   <div class="col-xl-8 col-lg-7">
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button class="btn btn-primary btn-user btn-block" type="submit">Save</button>
+    <form class="user" method="post" enctype="multipart/form-data"> {% csrf_token %}
+      {% for hidden_field in form.hidden_fields %}
+      {{ hidden_field }}
+      {% endfor %}
+
+      <div class="form-group form-error">
+        <p>{% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+        {% endif %}
+        </p>
+      </div>
+      <div class="form-group">
+        {% render_field form.title class+="form-control form-control-user" aria-describedby="titleHelp" placeholder="Enter import title..." %}
+      </div>
+      {% if form.title.errors %}
+      <div class="form-group form-error">
+        {{ form.title.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        {% render_field form.description rows="5" class+="form-control" aria-describedby="descriptionHelp" placeholder="Enter import description..." title="Import description" %}
+      </div>
+      {% if form.description.errors %}
+      <div class="form-group form-error">
+        {{ form.description.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+          <label>Import Status</label>
+          {% render_field form.status class+="form-control" aria-describedby="statusHelp" placeholder="Status..." %}
+        </div>
+        <div class="col-sm-6">
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+          <label>List </label>
+          {% render_field form.user_list class+="form-control" aria-describedby="userListHelp" placeholder="List..." %}
+        </div>
+        <div class="col-sm-6">
+          <label>Parent</label>
+          {% render_field form.parent class+="form-control" aria-describedby="parentHelp" placeholder="Parent..." %}
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-user btn-block" type="submit">Create Goal</button>
     </form>
     <hr>
-  <p><a href="{% url 'goal_list' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Goals</a></p>
+    <p><a href="{% url 'goal_list' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Goals</a></p>
   </div>
 </div>
-
 
 {% endblock %}

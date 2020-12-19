@@ -23,16 +23,15 @@
                 <p>If you are new to <a href="https://transcrob.es">Transcrobes</a>, please make sure you check out <a href="https://transcrob.es">the information site</a> to make sure Transcrobes is right for you. You can then go ahead and <a href="{% url 'registration_register' %}">create an account</a> or login here if you already have an account.</p>
               </div>
 
-              <form class="user" method="post" action="{% url 'login' %}">
-				{% csrf_token %}
+              <form class="user" method="post" action="{% url 'login' %}"> {% csrf_token %}
                 <div class="form-group form-error">
                   <p>{% if form.non_field_errors %}
-                      {{ form.non_field_errors }}
-                      {% endif %}
+                  {{ form.non_field_errors }}
+                  {% endif %}
                   </p>
                 </div>
                 <div class="form-group">
-			      {% render_field form.username class+="form-control form-control-user" aria-describedby="usernameHelp" placeholder="Enter Username..." %}
+                  {% render_field form.username class+="form-control form-control-user" aria-describedby="usernameHelp" placeholder="Enter Username..." %}
                 </div>
                 {% if form.username.errors %}
                 <div class="form-group form-error">
@@ -53,8 +52,8 @@
                     <label class="custom-control-label" for="customCheck">Remember Me</label>
                   </div>
                 </div>
-    			<input type="submit" value="Login" class="btn btn-primary btn-user btn-block" />
-    			<input type="hidden" name="next" value="{{ next }}" />
+                <input type="submit" value="Login" class="btn btn-primary btn-user btn-block" />
+                <input type="hidden" name="next" value="{{ next }}" />
               </form>
               <hr>
               <div class="text-center">

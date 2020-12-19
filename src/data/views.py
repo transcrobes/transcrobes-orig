@@ -75,7 +75,9 @@ class HomeView(OnboardedTemplateView):
             return "bg-danger"
         if percent < 0.75:
             return "bg-warning"
-        if percent < 0.90:
+        if percent < 0.85:
+            return "bg-primary"
+        if percent < 0.93:
             return "bg-info"
         return "bg-success"
 
@@ -90,6 +92,7 @@ class HomeView(OnboardedTemplateView):
             if percent:
                 progresses.append(
                     {
+                        "id": goal.id,
                         "name": goal.title,
                         "display_status": self.get_goal_display_status(goal.get_progress_percent()),
                         "progress_percent": percent,

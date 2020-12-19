@@ -50,8 +50,8 @@ class Import(DetailedModel):
         (VOCABULARY_GRAMMAR, "Vocabulary and Grammar"),
     ]
 
-    process_type = models.IntegerField(choices=PROCESS_TYPE, default=VOCABULARY_ONLY)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    process_type = models.IntegerField(choices=PROCESS_TYPE, default=VOCABULARY_ONLY, help_text="What items to extract")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text="Import owner")
     import_file = models.FileField(
         upload_to=user_directory_path,
         validators=[
@@ -59,10 +59,13 @@ class Import(DetailedModel):
             FileExtensionValidator(allowed_extensions=["txt", "csv"]),
             validate_file_size,
         ],
+        help_text="File to import",
     )
 
     # TODO: think about alerting if the object modification time is too old and processed = null
-    processed = models.BooleanField(default=False, null=True)  # False = new, null = processing, True = processed
+    processed = models.BooleanField(
+        default=False, null=True, help_text="Import status"
+    )  # False = new, null = processing, True = processed
 
     # TODO: maybe use a JSONField? It's JSON but we likely don't need the overhead in the db
     analysis = models.TextField(null=True)
@@ -89,18 +92,26 @@ class Import(DetailedModel):
     # won't want them in the lists but the point of having separate Import, UserList and Goal is precisely so
     # we have freedom around this!!!
     def nb_useful_types(self):
+        if not self.analysis:
+            return "Waiting"
         counts = json.loads(self.analysis)["vocabulary"]["counts"]
         return sum(counts.values())
 
     def nb_useful_tokens(self):
+        if not self.analysis:
+            return "Waiting"
         counts = json.loads(self.analysis)["vocabulary"]["counts"]
         return sum([int(k) * v for k, v in counts.items()])
 
     def nb_useful_characters_total(self):
+        if not self.analysis:
+            return "Waiting"
         words = json.loads(self.analysis)["vocabulary"]["buckets"]
         return sum([int(k) * len("".join(v)) for k, v in words.items()])
 
     def nb_useful_characters_unique(self):
+        if not self.analysis:
+            return "Waiting"
         words = json.loads(self.analysis)["vocabulary"]["buckets"]
         # a long string into a set to get only unique chars
         all_unique_characters = set("".join(["".join(v) for v in words.values()]))
@@ -662,7 +673,7 @@ class Goal(DetailedModel):
         return (known_words / all_words) if all_words else None
 
     # override Model.clean_fields()
-    def clean_fields(self, _exclude=None):
+    def clean_fields(self, exclude=None):
         if self.has_cycle():
             raise ValidationError("Cycle detected. A goal cannot have itself as a parent!")
 

@@ -1,5 +1,6 @@
 <!-- templates/data/import_create.html-->
 {% extends 'data/base.html' %}
+{% load widget_tweaks %}
 
 {% block title %}Create Import{% endblock %}
 
@@ -16,9 +17,55 @@
 
 <div class="row">
   <div class="col-xl-8 col-lg-7">
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
+    <form class="user" method="post" enctype="multipart/form-data"> {% csrf_token %}
+      {% for hidden_field in form.hidden_fields %}
+      {{ hidden_field }}
+      {% endfor %}
+
+      <div class="form-group form-error">
+        <p>{% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+        {% endif %}
+        </p>
+      </div>
+      <div class="form-group">
+        {% render_field form.title class+="form-control form-control-user" aria-describedby="titleHelp" placeholder="Enter import title..." %}
+      </div>
+      {% if form.title.errors %}
+      <div class="form-group form-error">
+        {{ form.title.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        {% render_field form.description rows="5" class+="form-control" aria-describedby="descriptionHelp" placeholder="Enter import description..." title="Import description" %}
+      </div>
+      {% if form.description.errors %}
+      <div class="form-group form-error">
+        {{ form.description.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+          <label>Import Status</label>
+          {% render_field form.status class+="form-control" aria-describedby="statusHelp" placeholder="Status..." %}
+        </div>
+        <div class="col-sm-6">
+          <label>Type of processing</label>
+          {% render_field form.process_type class+="form-control" aria-describedby="processTypeHelp" placeholder="Processing type..." %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        {% render_field form.import_file class+="btn btn-primary btn-block" aria-describedby="descriptionHelp" placeholder="Enter import description..." title="Import description" %}
+      </div>
+      {% if form.import_file.errors %}
+      <div class="form-group form-error">
+        {{ form.import_file.errors }}
+      </div>
+      {% endif %}
+
       <button class="btn btn-primary btn-user btn-block" type="submit">Upload</button>
     </form>
     <hr>
