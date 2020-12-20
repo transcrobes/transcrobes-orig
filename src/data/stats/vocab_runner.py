@@ -7,6 +7,8 @@ import time
 import kafka
 from django.db import connection
 
+import stats
+
 from . import create_temp_table_userword, update_db_userword
 
 RUNNER_TYPE = "vocab"  # also kafka topic and group
@@ -26,11 +28,17 @@ def run_updates(broker, consumer_timeout_ms, stats_loop_sleep, max_poll_records)
         data = {}
         for _tp, messages in consumer.poll(timeout_ms=consumer_timeout_ms).items():
             for message in messages:
-                stats = json.loads(message.value.decode("utf-8"))
-                user_id = stats["user_id"]
+                user_stats = json.loads(message.value.decode("utf-8"))
+                user_id = user_stats["user_id"]
                 if user_id not in data:
                     data[user_id] = {}
-                token_stats = stats["tstats"]
+                token_stats = user_stats["tstats"]
+
+                # FIXME: decide how to properly distinguish between the various types, or at least
+                # to store the info.
+                if int(user_stats["user_stats_mode"]) == stats.USER_STATS_MODE_IGNORE:
+                    # We should probably never arrive here with USER_STATS_MODE_IGNORE, but if we do
+                    continue
 
                 for k, v in token_stats.items():
                     if k not in data[user_id]:

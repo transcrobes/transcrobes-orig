@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+import stats
 from ankrobes import Ankrobes
 from data.models import UserWord
 from enrich.data import managers
@@ -41,7 +42,12 @@ def enrich_json(request):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        outdata = manager.enricher().enrich_to_json(text, request.user, manager)
+        if "userStatsMode" in request.data:
+            stats_mode = int(request.data["userStatsMode"])
+        else:
+            stats_mode = stats.USER_STATS_MODE_IGNORE
+
+        outdata = manager.enricher().enrich_to_json(text, request.user, manager, stats_mode=stats_mode)
 
     return do_response(Response(outdata))
 

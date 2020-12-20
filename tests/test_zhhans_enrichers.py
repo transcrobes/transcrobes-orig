@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APITransactionTestCase
 from vcr_unittest import VCRMixin, VCRTestCase
 
+import stats
 from ankrobes import Ankrobes  # pylint: disable=E0611  # pylint is dumb
 from enrich.apis import bing as bing_api
 from enrich.data import managers
@@ -221,7 +222,9 @@ class FullEnrichMixin(VCRMixin):
         intxt_txt = pkgutil.get_data("tests.assets.enrichers.nlp", "in.txt").decode("utf-8")
 
         # test with no known entries
-        model = self.manager.enricher().enrich_to_json(intxt_txt, self.user, self.manager)
+        model = self.manager.enricher().enrich_to_json(
+            intxt_txt, self.user, self.manager, stats_mode=stats.USER_STATS_MODE_L1
+        )
         enriched = pkgutil.get_data("tests.assets.enrichers.bing", "enriched_model_no_notes.json").decode("utf-8")
 
         self.assertEqual(model, json.loads(enriched))
@@ -241,15 +244,19 @@ class FullEnrichMixin(VCRMixin):
 
         self.user.transcrober.refresh_vocabulary()
 
-        model = self.manager.enricher().enrich_to_json(intxt_txt, self.user, self.manager)
+        model = self.manager.enricher().enrich_to_json(
+            intxt_txt, self.user, self.manager, stats_mode=stats.USER_STATS_MODE_L1
+        )
         enriched_notes = pkgutil.get_data("tests.assets.enrichers.bing", "enriched_model_with_notes.json").decode(
             "utf-8"
         )
+
         self.assertEqual(model, json.loads(enriched_notes))
 
         # Here we can't just compare the calls, as there will be a user_id in there. This user_id
         # will change depending on when in the test run the users are created, so will break tests
         # with reordering them, adding, etc. Here we go into the call and pull out the invariant bit
+
         self.assertEqual("vocab", MockKafkaProducer.mock_calls[1][1][0])
 
         self.assertEqual(

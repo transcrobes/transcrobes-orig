@@ -91,6 +91,11 @@ class Enricher(ABC):
                 token["definitions"]["fallback"] = manager.default().get_standardised_fallback_defs(token)
                 token["normalized_pos"] = self.get_simple_pos(token)
 
+                token["synonyms"] = manager.default().synonyms(token, token["normalized_pos"], max_synonyms=5)
+                token["user_synonyms"] = user.transcrober.filter_known(
+                    token["synonyms"], min_morpheme_known_count=2, prefer_whole_known_words=True
+                )
+
                 # TODO: decide whether we really don't want to make a best guess for words we know
                 # this might still be very useful though probably not until we have a best-trans-in-context SMT system
                 # that is good
@@ -110,6 +115,7 @@ class Enricher(ABC):
 
         return model, token_stats
 
+    # FIXME: unused, DELETE
     def _aenrich_model(self, model, user, manager):
         userdb = Ankrobes(user.username)
         token_stats = {}
@@ -177,24 +183,27 @@ class Enricher(ABC):
             return False
         return True
 
-    def enrich_to_json(self, html, user, manager):
-        logging.debug("Attempting to enrich: '%s'", html)
+    def enrich_to_json(self, html, user, manager, stats_mode=stats.USER_STATS_MODE_IGNORE):
+        logging.debug("Attempting to sync enrich: '%s'", html)
 
         model = manager.parser().parse(html)
         model, token_stats = self._enrich_model(model, user, manager)
 
-        stats.KAFKA_PRODUCER.send("vocab", {"user_id": user.id, "tstats": token_stats})
-
+        if stats_mode > stats.USER_STATS_MODE_IGNORE:
+            stats.KAFKA_PRODUCER.send(
+                "vocab", {"user_id": user.id, "tstats": token_stats, "user_stats_mode": stats_mode}
+            )
         return model
 
-    def aenrich_to_json(self, html, user, manager):
-        logging.debug("Attempting to enrich: '%s'", html)
+    # FIXME: this does NOT yet work and is NOT yet used
+    def aenrich_to_json(self, html, user, manager, stats_mode=stats.USER_STATS_MODE_IGNORE):
+        logging.debug("Attempting to async enrich: '%s'", html)
 
         model = manager.parser().parse(html)
-
-        # outdata = asyncio.run(manager.enricher().aenrich_to_json(text, request.user, manager))
         model, token_stats = self._aenrich_model(model, user, manager)
 
-        stats.KAFKA_PRODUCER.send("vocab", {"user_id": user.id, "tstats": token_stats})
-
+        if stats_mode > stats.USER_STATS_MODE_IGNORE:
+            stats.KAFKA_PRODUCER.send(
+                "vocab", {"user_id": user.id, "tstats": token_stats, "user_stats_mode": stats_mode}
+            )
         return model

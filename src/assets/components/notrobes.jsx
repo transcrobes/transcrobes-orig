@@ -74,11 +74,13 @@ class Notrobes extends React.Component {
                     timeoutId = window.setTimeout(function() {
                         timeoutId = null;
                         const eventUrl = `${urlBase}/user_event/`;
-                        const eventData = { type: 'bc_word_lookup',
-                          data : {
+                        const eventData = {
+                          type: 'bc_word_lookup',
+                          data: {
                             target_word: query,
                             target_sentence: ""
-                          }
+                          },
+                          userStatsMode: 8  // stats.USER_STATS_MODE_L1
                         }
                         axios.post( eventUrl, eventData, {
                             headers: headers

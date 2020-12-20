@@ -54,7 +54,8 @@ def update_db_userword(conn, data, temp_table):  # pylint: disable=R0914
                     tt.word_id,
                     tt.nb_seen_since_last_check,
                     false
-                    FROM {temp_table} tt
+                  FROM {temp_table} tt
+                  WHERE tt.word_id is not null
                 ON CONFLICT (user_id, word_id)
                 DO
                    UPDATE SET

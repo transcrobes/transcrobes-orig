@@ -306,7 +306,7 @@ class UserWord(models.Model):
     # FIXME:
     # this is a blunt instrument designed for active testing - if you get an answer to
     # a question specifically testing for this, you know it. There are obviously many
-    # dimensions to knowing a rule, so it should be at least a scale, even for explicit
+    # dimensions to knowing a word, so it should be at least a scale, even for explicit
     # tests. This should also be able interact with other evidence gathered for knowledge,
     # like looking at the last_checked and last_studied, which could possibly devalidate
     # the known status...

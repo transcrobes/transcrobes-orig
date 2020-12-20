@@ -16,3 +16,7 @@ class Translator(ABC):
     @abstractmethod
     def get_standardised_fallback_defs(self, token):
         pass
+
+    @abstractmethod
+    def synonyms(self, token, std_pos, max_synonyms=5):
+        pass

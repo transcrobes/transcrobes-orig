@@ -84,6 +84,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u897f",
+                        "\u6eaa",
+                        "\u559c",
+                        "\u5341\u4e00",
+                        "\u6eaa\u6751"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4e60\u8fd1\u5e73"
                 },
                 {
@@ -150,6 +158,10 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4e2d"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5728"
                 },
                 {
@@ -219,6 +231,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6d88\u606f",
+                        "\u4fe1\u606f",
+                        "\u8baf\u606f",
+                        "\u90ae\u4ef6"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u8d3a\u7535"
                 },
                 {
@@ -399,6 +418,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e2d"
                 },
                 {
@@ -508,6 +529,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6307\u660e",
+                        "\u6ce8\u610f",
+                        "\u63d0\u5230",
+                        "\u8457\u540d",
+                        "\u8bb0\u4e0b",
+                        "\u8868\u660e"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u6307\u51fa"
                 },
                 {
@@ -700,6 +730,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e2d"
                 },
                 {
@@ -766,6 +798,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8461\u8404\u7259",
+                        "\u8461\u8404\u7259 \u8bed",
+                        "\u8461\u56fd",
+                        "\u8461\u8404\u7cd6 \u9178"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u8461"
                 },
                 {
@@ -833,6 +872,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u53cb\u60c5",
+                        "\u53cb\u597d",
+                        "\u60c5\u8c0a",
+                        "\u4ea4\u60c5",
+                        "\u793c\u8ba9"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u53cb\u8c0a"
                 },
                 {
@@ -904,6 +951,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u6e90\u8fdc\u6d41\u957f"
                 },
                 {
@@ -995,6 +1044,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u5efa\u4ea4"
                 },
                 {
@@ -1076,6 +1127,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u5e74"
                 },
                 {
@@ -1144,6 +1197,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u6765"
                 },
                 {
@@ -1275,6 +1330,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u53cc\u65b9"
                 },
                 {
@@ -1342,6 +1399,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u79c9\u627f",
+                        "\u575a\u6301",
+                        "\u7ef4\u62a4",
+                        "\u575a\u5b88",
+                        "\u638c\u63e1"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u79c9\u6301"
                 },
                 {
@@ -1437,6 +1502,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4e92\u76f8",
+                        "\u53cc\u65b9",
+                        "\u4e92",
+                        "\u4e92\u60e0"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u76f8\u4e92"
                 },
                 {
@@ -1530,6 +1602,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u5c0a\u91cd"
                 },
                 {
@@ -1647,6 +1721,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u540c\u6837",
+                        "\u540c\u7b49",
+                        "\u76f8\u7b49",
+                        "\u4e00\u89c6\u540c\u4ec1"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5e73\u7b49"
                 },
                 {
@@ -1731,6 +1812,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u76f8"
                 },
                 {
@@ -1813,6 +1896,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u7559",
+                        "\u5446",
+                        "\u4fdd\u6301",
+                        "\u7559\u4e0b",
+                        "\u6cbb\u7597",
+                        "\u82b1"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5f85"
                 },
                 {
@@ -1902,6 +1994,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e92\u5229"
                 },
                 {
@@ -1949,6 +2043,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u5171\u8d62"
                 },
                 {
@@ -2017,6 +2113,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u7684"
                 },
                 {
@@ -2128,6 +2226,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u7075\u9b42",
+                        "\u7075",
+                        "\u5723\u7075",
+                        "\u672c\u7740",
+                        "\u4ecb\u610f",
+                        "\u7403\u5458"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u7cbe\u795e"
                 },
                 {
@@ -2261,6 +2368,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4fc3\u8fdb",
+                        "\u63a8\u5e7f",
+                        "\u63a8\u8fdb",
+                        "\u63d0\u5347",
+                        "\u63a8",
+                        "\u9a71\u52a8"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u63a8\u52a8"
                 },
                 {
@@ -2338,6 +2454,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4e24\u56fd",
+                        "\u53cc \u4fa7",
+                        "\u53cc\u65b9",
+                        "\u53cc\u5411",
+                        "\u53cc\u9762"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u53cc\u8fb9"
                 },
                 {
@@ -2462,6 +2586,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u611f\u60c5",
+                        "\u8054\u7cfb",
+                        "\u4eba\u9645\u5173\u7cfb",
+                        "\u76f8\u5173\u6027",
+                        "\u9886\u5e26",
+                        "\u76f8\u5173\u5206\u6790"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5173\u7cfb"
                 },
                 {
@@ -2539,6 +2672,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u536b\u751f",
+                        "\u4fdd\u5065",
+                        "\u533b\u7597",
+                        "\u751f"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5065\u5eb7"
                 },
                 {
@@ -2652,6 +2792,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5e73\u7a33",
+                        "\u7a33\u6b65",
+                        "\u9010\u6b65",
+                        "\u7a33\u6b65 \u63a8\u8fdb",
+                        "\u7a33"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u7a33\u5b9a"
                 },
                 {
@@ -2755,6 +2903,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5f00\u53d1",
+                        "\u57f9\u517b",
+                        "\u5f00\u5c55",
+                        "\u7814\u5236",
+                        "\u589e\u957f"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u53d1\u5c55"
                 },
                 {
@@ -2827,6 +2983,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "1999\u5e74"
                 },
                 {
@@ -2958,6 +3116,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u53cc\u65b9"
                 },
                 {
@@ -3043,6 +3203,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6b63\u786e",
+                        "\u9002\u5f53",
+                        "\u6b63\u5e38",
+                        "\u6070\u5f53",
+                        "\u9002\u5ea6",
+                        "\u4ee4\u4eba \u6ee1\u610f"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u59a5\u5584"
                 },
                 {
@@ -3168,6 +3337,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6c42\u89e3",
+                        "\u89e3",
+                        "\u9488\u5bf9",
+                        "\u89e3\u7b54",
+                        "\u51b3\u5fc3",
+                        "\u5b9a\u5c45"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u89e3\u51b3"
                 },
                 {
@@ -3235,6 +3413,12 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6fb3",
+                        "\u6fb3\u95e8\u7279\u522b\u884c\u653f\u533a",
+                        "\u6e2f\u6fb3"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u6fb3\u95e8"
                 },
                 {
@@ -3318,6 +3502,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u96be\u9898",
+                        "\u9ebb\u70e6",
+                        "\u9898",
+                        "\u8d28\u8be2",
+                        "\u8d28\u7591",
+                        "\u8bae\u9898"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u95ee\u9898"
                 },
                 {
@@ -3437,6 +3630,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5efa\u7acb",
+                        "\u786e\u7acb",
+                        "\u8bbe\u7acb",
+                        "\u5236\u5b9a",
+                        "\u8bbe\u7f6e",
+                        "\u6210\u7acb"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u6811\u7acb"
                 },
                 {
@@ -3495,6 +3697,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e86"
                 },
                 {
@@ -3595,6 +3799,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u56fd\u5bb6",
+                        "\u5168\u56fd",
+                        "\u4e61\u6751",
+                        "\u5168\u56fd\u5404\u5730",
+                        "\u6c11\u65cf",
+                        "\u90ed"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u56fd"
                 },
                 {
@@ -3663,6 +3876,12 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u548c",
+                        "\u53ca",
+                        "\u5e76"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4e0e"
                 },
                 {
@@ -3763,6 +3982,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u56fd\u5bb6",
+                        "\u5168\u56fd",
+                        "\u4e61\u6751",
+                        "\u5168\u56fd\u5404\u5730",
+                        "\u6c11\u65cf",
+                        "\u90ed"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u56fd"
                 },
                 {
@@ -3848,6 +4076,12 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u900f\u8fc7",
+                        "\u7684",
+                        "\u7531"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u901a\u8fc7"
                 },
                 {
@@ -3949,6 +4183,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u53cb\u5584",
+                        "\u4eb2\u5207",
+                        "\u53cb\u8c0a\u8d5b",
+                        "\u53cb\u519b",
+                        "\u4eb2\u548c",
+                        "\u597d"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u53cb\u597d"
                 },
                 {
@@ -4068,6 +4311,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8c08\u5224",
+                        "\u6d3d\u8c08",
+                        "\u8bae \u4ed8",
+                        "\u78cb\u5546",
+                        "\u54a8\u8be2",
+                        "\u8ba8\u4ef7\u8fd8\u4ef7"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u534f\u5546"
                 },
                 {
@@ -4193,6 +4445,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6c42\u89e3",
+                        "\u89e3",
+                        "\u9488\u5bf9",
+                        "\u89e3\u7b54",
+                        "\u51b3\u5fc3",
+                        "\u5b9a\u5c45"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u89e3\u51b3"
                 },
                 {
@@ -4272,6 +4533,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u53f2",
+                        "\u5386\u7a0b",
+                        "\u75c5\u53f2",
+                        "\u53f2\u5b66"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5386\u53f2"
                 },
                 {
@@ -4357,6 +4625,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u7559\u4e0b",
+                        "\u843d\u540e",
+                        "\u843d\u4e0b",
+                        "\u6389\u961f"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u9057\u7559"
                 },
                 {
@@ -4440,6 +4715,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u96be\u9898",
+                        "\u9ebb\u70e6",
+                        "\u9898",
+                        "\u8d28\u8be2",
+                        "\u8d28\u7591",
+                        "\u8bae\u9898"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u95ee\u9898"
                 },
                 {
@@ -4508,6 +4792,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u7684"
                 },
                 {
@@ -4617,6 +4903,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6a21\u8303",
+                        "\u5b8c\u4eba",
+                        "\u6977\u6a21",
+                        "\u6a21\u578b",
+                        "\u6a21\u5f0f",
+                        "\u795e\u5316"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5178\u8303"
                 },
                 {
@@ -4689,6 +4984,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "2005\u5e74"
                 },
                 {
@@ -4869,6 +5166,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e2d"
                 },
                 {
@@ -4935,6 +5234,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8461\u8404\u7259",
+                        "\u8461\u8404\u7259 \u8bed",
+                        "\u8461\u56fd",
+                        "\u8461\u8404\u7cd6 \u9178"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u8461"
                 },
                 {
@@ -5060,6 +5366,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6811\u7acb",
+                        "\u786e\u7acb",
+                        "\u8bbe\u7acb",
+                        "\u5236\u5b9a",
+                        "\u6784\u5efa",
+                        "\u6210\u7acb"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5efa\u7acb"
                 },
                 {
@@ -5193,6 +5508,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u7efc\u5408",
+                        "\u7efc\u5408\u6027",
+                        "\u5b8c\u5584",
+                        "\u5168\u65b9\u4f4d",
+                        "\u6574\u4f53",
+                        "\u5168"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5168\u9762"
                 },
                 {
@@ -5280,6 +5604,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u7b56\u7565",
+                        "\u5bf9\u7b56",
+                        "\u6218\u672f",
+                        "\u8bc0"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u6218\u7565"
                 },
                 {
@@ -5387,6 +5718,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5408\u4f5c \u4f19\u4f34",
+                        "\u4f34\u4fa3",
+                        "\u642d\u6863",
+                        "\u5408\u4f19\u4eba",
+                        "\u540c\u4f34",
+                        "\u4f19\u8ba1"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4f19\u4f34"
                 },
                 {
@@ -5511,6 +5851,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u611f\u60c5",
+                        "\u8054\u7cfb",
+                        "\u4eba\u9645\u5173\u7cfb",
+                        "\u76f8\u5173\u6027",
+                        "\u9886\u5e26",
+                        "\u76f8\u5173\u5206\u6790"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5173\u7cfb"
                 },
                 {
@@ -5570,6 +5919,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4ee5\u6765"
                 },
                 {
@@ -5701,6 +6052,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u53cc\u65b9"
                 },
                 {
@@ -5810,6 +6163,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u9ad8\u8038",
+                        "\u9ad8\u7ba1",
+                        "\u4e3b\u7ba1",
+                        "\u6267\u884c\u5b98",
+                        "\u7ecf\u7406\u4eba",
+                        "\u7ba1\u7406\u8005"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u9ad8\u5c42"
                 },
                 {
@@ -5869,6 +6231,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8bbf\u95ee",
+                        "\u53c2\u89c2",
+                        "\u62dc\u8bbf",
+                        "\u8003\u5bdf"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4e92\u8bbf"
                 },
                 {
@@ -5964,6 +6333,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u7ecf\u5e38",
+                        "\u5e38\u89c1",
+                        "\u9891 \u53d1",
+                        "\u7ecf\u5e38\u6027"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u9891\u7e41"
                 },
                 {
@@ -6055,6 +6431,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u653f\u6cbb\u5b66",
+                        "\u653f\u754c",
+                        "\u653f\u575b",
+                        "\u653f\u6cbb\u8bfe"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u653f\u6cbb"
                 },
                 {
@@ -6114,6 +6497,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e92\u4fe1"
                 },
                 {
@@ -6233,6 +6618,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u7ecf\u5e38",
+                        "\u4e0d\u505c \u5730",
+                        "\u4e0d\u505c",
+                        "\u65f6\u5e38",
+                        "\u8fde\u7eed",
+                        "\u4e0d\u5df2"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4e0d\u65ad"
                 },
                 {
@@ -6310,6 +6704,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6df1\u5316",
+                        "\u6df1\u5165",
+                        "\u4e0d\u65ad \u6df1\u5316",
+                        "\u52a0\u5f3a",
+                        "\u5f3a\u5316"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u52a0\u6df1"
                 },
                 {
@@ -6390,6 +6792,12 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6bcf\u4e2a",
+                        "\u6bcf",
+                        "\u6bcf\u4e00"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5404"
                 },
                 {
@@ -6497,6 +6905,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u573a",
+                        "\u5b57\u6bb5",
+                        "\u73b0\u573a",
+                        "\u91ce\u5916",
+                        "\u5730\u533a",
+                        "\u57df"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u9886\u57df"
                 },
                 {
@@ -6574,6 +6991,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e92\u5229"
                 },
                 {
@@ -6711,6 +7130,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u534f\u4f5c",
+                        "\u914d\u5408",
+                        "\u534f\u540c",
+                        "\u6709\u9650",
+                        "\u516c\u53f8",
+                        "\u5171\u540c"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5408\u4f5c"
                 },
                 {
@@ -6818,6 +7246,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6210\u5c31",
+                        "\u6210\u7ee9",
+                        "\u7ee9\u6548",
+                        "\u4e1a\u7ee9",
+                        "\u7ed3\u679c",
+                        "\u7ed3\u5c40"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u6210\u679c"
                 },
                 {
@@ -6961,6 +7398,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u91cd\u8981",
+                        "\u91cd\u5927",
+                        "\u660e\u663e",
+                        "\u610f\u4e49",
+                        "\u975e\u51e1",
+                        "\u503c\u5f97 \u6ce8\u610f"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u663e\u8457"
                 },
                 {
@@ -7051,6 +7497,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6700\u8fd1",
+                        "\u8fd1\u671f",
+                        "\u8fd1\u6765",
+                        "\u8fd1\u65e5"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4e0d\u4e45\u524d"
                 },
                 {
@@ -7137,6 +7590,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u6211"
                 },
                 {
@@ -7234,6 +7689,11 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u987a\u5229",
+                        "\u5706\u6ee1"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u6210\u529f"
                 },
                 {
@@ -7327,6 +7787,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u8bbf\u95ee"
                 },
                 {
@@ -7386,6 +7848,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u8d35\u56fd"
                 },
                 {
@@ -7466,6 +7930,11 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4e0e",
+                        "\u8be6\u7ec6"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u540c"
                 },
                 {
@@ -7532,6 +8001,11 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u60a8",
+                        "\u4f60\u4eec"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4f60"
                 },
                 {
@@ -7633,6 +8107,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5f00\u5c55",
+                        "\u4f20\u5bfc",
+                        "\u6267\u884c",
+                        "\u5b9e\u65bd",
+                        "\u5b9e\u884c"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u8fdb\u884c"
                 },
                 {
@@ -7760,6 +8242,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5f7b\u5e95",
+                        "\u5168\u9762",
+                        "\u900f\u5f7b",
+                        "\u8be6\u5c3d",
+                        "\u6df1",
+                        "\u8fdb\u4e00\u6b65"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u6df1\u5165"
                 },
                 {
@@ -7861,6 +8352,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u53cb\u5584",
+                        "\u4eb2\u5207",
+                        "\u53cb\u8c0a\u8d5b",
+                        "\u53cb\u519b",
+                        "\u4eb2\u548c",
+                        "\u597d"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u53cb\u597d"
                 },
                 {
@@ -7978,6 +8478,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4ea4",
+                        "\u7a7a\u8c03",
+                        "\u4ea4\u6362",
+                        "\u4ea4\u6613\u6240",
+                        "\u5916\u6c47",
+                        "\u901a\u4fe1"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4ea4\u6d41"
                 },
                 {
@@ -8101,6 +8610,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8054\u5408",
+                        "\u643a\u624b",
+                        "\u8054\u624b",
+                        "\u5408\u5171",
+                        "\u4e00\u8d77"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5171\u540c"
                 },
                 {
@@ -8186,6 +8703,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8ba1\u5212",
+                        "\u7b56\u5212",
+                        "\u6253\u7b97",
+                        "\u8ba1\u753b"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u89c4\u5212"
                 },
                 {
@@ -8244,6 +8768,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e86"
                 },
                 {
@@ -8424,6 +8950,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e2d"
                 },
                 {
@@ -8490,6 +9018,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8461\u8404\u7259",
+                        "\u8461\u8404\u7259 \u8bed",
+                        "\u8461\u56fd",
+                        "\u8461\u8404\u7cd6 \u9178"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u8461"
                 },
                 {
@@ -8614,6 +9149,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u611f\u60c5",
+                        "\u8054\u7cfb",
+                        "\u4eba\u9645\u5173\u7cfb",
+                        "\u76f8\u5173\u6027",
+                        "\u9886\u5e26",
+                        "\u76f8\u5173\u5206\u6790"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5173\u7cfb"
                 },
                 {
@@ -8717,6 +9261,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5f00\u53d1",
+                        "\u57f9\u517b",
+                        "\u5f00\u5c55",
+                        "\u7814\u5236",
+                        "\u589e\u957f"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u53d1\u5c55"
                 },
                 {
@@ -8819,6 +9371,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u65b0\u578b",
+                        "\u5168\u65b0",
+                        "\u6700\u65b0",
+                        "\u65b0\u5efa",
+                        "\u65b0\u9c9c"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u65b0"
                 },
                 {
@@ -8887,6 +9447,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u7684"
                 },
                 {
@@ -8954,6 +9516,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u56fe\u7eb8",
+                        "\u84dd\u672c",
+                        "\u8def\u7ebf \u56fe",
+                        "\u8def\u6807"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u84dd\u56fe"
                 },
                 {
@@ -9050,6 +9619,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u6211"
                 },
                 {
@@ -9145,6 +9716,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u9ad8",
+                        "\u975e\u5e38",
+                        "\u6781",
+                        "\u5f3a\u70c8"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u9ad8\u5ea6"
                 },
                 {
@@ -9264,6 +9842,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5f3a\u8c03",
+                        "\u7740\u91cd",
+                        "\u9644\u52a0",
+                        "\u9644",
+                        "\u8fde\u63a5",
+                        "\u6ce8\u610f"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u91cd\u89c6"
                 },
                 {
@@ -9444,6 +10031,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e2d"
                 },
                 {
@@ -9510,6 +10099,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8461\u8404\u7259",
+                        "\u8461\u8404\u7259 \u8bed",
+                        "\u8461\u56fd",
+                        "\u8461\u8404\u7cd6 \u9178"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u8461"
                 },
                 {
@@ -9634,6 +10230,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u611f\u60c5",
+                        "\u8054\u7cfb",
+                        "\u4eba\u9645\u5173\u7cfb",
+                        "\u76f8\u5173\u6027",
+                        "\u9886\u5e26",
+                        "\u76f8\u5173\u5206\u6790"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5173\u7cfb"
                 },
                 {
@@ -9737,6 +10342,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5f00\u53d1",
+                        "\u7814\u5236",
+                        "\u8fdb\u5c55",
+                        "\u53d1\u80b2",
+                        "\u589e\u957f",
+                        "\u8fdb\u6b65"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u53d1\u5c55"
                 },
                 {
@@ -9807,6 +10421,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u613f"
                 },
                 {
@@ -9875,6 +10491,11 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4e0e",
+                        "\u8be6\u7ec6"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u540c"
                 },
                 {
@@ -9941,6 +10562,11 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u60a8",
+                        "\u4f60\u4eec"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4f60"
                 },
                 {
@@ -10000,6 +10626,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e00\u9053"
                 },
                 {
@@ -10148,6 +10776,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8bd5",
+                        "\u5c1d\u8bd5",
+                        "\u8bd5\u56fe",
+                        "\u5c3d\u529b",
+                        "\u594b\u6597",
+                        "\u66f4\u52a0 \u52aa\u529b \u5b66\u4e60"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u52aa\u529b"
                 },
                 {
@@ -10218,6 +10855,10 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5230"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4ee5"
                 },
                 {
@@ -10304,6 +10945,10 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u90fd"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4e24"
                 },
                 {
@@ -10404,6 +11049,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u56fd\u5bb6",
+                        "\u5168\u56fd",
+                        "\u4e61\u6751",
+                        "\u5168\u56fd\u5404\u5730",
+                        "\u6c11\u65cf",
+                        "\u90ed"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u56fd"
                 },
                 {
@@ -10473,6 +11127,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u5efa\u4ea4"
                 },
                 {
@@ -10555,6 +11211,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5468\u5e74 \u7eaa\u5ff5",
+                        "\u7eaa\u5ff5\u65e5",
+                        "\u5468\u5e74 \u7eaa\u5ff5\u65e5",
+                        "\u5468\u5e74 \u5e86"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5468\u5e74"
                 },
                 {
@@ -10613,6 +11276,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e3a"
                 },
                 {
@@ -10715,6 +11380,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u65b0\u578b",
+                        "\u5168\u65b0",
+                        "\u6700\u65b0",
+                        "\u65b0\u5efa",
+                        "\u65b0\u9c9c"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u65b0"
                 },
                 {
@@ -10800,6 +11473,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5f00\u59cb",
+                        "\u5f00\u7aef",
+                        "\u521d",
+                        "\u5f00\u5934",
+                        "\u542f\u52a8",
+                        "\u9608 \u503c"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u8d77\u70b9"
                 },
                 {
@@ -10945,6 +11627,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4fc3\u8fdb",
+                        "\u63a8\u5e7f",
+                        "\u63a8\u8fdb",
+                        "\u63d0\u5347",
+                        "\u63a8",
+                        "\u9a71\u52a8"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u63a8\u52a8"
                 },
                 {
@@ -11125,6 +11816,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u4e2d"
                 },
                 {
@@ -11191,6 +11884,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u8461\u8404\u7259",
+                        "\u8461\u8404\u7259 \u8bed",
+                        "\u8461\u56fd",
+                        "\u8461\u8404\u7cd6 \u9178"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u8461"
                 },
                 {
@@ -11324,6 +12024,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u7efc\u5408",
+                        "\u7efc\u5408\u6027",
+                        "\u5b8c\u5584",
+                        "\u5168\u65b9\u4f4d",
+                        "\u6574\u4f53",
+                        "\u5168"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5168\u9762"
                 },
                 {
@@ -11411,6 +12120,13 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u7b56\u7565",
+                        "\u5bf9\u7b56",
+                        "\u6218\u672f",
+                        "\u8bc0"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u6218\u7565"
                 },
                 {
@@ -11518,6 +12234,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u5408\u4f5c \u4f19\u4f34",
+                        "\u4f34\u4fa3",
+                        "\u642d\u6863",
+                        "\u5408\u4f19\u4eba",
+                        "\u540c\u4f34",
+                        "\u4f19\u8ba1"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4f19\u4f34"
                 },
                 {
@@ -11642,6 +12367,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u611f\u60c5",
+                        "\u8054\u7cfb",
+                        "\u4eba\u9645\u5173\u7cfb",
+                        "\u76f8\u5173\u6027",
+                        "\u9886\u5e26",
+                        "\u76f8\u5173\u5206\u6790"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u5173\u7cfb"
                 },
                 {
@@ -11689,6 +12423,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u8fc8\u4e0a"
                 },
                 {
@@ -11791,6 +12527,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u65b0\u578b",
+                        "\u5168\u65b0",
+                        "\u6700\u65b0",
+                        "\u65b0\u5efa",
+                        "\u65b0\u9c9c"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u65b0"
                 },
                 {
@@ -11882,6 +12626,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u6b65\u9aa4",
+                        "\u63aa\u65bd",
+                        "\u6b65",
+                        "\u811a\u6b65",
+                        "\u697c\u68af",
+                        "\u53f0"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u53f0\u9636"
                 },
                 {
@@ -12002,6 +12755,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u66f4\u591a",
+                        "\u66f4\u52a0",
+                        "\u591a",
+                        "\u66f4\u4e3a",
+                        "\u751a\u81f3",
+                        "\u4e5f"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u66f4"
                 },
                 {
@@ -12138,6 +12900,14 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u55ef",
+                        "\u4e95",
+                        "\u90a3\u4e48",
+                        "\u826f\u597d",
+                        "\u5bf9"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u597d"
                 },
                 {
@@ -12197,6 +12967,8 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [],
+                    "user_synonyms": [],
                     "word": "\u9020\u798f"
                 },
                 {
@@ -12283,6 +13055,10 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u90fd"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4e24"
                 },
                 {
@@ -12383,6 +13159,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u56fd\u5bb6",
+                        "\u5168\u56fd",
+                        "\u4e61\u6751",
+                        "\u5168\u56fd\u5404\u5730",
+                        "\u6c11\u65cf",
+                        "\u90ed"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u56fd"
                 },
                 {
@@ -12441,6 +13226,12 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4e0e",
+                        "\u53ca",
+                        "\u5e76"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u548c"
                 },
                 {
@@ -12527,6 +13318,10 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u90fd"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4e24"
                 },
                 {
@@ -12627,6 +13422,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u56fd\u5bb6",
+                        "\u5168\u56fd",
+                        "\u4e61\u6751",
+                        "\u5168\u56fd\u5404\u5730",
+                        "\u6c11\u65cf",
+                        "\u90ed"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u56fd"
                 },
                 {
@@ -12715,6 +13519,15 @@
                             "name": "freq"
                         }
                     ],
+                    "synonyms": [
+                        "\u4eba",
+                        "\u4eba\u4eec",
+                        "\u522b\u4eba",
+                        "\u5e02\u6c11",
+                        "\u4ec1",
+                        "\u516c\u6c11"
+                    ],
+                    "user_synonyms": [],
                     "word": "\u4eba\u6c11"
                 },
                 {

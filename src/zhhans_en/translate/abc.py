@@ -189,3 +189,7 @@ class ZHHANS_EN_ABCDictTranslator(PersistenceProvider, Translator):
     def get_standardised_fallback_defs(self, token):
         # TODO: do something better than this!
         return self.get_standardised_defs(token)
+
+    # override Translator
+    def synonyms(self, token, std_pos, max_synonyms=5):
+        raise NotImplementedError

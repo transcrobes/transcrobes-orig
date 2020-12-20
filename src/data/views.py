@@ -281,8 +281,20 @@ def update_model(request):
 @api_view(["POST", "OPTIONS"])
 def user_event(request):
     if request.method == "POST":
+
+        if "userStatsMode" in request.data:
+            stats_mode = int(request.data["userStatsMode"])
+        else:
+            stats_mode = stats.USER_STATS_MODE_IGNORE
+
         stats.KAFKA_PRODUCER.send(
-            "actions", {"user_id": request.user.id, "type": request.data["type"], "data": request.data["data"]}
+            "actions",
+            {
+                "user_id": request.user.id,
+                "type": request.data["type"],
+                "data": request.data["data"],
+                "user_stats_mode": stats_mode,
+            },
         )
 
     data = {"status": "success"}

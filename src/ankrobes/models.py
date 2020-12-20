@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
 import json
+import logging
 import pkgutil
+from collections import Counter
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.functional import cached_property
 from djankiserv.unki.collection import Collection
 from libgravatar import Gravatar
+
+from enrich.models import BingAPILookup
+
+logger = logging.getLogger(__name__)
 
 
 class Transcrober(models.Model):
@@ -68,3 +75,43 @@ class Transcrober(models.Model):
             sql = f"""
             REFRESH MATERIALIZED VIEW CONCURRENTLY {self.user.username}.user_vocabulary"""
             col.db.execute(sql)
+
+    @cached_property
+    def known_words(self):
+        return set(
+            BingAPILookup.objects.filter(userword__user=self.user, userword__is_known=True).values_list(
+                "source_text", flat=True
+            )
+        )
+
+    @cached_property
+    def known_word_bases(self):
+        # TODO: are these morphemes? sorta? it basically means "Chinese characters" but that's not very generic :-)
+        return Counter("".join(self.known_words))
+
+    def filter_known(self, words, min_morpheme_known_count=2, prefer_whole_known_words=True):
+        if not words:
+            return []  # or None?
+        known = []
+        whole_known_words = []
+        for word in words:
+            if word in self.known_words:
+                if prefer_whole_known_words:
+                    whole_known_words.append(word)
+                else:
+                    known.append(word)
+            elif min_morpheme_known_count > 0:
+                good = True
+                for character in word:
+                    if (
+                        character not in self.known_word_bases
+                        or self.known_word_bases[character] < min_morpheme_known_count
+                    ):
+                        good = False
+                        break
+                if good:
+                    known.append(word)
+
+        logger.debug(f"{whole_known_words + known=}")
+
+        return whole_known_words + known

@@ -27,7 +27,6 @@ class BingTranslator(Translator, BingAPI):
 
     # public override methods
     def get_standardised_defs(self, token):
-        # breakpoint()
         result = self._ask_bing_lookup(token["lemma"])
         jresult = json.loads(result)
         bing = jresult[0]["translations"]
@@ -73,6 +72,57 @@ class BingTranslator(Translator, BingAPI):
         translation = jresult[0]["translations"][0]["text"]
         logging.debug("Returning Bing translation '%s' for '%s'", translation, text)
         return translation, jresult[0]["translations"][0].get("alignment")
+
+    def synonyms(self, token, std_pos, max_synonyms=5):
+        """
+        Return the Bing reverse translations (aka synonyms) for translations in the lookup
+        that have at least X similarity and a frequency of at least Y
+        """
+        MAX_REVERSE_TRANSLATION_SOURCES = 3
+
+        # get the MAX_REVERSE_TRANSLATION_SOURCES most confident translations from db or cache
+        # that have the POS we are looking for, in order of most confident
+        jresult = json.loads(self._ask_bing_lookup(token["lemma"]))
+        same_pos = [x for x in jresult[0]["translations"] if x["posTag"] == std_pos]
+
+        if not same_pos:
+            return []  # or None?
+
+        sorted_defs = sorted(same_pos, key=lambda i: i["confidence"], reverse=True)[:MAX_REVERSE_TRANSLATION_SOURCES]
+
+        # From those upto MAX_REVERSE_TRANSLATION_SOURCES found, get the most frequent reverse translations,
+        # with (hopefully? is my algo ok???) upto max_synonyms, but leaving a single spot free if we have
+        # sources left... Basically, if we want 5 and MAX_REVERSE_TRANSLATION_SOURCES is 3, then get 3 from the
+        # first and 1 each from sources two and three
+        best_count = MAX_REVERSE_TRANSLATION_SOURCES
+        best_synonyms = []
+        i = 0
+        sorted_bts = sorted(sorted_defs[0]["backTranslations"], key=lambda i: i["frequencyCount"], reverse=True)
+        while len(best_synonyms) <= best_count and i < len(sorted_bts):
+            word = sorted_defs[0]["backTranslations"][i]["normalizedText"]
+            if word != token["lemma"] and word not in best_synonyms:
+                best_synonyms.append(word)
+            i += 1
+
+        best_count += 1
+        if len(sorted_defs) > 1:
+            i = 0
+            while len(best_synonyms) <= best_count and i < len(sorted_defs[1]["backTranslations"]):
+                word = sorted_defs[1]["backTranslations"][i]["normalizedText"]
+                if word != token["lemma"] and word not in best_synonyms:
+                    best_synonyms.append(word)
+                i += 1
+
+        best_count += 1
+        if len(sorted_defs) > 2:
+            i = 0
+            while len(best_synonyms) <= best_count and i < len(sorted_defs[2]["backTranslations"]):
+                word = sorted_defs[2]["backTranslations"][i]["normalizedText"]
+                if word != token["lemma"] and word not in best_synonyms:
+                    best_synonyms.append(sorted_defs[2]["backTranslations"][i]["normalizedText"])
+                i += 1
+
+        return best_synonyms
 
     def _translate_params(self):
         return {**self.default_params(), **{"includeAlignment": True}}

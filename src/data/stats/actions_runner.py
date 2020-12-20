@@ -7,6 +7,8 @@ import time
 import kafka
 from django.db import connection
 
+import stats
+
 from . import create_temp_table_userword, update_db_userword
 
 RUNNER_TYPE = "actions"  # also kafka topic and group
@@ -26,21 +28,28 @@ def run_updates(broker, consumer_timeout_ms, stats_loop_sleep, max_poll_records)
         data = {}
         for _topic, messages in consumer.poll(timeout_ms=consumer_timeout_ms).items():
             for message in messages:
-                print("great action ts", message.timestamp)
-                stats = json.loads(message.value.decode("utf-8"))
-                user_id = stats["user_id"]
+                user_stats = json.loads(message.value.decode("utf-8"))
+
+                # FIXME: decide how to properly distinguish between the various types, or at least
+                # to store the info
+                user_stats_mode = int(user_stats["user_stats_mode"])
+                if user_stats_mode == stats.USER_STATS_MODE_IGNORE:
+                    # We should probably never arrive here with USER_STATS_MODE_IGNORE, but if we do
+                    continue
+
+                # Only log if we are not ignoring, so must be after the guard!
+                logger.debug(f"Processing action user_stats {user_stats=}")
+
+                user_id = user_stats["user_id"]
                 if user_id not in data:
                     data[user_id] = {}
 
-                event_type = stats["type"]
-                event_data = stats["data"]
-
                 # FIXME: currently ignoring these as we don't have a home for the data yet
-                if event_type in ["add_note", "set_word_known", "bc_sentence_lookup"]:
+                if user_stats["type"] in ["add_note", "set_word_known", "bc_sentence_lookup"]:
                     continue
 
-                if event_type == "bc_word_lookup":
-                    word = event_data["target_word"]
+                if user_stats["type"] == "bc_word_lookup":
+                    word = user_stats["data"]["target_word"]
                     if word not in data[user_id]:
                         data[user_id][word] = [0, 0, None]
 
