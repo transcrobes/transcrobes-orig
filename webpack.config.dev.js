@@ -1,20 +1,18 @@
-const HtmlWebPackPlugin = require( 'html-webpack-plugin' );
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    survey: ['./src/assets/survey.app.jsx' ],
-    notrobes: ['./src/assets/notrobes.app.jsx']
+    app: ['./src/assets/js/app.js'],
+    sw: ['./src/assets/js/sw.js'],
+    notrobes: ["regenerator-runtime/runtime.js", './src/assets/react-apps/notrobes.app.jsx'],
+    srsrobes: ["regenerator-runtime/runtime.js", './src/assets/react-apps/srsrobes.app.jsx'],
+    listrobes: ["regenerator-runtime/runtime.js", './src/assets/react-apps/listrobes.app.jsx'],
+    survey: ["regenerator-runtime/runtime.js", './src/assets/react-apps/survey.app.jsx'],
   },
   output: {
-    filename: '[name]-bundle.js',  // output bundle file name
-    path: path.resolve(__dirname, './src/static'),  // path to our Django static directory
-  },
-  devServer: {
-    host: '0.0.0.0', //your ip address
-    port: 8080,
-    disableHostCheck: true,
-    historyApiFallback: true,
+    filename: '[name]-bundle.js',
+    path: path.resolve(__dirname, './src/static'), // path to our Django static directory
   },
   module: {
     rules: [
@@ -41,9 +39,8 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebPackPlugin({
-      template: path.resolve( __dirname, 'tmp/index.html' ),
-      filename: 'index.html'
-    })
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ]
-};
+}

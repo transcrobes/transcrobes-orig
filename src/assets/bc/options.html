@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Transcrobes Options</title>
+    <meta charset="utf-8">
+    <meta name="description" content="Transcrobes Options">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Anton Melser">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <style>
+      body {
+        font-family: "Open Sans Light", sans-serif;
+        font-size: 1.2em;
+        padding: 2em;
+        font-weight: 300;
+        max-width: 800px;
+      }
+      .hidden {
+        display: none;
+      }
+      .credentials {
+        max-width: 500px;
+        display: flex;
+        flex-flow: column;
+      }
+      .frow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .savestyle {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 8px;
+        padding-top: 8px;
+      }
+      .title {
+        font-size: 1.2em;
+        margin-bottom: 0.5em;
+      }
+      input {
+        margin: 0.5em;
+        width: 200px;
+        height: 2.5em;
+      }
+      button {
+        width: 208px;  /* why do i need 208 here :-( */
+        height: 2.5em;
+        margin-bottom: 0.5em;
+      }
+      select {
+        margin: 0.5em;
+        width: 208px;  /* why do i need 208 here :-( */
+        height: 2.5em;
+      }
+      .initialisation_details {
+        max-width: 500px;
+        display: flex;
+        flex-flow: column;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="credentials">
+      <div class="title" >Transcrobes Server connection information</div>
+      <div class="frow">Username: <input id="username" type="text"/></div>
+      <div class="frow">Password: <input id="password" type="password"/></div>
+      <div class="frow">Base URL: <input id="base-url" type="url"/></div>
+      <div class="frow"> <label for="glossing">Glossing:</label>
+
+        <!-- see content.js
+          USER_STATS_MODE_IGNORE = -1
+          USER_STATS_MODE_UNMODIFIED = 0
+          USER_STATS_MODE_NO_GLOSS = 2  # word-segmented
+          USER_STATS_MODE_L2_SIMPLIFIED = 4  # Simpler synonym, or L1 if none known
+          USER_STATS_MODE_TRANSLITERATION = 6  # Pinyin
+          USER_STATS_MODE_L1 = 8  # English
+        -->
+        <select name="glossing" id="glossing">
+          <option value="0">None</option>
+          <option value="4">Simple word</option>
+          <option value="6">Pinyin</option>
+          <option value="8" selected>English</option>
+        </select>
+      </div>
+
+      <div class="savestyle"><button id="save">Save/Update</button></div>
+      <div class="savestyle"><button class="hidden" id="reinitialise">Reinitialise from scratch</button></div>
+    </div>
+
+    <div id="status"></div>
+    <div id="intro">
+      <div class='initialisation_details' id="initialisation_details">
+        <h1>Welcome! It's Transcrobes initialisation time!</h1>
+        <p>Even though the client side of Transcrobes is entirely browser-based, a lot of Transcrobes' data needs to be
+          downloaded in order to
+          save on bandwidth and dramatically improve performance, and that is going to take a while (15-25 minutes, depending on
+          how fast your phone/tablet/computer is).</p>
+        <p>The system needs to do quite a lot of work (mainly building indexeddb indexes), so don't be alarmed if your devices
+          heat up a bit (should be less than a gaming session though!) and the fan switches on. It's normal, and will only
+          happen once, at initialisation time. It's better to not interrupt the initialisation while it's happening (like any
+          initialisation!), so make sure your device has plenty of battery (or is plugged in). On an Android device you MUST plug
+          it in and keep the screen from going off or the initialisation will freeze due to system optimisations. It will also
+          download 25-50MB of data so if you are not on wifi, make sure that is not a problem for your data plan.</p>
+      </div>
+    </div>
+    <div id="initialisation" class="hidden">
+      <div id="initialisation_started">
+        <h1>Initialisation started</h1>
+          <p>Please be patient while the initialisation finishes. The initialisation will give some updates but you should not be worried unless
+            you see no update for over 5 minutes. No harm should come if you stop the initialisation by navigating away or closing the
+            browser. The initialisation will pick up where it left off when you return.</p>
+        <div id="loading"><img src="img/loader.gif" /></div>
+        <div class="text-center" style="font-size: 2em; color:black;" id="initialisationMessages"></div>
+      </div>
+    </div>
+
+    <script src="options-bundle.js"></script>
+  </body>
+</html>

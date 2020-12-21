@@ -2,13 +2,11 @@
 
 import json
 import logging
-import socket
 from abc import ABC, abstractmethod
 from urllib.parse import quote
 
 import requests
-import xmltodict
-from aiohttp_retry import RetryClient, RetryOptions
+from aiohttp_retry import ExponentialRetry, RetryClient
 
 logger = logging.getLogger(__name__)
 
@@ -24,52 +22,8 @@ class ParseProvider(ABC):
         """
 
 
-"""
-TODO: currently unused, as we want proper word offsets and using the main provider
-means we can have identical config for the supported languages. Left here in case
-we decide using postagger directly is worth the hassle (for significantly reduced
-memory usage
-"""
-
-
-class SocketCoreNLPProvider(ParseProvider):
-    def parse(self, text, _provider_parameters=None):
-        logger.debug("Starting SocketCoreNLPProvider parse of: %s", text)
-
-        clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        clientsocket.connect((self._config["host"], int(self._config["port"])))
-        clientsocket.send(str.encode(text + "\n"))
-        ret = clientsocket.recv(16384).decode()
-        buf = ret
-        while True:
-            if len(ret) > 0:
-                ret = clientsocket.recv(16384).decode()
-                buf = buf + ret  # clientsocket.recv(16384).decode()
-            else:
-                break
-        doc = f"<doc>{buf}</doc>"
-
-        outmodel = {"sentences": []}
-        sInd = 0
-        # TODO: we should either just iterate on the xml directly or tell xmltodict what
-        # structure to use - double-handling is stupid
-        m = xmltodict.parse(doc, dict_constructor=dict, attr_prefix="", cdata_key="originalText")
-        for s in m["doc"]["sentence"]:
-            wInd = 1
-            sentence = {"index": sInd, "tokens": []}
-            sInd += 1
-            for w in s["word"]:
-                sentence["tokens"].append(
-                    {"index": wInd, "word": w["lemma"], "originalText": w["originalText"], "pos": w["pos"]}
-                )
-                wInd += 1
-
-            outmodel["sentences"].append(sentence)
-
-        return outmodel
-
-
 class HTTPCoreNLPProvider(ParseProvider):
+    # FIXME: the sync version of `aparse`, it should probably disappear
     def parse(self, text, provider_parameters=None):
         logger.debug("Starting HTTPCoreNLPProvider parse of: %s", text)
 
@@ -86,11 +40,11 @@ class HTTPCoreNLPProvider(ParseProvider):
 
     async def aparse(self, text, provider_parameters=None, max_attempts=5, max_wait_between_attempts=300):
         ## the max_timeout option is horribly named, it is the wait between attempts, not timeout at all...
-        retry_options = RetryOptions(attempts=max_attempts, max_timeout=max_wait_between_attempts)
+        retry_options = ExponentialRetry(attempts=max_attempts, max_timeout=max_wait_between_attempts)
         async with RetryClient(raise_for_status=False, retry_options=retry_options) as client:
             logger.debug("Starting HTTPCoreNLPProvider aparse of: %s", text)
             params = {"properties": provider_parameters or self._config["params"]}
-            async with client.post(self._config["base_url"], data=quote(text), params=params) as response:
+            async with client.post(self._config["base_url"], data=text, params=params) as response:
                 response.raise_for_status()
                 logger.debug("Finished getting model from CoreNLP via http")
                 return await response.json()

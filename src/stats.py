@@ -5,11 +5,23 @@ from django.conf import settings
 from kafka import KafkaProducer
 
 USER_STATS_MODE_IGNORE = -1
-USER_STATS_MODE_UNMODIFIED = 0
-USER_STATS_MODE_NO_GLOSS = 2  # word-segmented
-USER_STATS_MODE_L2_SIMPLIFIED = 4  # Simpler synonym, not yet implemented
-USER_STATS_MODE_TRANSLITERATION = 6  # Pinyin
-USER_STATS_MODE_L1 = 8  # English
+GLOSSING_MODE_UNMODIFIED = 0
+GLOSSING_MODE_SEGMENT_ONLY = 2  # word-segmented
+GLOSSING_MODE_L2_SIMPLIFIED = 4  # Simpler synonym, not yet implemented
+GLOSSING_MODE_TRANSLITERATION = 6  # Pinyin
+GLOSSING_MODE_L1 = 8  # English
+
+USER_GLOSSING_MODE = [
+    (GLOSSING_MODE_UNMODIFIED, "Unmodified text"),
+    (GLOSSING_MODE_L2_SIMPLIFIED, "Simpler words"),
+    (GLOSSING_MODE_TRANSLITERATION, "Transliteration"),
+    (GLOSSING_MODE_L1, "Native language"),
+]
+
+USER_STATS_MODE = [
+    (USER_STATS_MODE_IGNORE, "Ignore"),
+    (GLOSSING_MODE_SEGMENT_ONLY, "Segmentation only"),
+] + USER_GLOSSING_MODE
 
 KAFKA_PRODUCER: KafkaProducer
 

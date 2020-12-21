@@ -1,0 +1,111 @@
+<!-- templates/data/list_create.html-->
+{% extends 'data/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Create List{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Create a new List</h1>
+</div>
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <p>When Transcrobes creates a list a number of analysis steps are required, which can take some time depending on how busy the system is. Please be patient while this happens - good things can take a little time! You can check the current status of your lists on the <a href="{% url 'list_list' %}">Lists page</a>.</p>
+</div>
+
+
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <form class="user" method="post" enctype="multipart/form-data"> {% csrf_token %}
+      {% for hidden_field in form.hidden_fields %}
+      {{ hidden_field }}
+      {% endfor %}
+
+      <div class="form-group form-error">
+        <p>{% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+        {% endif %}
+        </p>
+      </div>
+      <div class="form-group">
+        {% render_field form.title class+="form-control form-control-user" aria-describedby="titleHelp" placeholder="Enter list title..." %}
+      </div>
+      {% if form.title.errors %}
+      <div class="form-group form-error">
+        {{ form.title.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        {% render_field form.description rows="5" class+="form-control" aria-describedby="descriptionHelp" placeholder="Enter list description..." title="List description" %}
+      </div>
+      {% if form.description.errors %}
+      <div class="form-group form-error">
+        {{ form.description.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+          <label>List active Status</label>
+          {% render_field form.status class+="form-control" aria-describedby="statusHelp" placeholder="Status..." %}
+        </div>
+        <div class="col-sm-6">
+          <label>Maximum size of the list (-1 for all)</label>
+        {% render_field form.nb_to_take class+="form-control" aria-describedby="nbToTakeHelp" placeholder="Nb to take..." %}
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+          <label>Source Import</label>
+          {% render_field form.the_import class+="form-control" aria-describedby="userListHelp" placeholder="Import..." %}
+        </div>
+        <div class="col-sm-6">
+          <label>Order by</label>
+          {% render_field form.order_by class+="form-control" aria-describedby="parentHelp" placeholder="Order by..." %}
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+          <label>Minimum document frequency (-1 for all)</label>
+          {% render_field form.minimum_doc_frequency class+="form-control" aria-describedby="minimumDocFrequencyHelp" placeholder="Minimum frequency in document..." %}
+        </div>
+        <div class="col-sm-6">
+          <label>Minimum absolute frequency (-1 for all)</label>
+          {% render_field form.minimum_abs_frequency class+="form-control" aria-describedby="minimumAbsFrequencyHelp" placeholder="Minimum absolute frequency..." %}
+        </div>
+      </div>
+
+      <div class="form-group row">
+        {% comment %} <div class="col-sm-6 mb-3 mb-sm-0">
+          <label for="id_add_notes">Add notes to spaced repetition (Anki)</label>
+          {% render_field form.add_notes class+="" aria-describedby="addNotesHelp" placeholder="Add notes to spaced repetition..." %}
+        </div> {% endcomment %}
+        {% comment %} <div class="col-sm-6">
+          <label for="id_only_dictionary_words">Only take items found in the dictionary</label>
+          {% render_field form.only_dictionary_words class+="" aria-describedby="onlyDictionaryWordHelp" placeholder="Only take items if they appear in the default dictionary..." %}
+        </div> {% endcomment %}
+      </div>
+
+      <div class="form-group row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+          <label for="id_shared">Share list with other learners (public list)</label>
+          {% render_field form.shared class+="" aria-describedby="shareListHelp" placeholder="Public list..." %}
+        </div>
+        <div class="col-sm-6">
+          <label for="id_words_are_known">Words are known</label>
+          {% render_field form.words_are_known class+="" aria-describedby="wordsAreKnownHelp" placeholder="Words should be marked as known..." %}
+        </div>
+      </div>
+      <button class="btn btn-primary btn-user btn-block" type="submit">Create List</button>
+    </form>
+    <hr>
+    <p><a href="{% url 'list_list' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Lists</a></p>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+<!-- templates/settings/offline.html -->
+{% extends 'data/unauth_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Offline{% endblock %}
+
+{% block content %}
+<!-- Outer Row -->
+<div class="row justify-content-center">
+  <div class="col-xl-10 col-lg-12 col-md-9">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+          <div class="col-lg-6">
+            <div class="p-5">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Offline</h1>
+                <p>Unfortunately, it looks like there is no internet connection or there is a problem with the server. Most of Transcrobes can function properly offline but certain pages and services require an active connection. Please try connecting to a network or continue learning with the offline functionality!</p>
+                <div style="display:flex; justify-content: center; padding-bottom: 2em">
+                  <button style="width: 90%" onclick="window.history.back()" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Return to the Dashboard</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

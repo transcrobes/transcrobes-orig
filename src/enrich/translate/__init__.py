@@ -20,3 +20,7 @@ class Translator(ABC):
     @abstractmethod
     def synonyms(self, token, std_pos, max_synonyms=5):
         pass
+
+    @abstractmethod
+    async def sound_for(self, token):  # FIXME: the entries should actually be able to do this per POS
+        pass

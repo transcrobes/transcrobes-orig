@@ -1,0 +1,26 @@
+<!-- templates/data/base_footer_with_copyright.html-->
+{% extends 'data/base_no_menus.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <main>
+    {% block main %} {% endblock %}
+  </main>
+</div>
+{% endblock %}
+
+{% block copyright %}
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+  <div class="container">
+    {% block footer %}{% endblock %}
+  </div>
+  <div class="container my-auto">
+    <div class="copyright text-center my-auto">
+      <span>Copyright &copy; Anton Melser 2021</span>
+    </div>
+  </div>
+</footer>
+<!-- End of Footer -->
+{% endblock %}

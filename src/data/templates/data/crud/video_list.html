@@ -1,0 +1,74 @@
+<!-- templates/data/video_list.html-->
+{% extends 'data/base.html' %}
+
+{% block title %}Subtitled Media{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Subtitled Media</h1>
+</div>
+
+<div class="row">
+  <div class="col-xl-10 col-lg-11">
+    <div class="card shadow mb-4">
+      <div class="card-body">
+        <p>To watch videos (or listen to podcasts, etc.) with Transcrobes you will first need to import a subtitle track into the system.</p>
+        <p><a href="{% url 'import_create' %}" class="btn btn-primary btn-user btn-block">Import a WebVTT or SRT file</a></p>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                {% if message %}
+                <div class="text-center" style="font-weight: 800; padding-bottom:1em">
+                  {{ message }}
+                </div>
+                {% endif %}
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr><th>Name</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                      {% for track in object_list %}
+                      <tr>
+                        <td><a href="{% url 'import_detail' pk=track.the_import.id %}" class="btn btn-primary btn-user btn-block">{{ track.title }} ({{track.id}})</a></td>
+                        <td>{{ track.created }}</td>
+                        <td>{{ track.processing_status }}</td>
+                        <td>
+                          {% if track.processing == 3 %}<a class="btn btn-primary btn-user btn-block" href="{% url 'video_watch' pk=track.id %}">Watch</a>
+                          {% elif not track.processing %}
+                            <form method="POST">
+                              {% csrf_token %}
+                              <button class="btn btn-primary btn-user btn-block" type="submit">Enrich</button>
+                              <input type="hidden" name="request_content_id" value="{{track.id}}">
+                            </form>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="4">No subtitle imports yet. <a href="{% url 'import_create' %}" class="btn btn-primary btn-user btn-block">Import one</a></td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+              </div><!-- /.table-responsive -->
+            </div><!-- /.panel-body -->
+          </div><!-- /.panel -->
+        </div><!-- /.col-lg-6 -->
+      </div><!-- /.row -->
+
+      <div class="card-body">
+        <h5>Further information</h5>
+        <p>Importing will analyse the subtitle text, giving you important information about the unique benefits and challenges you will face with this particular material, at this particular point in your learning journey. </p>
+        <p>The system currently supports the common WebVTT (".vtt" extension) and Subrip (".srt" extension) subtitle formats. You can convert to one of these formats using the free online <a href="https://subtitletools.com/convert-to-srt-online">Subtitle Tools</a>. Please make sure to comply with any local laws in the place you live when sourcing or converting subtitles from one format to another, and make sure you only watch legally obtained material.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

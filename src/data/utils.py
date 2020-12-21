@@ -174,13 +174,6 @@ def update_user_rules(rlz, user):
     return UserGrammarRule.objects.bulk_create(new_user_rules)
 
 
-def add_lemmas(model):
-    for s in model["sentences"]:
-        for t in s["tokens"]:
-            t["lemma"] = t["word"]
-    return model
-
-
 def vocab_levels(vocab):
     lang_pair = "zh-Hans:en"  # get_username_lang_pair(request)
     manager = managers.get(lang_pair)
@@ -195,7 +188,6 @@ def vocab_levels(vocab):
     levels = {}
     dedup = set()
     for k in vocab.keys():
-        # print(hsk.meta_for_word(k))
         ls = hsk.meta_for_word(k)
         if ls and k not in dedup:
             if not ls[0]["hsk"] in levels:

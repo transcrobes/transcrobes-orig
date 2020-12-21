@@ -1,3 +1,4 @@
+<!-- templates/data/unauth_base.html-->
 {% load static %}
 
 <!DOCTYPE html>
@@ -17,7 +18,7 @@
   <!-- Styles for this template-->
   <link href="{% static 'data/css/all.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'data/css/sb-admin-2.min.css' %}" rel="stylesheet" type="text/css">
-  <link href="{% static 'data/css/custom.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'data/css/transcrobes.css' %}" rel="stylesheet" type="text/css">
 
   <!-- Custom fonts for this template-->
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -48,6 +49,8 @@
   <script src="{% static 'data/js/sb-admin-2.min.js' %}"></script>
 
   {% block extrajs %}{% endblock %}
+
+<div id="pg_ts" style="display: none">{% now 'Y-m-d H:i:s.u e' %}</div>
 </body>
 
 </html>

@@ -131,7 +131,7 @@ interactions:
       X-ClientTraceId:
       - d6804a85-6e8e-4663-9806-ca2e032dbc03
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Good.","to":"en","alignment":{"proj":"0:0-0:4"}}]}]'

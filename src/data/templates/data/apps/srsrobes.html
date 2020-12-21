@@ -1,0 +1,19 @@
+<!-- templates/data/srsrobes.html-->
+{% extends 'data/base.html' %}
+{% load static %}
+
+{% block title %}Vocabulary revision{% endblock %}
+
+{% block content %}
+<div id="root"></div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'srsrobes-bundle.js' %}"></script>
+{% endblock %}
+
+{% comment %} {% block footer %}
+<div style="display:flex; justify-content: center; padding-bottom: 2em">
+  <a style="width: 90%" href="{% url 'home' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> return to the dashboard</a>
+</div>
+{% endblock %} {% endcomment %}

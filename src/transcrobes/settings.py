@@ -2,13 +2,12 @@
 import os
 from datetime import timedelta
 
-import djankiserv.unki
-from djankiserv.unki.database import PostgresAnkiDataModel
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.getenv("TRANSCROBES_DEBUG")).lower() == "true"
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv("TRANSCROBES_SECRET_KEY", "not_a_very_good_secret")
 
 INSTALLED_APPS = [
     # core
@@ -19,8 +18,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-    "corsheaders",
     # community
+    "corsheaders",
     "registration",
     "anymail",
     "widget_tweaks",
@@ -30,11 +29,8 @@ INSTALLED_APPS = [
     "django_k8s",  # allows for a more elegant init-container to check for migrations and db availability
     "django_prometheus",
     "django_extensions",
-    "djankiserv.apps.DjankiservConfig",
     # local
     "enrich.apps.EnrichConfig",
-    "ankrobes.apps.AnkrobesConfig",
-    "en_zhhans.apps.EnZhhansConfig",
     "zhhans_en.apps.ZhhansEnConfig",
     "enrichers.apps.EnrichersConfig",
     "data.apps.DataConfig",
@@ -49,6 +45,11 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 CORS_ALLOW_ALL_ORIGINS = True  # TODO: think about restricting this
 
 SIMPLE_JWT = {
@@ -56,10 +57,10 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=int(os.getenv("TRANSCROBES_JWT_REFRESH_TOKEN_LIFETIME_DAYS", "1"))),
 }
 
-# TODO: fix the csrf thing - is this fixed now???
 MIDDLEWARE = [
-    "django_prometheus.middleware.PrometheusBeforeMiddleware",
+    # "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -67,7 +68,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_prometheus.middleware.PrometheusAfterMiddleware",
+    # "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "transcrobes.urls"
@@ -87,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "transcrobes.wsgi.application"
+ASGI_APPLICATION = "transcrobes.asgi.application"
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -101,22 +102,22 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 STATIC_URL = "/static/"
-STATIC_ROOT = "build/static"
+STATIC_ROOT = "whitenoise"
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-MEDIA_URL = "/media/"
 MEDIA_ROOT = os.getenv("TRANSCROBES_MEDIA_ROOT", "/tmp/media/")
 
 ## Observability
 # Prometheus
 PROMETHEUS_EXPORT_MIGRATIONS = False  # https://github.com/korfuri/django-prometheus/issues/34
 PROMETHEUS_MULTIPROC_MODE = True  # default is False
-PROMETHEUS_MULTIPROC_DIR = "/tmp/transcrobes_prometheus"
+PROMETHEUS_MULTIPROC_DIR = "/tmp/transcrobes_prometheus"  # this is required when there are multiple workers
 
 # Logging
 LOGGING = {
@@ -144,18 +145,13 @@ LOGGING = {
             "level": os.getenv("TRANSCROBES_ENRICHERS_LOG_LEVEL", "ERROR"),
             "propagate": False,
         },
-        "ankrobes": {
-            "handlers": ["console"],
-            "level": os.getenv("TRANSCROBES_NOTES_LOG_LEVEL", "ERROR"),
-            "propagate": False,
-        },
         "": {"handlers": ["console"], "level": os.getenv("TRANSCROBES_DEFAULT_LOG_LEVEL", "ERROR"), "propagate": False},
     },
 }
 
-if DEBUG:
-    MIDDLEWARE.append("request_logging.middleware.LoggingMiddleware")
-    LOGGING["loggers"]["django.request"] = {"handlers": ["console"], "level": "DEBUG", "propagate": False}
+# if DEBUG:
+#     MIDDLEWARE.append("request_logging.middleware.LoggingMiddleware")
+#     LOGGING["loggers"]["django.request"] = {"handlers": ["console"], "level": "DEBUG", "propagate": False}
 
 DATABASES = {
     "default": {
@@ -166,17 +162,8 @@ DATABASES = {
         "HOST": os.getenv("TC_POSTGRES_HOST", "127.0.0.1"),
         "PORT": os.getenv("TC_POSTGRES_PORT", "5432"),
     },
-    "userdata": {
-        "ENGINE": os.getenv("TC_DJANKISERV_USERDB_ENGINE", "django_prometheus.db.backends.postgresql"),
-        "NAME": os.getenv("TC_DJANKISERV_USERDB_NAME", "transcrobes"),
-        "USER": os.getenv("TC_DJANKISERV_USERDB_USER", "your_user"),
-        "PASSWORD": os.getenv("TC_DJANKISERV_USERDB_PASSWORD", "your_password"),
-        "HOST": os.getenv("TC_DJANKISERV_USERDB_HOST", "127.0.0.1"),
-        "PORT": os.getenv("TC_DJANKISERV_USERDB_PORT", "5432"),
-    },
 }
 
-djankiserv.unki.AnkiDataModel = PostgresAnkiDataModel
 SITE_ID = 1
 
 # WARNING!!! MUST be behind ssl proxy for both security and for both djankiserv and brocrobes to work
@@ -189,9 +176,6 @@ if HA_HOST:
 if os.getenv("TRANSCROBES_POD_IP"):
     ALLOWED_HOSTS.append(os.getenv("TRANSCROBES_POD_IP"))
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("TRANSCROBES_SECRET_KEY", "not_a_very_good_secret")
-
 # pilot
 LOGIN_URL = "/accounts/login/"
 LOGOUT_URL = "/accounts/logout/"
@@ -199,9 +183,6 @@ LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 REGISTRATION_FORM = "transcrobes.forms.RestrictiveRegistrationForm"
 INTERNAL_IPS = ("127.0.0.1",)
-
-# if you change this, it must also be changed in the images/static/Dockerfile
-STATIC_ROOT = "build/static"
 
 # Email: anymail via mailgun and defaults
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.emailbackend, or...
@@ -218,28 +199,22 @@ ACCOUNT_ACTIVATION_DAYS = int(os.getenv("TRANSCROBES_ACCOUNT_ACTIVATION_DAYS", "
 REGISTRATION_OPEN = str(os.getenv("TRANSCROBES_REGISTRATION_OPEN")).lower() == "true"
 REGISTRATION_AUTO_LOGIN = True
 
-## DJANKISERV
-# This is required as Django will add a slash and redirect to that by default, and djankiserv doesn't support that
-APPEND_SLASH = False
-
-DJANKISERV_SYNC_URLBASE = "sync/"  # this is not actually currently configurable, due to hardcoding in the clients
-DJANKISERV_SYNC_MEDIA_URLBASE = "msync/"  # this is not actually configurable, due to hardcoding in the clients
-DJANKISERV_API_URLBASE = "dapi/"  # TODO: turn this into an envvar
-DJANKISERV_DATA_ROOT = os.getenv("TRANSCROBES_DJANKISERV_DATA_ROOT", "/tmp")
-
-# DEBUG STUFF
-DJANKISERV_DEBUG = str(os.getenv("DJANKISERV_DEBUG", os.getenv("TRANSCROBES_DEBUG", "false"))).lower() == "true"
-
-DJANKISERV_GENERATE_TEST_ASSETS = False
-DJANKISERV_GENERATE_TEST_ASSETS_DIR = "/tmp/asrv/"
 TEST_RUNNER = "tests.CleanupTestRunner"
 
-## Stats
+## Stats & Events
 # Kafka
 KAFKA_BROKER = os.getenv("TRANSCROBES_KAFKA_BROKER", "localhost:9092")
 KAFKA_CONSUMER_TIMEOUT_MS = int(os.getenv("TRANSCROBES_KAFKA_CONSUMER_TIMEOUT_MS", "5000"))
 KAFKA_STATS_LOOP_SLEEP_SECS = int(os.getenv("TRANSCROBES_KAFKA_STATS_LOOP_SLEEP_SECS", "10"))
 KAFKA_MAX_POLL_RECORDS = int(os.getenv("TRANSCROBES_KAFKA_MAX_POLL_RECORDS", "500"))  # 500 is default
+
+# FIXME: Is this required for ASGI??? No idea!!!
+THREAD_SENSITIVE = os.getenv("TRANSCROBES_WSGI_PROCESS", "true").lower() == "true"
+
+# TODO: there appears to be an issue with asyncpg because of pgpool, so until aiopg (which is fine with pgpool2) is
+# implemented, or we forget about pgpool, then only kafka can work (and don't forget to create the topics beforehand,
+# or first connection fails). Default to memory, which is find for debugging
+BROACASTER_MESSAGING_LAYER = os.getenv("TRANSCROBES_BROACASTER_MESSAGING_LAYER", "memory")
 
 CACHES = {
     "default": {
@@ -267,6 +242,8 @@ CACHES = {
     },
 }
 
+DEFINITIONS_CACHE_DIR = os.getenv("TRANSCROBES_DEFINITIONS_CACHE_DIR", os.path.join(MEDIA_ROOT, "definitions_json"))
+
 # User list import max file size in KB
 IMPORT_MAX_UPLOAD_SIZE_KB = int(os.getenv("TRANSCROBES_IMPORT_MAX_UPLOAD_SIZE_KB", "5120"))
 
@@ -291,6 +268,8 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = (
 IMPORT_PARSE_CHUNK_SIZE_BYTES = int(os.getenv("TRANSCROBES_IMPORT_PARSE_CHUNK_SIZE_BYTES", "20000"))
 IMPORT_DETECT_CHUNK_SIZE_BYTES = int(os.getenv("TRANSCROBES_IMPORT_DETECT_CHUNK_SIZE_BYTES", "5000"))
 IMPORT_MAX_CONCURRENT_PARSER_QUERIES = int(os.getenv("TRANSCROBES_IMPORT_MAX_CONCURRENT_PARSER_QUERIES", "10"))
+
+USER_ONBOARDING_SURVEY_IDS = [int(i) for i in os.getenv("TRANSCROBES_USER_ONBOARDING_SURVEY_IDS", "1").split(",")]
 
 # TODO: give the option of doing an import to a configmap mounted file
 # and configuring from there. That will likely be useful when we have

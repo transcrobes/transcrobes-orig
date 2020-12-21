@@ -2,7 +2,7 @@
 
 source scripts/runsetup.sh
 
-FILE=.env
+FILE=.env.export
 if [ -f "$FILE" ]; then
     echo "Found .env file, sourcing"
     source $FILE

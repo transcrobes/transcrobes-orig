@@ -1,30 +1,204 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import annotations
+
 import csv
 import io
 import json
 import logging
 import os
+from collections import Counter
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 from django.db import connection, models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django_extensions.db.models import ActivatorModel, TimeStampedModel, TitleSlugDescriptionModel
+from libgravatar import Gravatar
 from upload_validator import FileTypeValidator
 
-from ankrobes import Ankrobes
+import stats
 from enrich.models import BingAPILookup, BingAPITranslation
-from utils import default_definition  # , SIMPLIFIED_UTF8_ORD_MIN, SIMPLIFIED_UTF8_ORD_MAX
+from enrich.translate.bing import BingTranslator
+from ndutils import user_imports_path, user_resources_path
+from zhhans_en.translate.ccc import ZHHANS_EN_CCCedictTranslator
 
 from .validators import validate_file_size
+
+MANIFEST_JSON = "manifest.json"
+PARSE_JSON_SUFFIX = ".parse.json"
+ENRICH_JSON_SUFFIX = ".enrich.json"
+DATA_JS_SUFFIX = ".data.js"
+SRT_EXTENTION = ".srt"
+VTT_EXTENTION = ".vtt"
+WEBVTT_FILE = "subtitles.vtt"
+
 
 SIMPLIFIED_UTF8_ORD_MIN = 22909
 SIMPLIFIED_UTF8_ORD_MAX = 40869
 
 logger = logging.getLogger(__name__)
+
+NONE = 0
+REQUESTED = 1
+PROCESSING = 2
+FINISHED = 3
+ERROR = 4
+
+PROCESSING_STATUS = [
+    (NONE, "None"),
+    (REQUESTED, "Requested"),
+    (PROCESSING, "Processing"),
+    (FINISHED, "Finished"),
+    (ERROR, "ERROR"),
+]
+
+
+class Card(models.Model):
+    L2_GRAPH = 1
+    L2_SOUND = 2
+    L1_MEANING = 3
+
+    CARD_TYPE = [
+        (L2_GRAPH, "L2 written form"),  # JS GRAPH
+        (L2_SOUND, "L2 sound form"),  # JS SOUND
+        (L1_MEANING, "L1 meaning"),  # JS MEANING
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text="Card owner")
+    word = models.ForeignKey(BingAPILookup, on_delete=models.CASCADE)
+    card_type = models.IntegerField(choices=CARD_TYPE, default=L2_GRAPH, help_text="Card type")
+    interval = models.IntegerField(default=0, help_text="SM2 interval")
+    repetition = models.IntegerField(default=0, help_text="SM2 repetition")
+    efactor = models.FloatField(default=2.5, help_text="SM2 efactor")
+    front = models.TextField(null=True, help_text="Override default definition cue")
+    back = models.TextField(null=True, help_text="Override default definition expected response")
+    due_date = models.DateTimeField(null=True)
+    first_revision_date = models.DateTimeField(null=True)
+    last_revision_date = models.DateTimeField(null=True)
+    updated_at = models.DateTimeField(default=timezone.now)
+    known = models.BooleanField(default=False, help_text="Learner believes they 'know' the word/cardtype")
+    suspended = models.BooleanField(default=False, help_text="Don't revise the cardtype")
+    deleted = models.BooleanField(default=False, help_text="Card has been deleted")
+
+
+class Transcrober(models.Model):
+    # FIXME: move this class to the transcrobes app
+    DARK_MODE = "dark"
+    LIGHT_MODE = "light"
+    WHITE_MODE = "white"
+    BLACK_MODE = "black"
+
+    CONTENT_MODE = [
+        (DARK_MODE, "Dark mode"),
+        (LIGHT_MODE, "Light mode"),
+        (WHITE_MODE, "White mode"),
+        (BLACK_MODE, "Black mode"),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # TODO: this should probably be a OneToMany, so we can have users
+    # who use the system for more than one language. KISS for the moment
+    from_lang = models.CharField(max_length=20, default="zh-Hans")  # 20 is probably overkill
+    to_lang = models.CharField(max_length=20, default="en")  # 20 is probably overkill
+
+    # FIXME: this is pretty nasty, but while we are defaulting to from_lang="zh-Hans", why not!
+    ds = f"{BingTranslator.SHORT_NAME},{ZHHANS_EN_CCCedictTranslator.SHORT_NAME},{BingTranslator.FALLBACK_SHORT_NAME}"
+    dictionary_ordering = models.CharField(max_length=50, default=ds)
+
+    default_segment = models.BooleanField(default=True, help_text="Segment texts by default")
+    default_glossing = models.IntegerField(
+        choices=stats.USER_GLOSSING_MODE,
+        default=stats.GLOSSING_MODE_L1,
+        help_text="Default gloss mode for platform-internal reading",
+    )
+    reading_mode = models.CharField(
+        choices=CONTENT_MODE, max_length=100, default=DARK_MODE, help_text="Reading mode for platform-internal reading"
+    )
+    font_size_percent = models.IntegerField(
+        validators=[MinValueValidator(30), MaxValueValidator(200)], default=100, help_text="Default font size percent"
+    )
+    subtitle_default_segment = models.BooleanField(default=True, help_text="Segment subtitles by default")
+    subtitle_default_glossing = models.IntegerField(
+        choices=stats.USER_GLOSSING_MODE,
+        default=stats.GLOSSING_MODE_L1,
+        help_text="Default gloss mode for platform-internal subtitles",
+    )
+    media_mode = models.CharField(
+        choices=CONTENT_MODE, max_length=100, default=DARK_MODE, help_text="Video mode for platform-internal subtitles"
+    )
+    subtitle_box_width_percent = models.IntegerField(
+        validators=[MinValueValidator(25), MaxValueValidator(100)],
+        default=50,
+        help_text="Default subtitle box width percent",
+    )
+    subtitle_font_size_percent = models.IntegerField(
+        validators=[MinValueValidator(30), MaxValueValidator(250)],
+        default=150,
+        help_text="Default subtitle font size percent",
+    )
+
+    @staticmethod
+    def get_absolute_url():
+        return reverse("profile")
+
+    def lang_pair(self):
+        return f"{self.from_lang}:{self.to_lang}"
+
+    def get_gravatar(self):
+        return Gravatar(self.user.email).get_image()[5:]  # remove the 'http:'
+
+    def get_full_name(self):
+        full_name = f"{self.user.first_name} {self.user.last_name}"
+        return full_name if full_name.strip() else self.user.username
+
+    @cached_property
+    def known_words(self):
+        return set(
+            BingAPILookup.objects.filter(userword__user=self.user, userword__is_known=True).values_list(
+                "source_text", flat=True
+            )
+        )
+
+    @cached_property
+    def known_word_bases(self):
+        # TODO: are these morphemes? sorta? it basically means "Chinese characters" but that's not very generic :-)
+        return Counter("".join(self.known_words))
+
+    def filter_known(self, words, min_morpheme_known_count=2, prefer_whole_known_words=True):
+        if not words:
+            return []  # or None?
+        known = []
+        whole_known_words = []
+        for word in words:
+            if word in self.known_words:
+                if prefer_whole_known_words:
+                    whole_known_words.append(word)
+                else:
+                    known.append(word)
+            elif min_morpheme_known_count > 0:
+                good = True
+                for character in word:
+                    if (
+                        character not in self.known_word_bases
+                        or self.known_word_bases[character] < min_morpheme_known_count
+                    ):
+                        good = False
+                        break
+                if good:
+                    known.append(word)
+
+        logger.debug(f"{whole_known_words + known=}")
+
+        return whole_known_words + known
+
+    def user_onboarded(self):
+        ids = settings.USER_ONBOARDING_SURVEY_IDS
+        return self.usersurvey_set.filter(survey__id__in=ids).count() == len(ids)
 
 
 class DetailedModel(ActivatorModel, TimeStampedModel, TitleSlugDescriptionModel):
@@ -35,12 +209,24 @@ class DetailedModel(ActivatorModel, TimeStampedModel, TitleSlugDescriptionModel)
         abstract = True
 
 
-def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/imports/user_<id>/<filename>
-    return "imports/user_{0}/{1}".format(instance.user.id, filename)
+class DetailedProcessingModel(DetailedModel):
+    class Meta:
+        abstract = True
+
+    def processing_status(self):
+        if self.processing == FINISHED:
+            return "Processed"
+
+        if self.processing in [PROCESSING, REQUESTED]:
+            return "Processing"
+
+        if self.processing in [ERROR]:
+            return "Error"
+
+        return "None"
 
 
-class Import(DetailedModel):
+class Import(DetailedProcessingModel):
     VOCABULARY_ONLY = 1
     GRAMMAR_ONLY = 2
     VOCABULARY_GRAMMAR = 3
@@ -53,19 +239,19 @@ class Import(DetailedModel):
     process_type = models.IntegerField(choices=PROCESS_TYPE, default=VOCABULARY_ONLY, help_text="What items to extract")
     user = models.ForeignKey(User, on_delete=models.CASCADE, help_text="Import owner")
     import_file = models.FileField(
-        upload_to=user_directory_path,
+        upload_to=user_imports_path,
         validators=[
-            FileTypeValidator(allowed_types=["text/plain", "text/csv", "application/csv"]),
-            FileExtensionValidator(allowed_extensions=["txt", "csv"]),
+            FileTypeValidator(
+                allowed_types=["text/plain", "text/csv", "application/csv", "application/zip", "application/epub+zip"]
+            ),
+            FileExtensionValidator(allowed_extensions=["txt", "csv", "epub", "vtt", "srt"]),
             validate_file_size,
         ],
         help_text="File to import",
     )
 
     # TODO: think about alerting if the object modification time is too old and processed = null
-    processed = models.BooleanField(
-        default=False, null=True, help_text="Import status"
-    )  # False = new, null = processing, True = processed
+    processing = models.IntegerField(choices=PROCESSING_STATUS, default=REQUESTED, help_text="Processing status")
 
     # TODO: maybe use a JSONField? It's JSON but we likely don't need the overhead in the db
     analysis = models.TextField(null=True)
@@ -73,14 +259,14 @@ class Import(DetailedModel):
     # shared, can be seen by others, and used as a template for creating their own versions
     shared = models.BooleanField(default=False, help_text="Allow others to see and use this import?")
 
-    def processing_status(self):
-        if self.processed:
-            return "Processed"
+    def processed(self):
+        return self.processing == FINISHED
 
-        if self.processed is None:
-            return "Processing"
+    def _relative_processed_path(self):
+        return user_resources_path(self.user, os.path.basename(self.import_file.path))
 
-        return "Waiting"
+    def processed_path(self):
+        return os.path.join(settings.MEDIA_ROOT, self._relative_processed_path())
 
     def import_file_name(self):
         return os.path.basename(self.import_file.name)
@@ -126,6 +312,45 @@ class Import(DetailedModel):
 
     def get_absolute_url(self):
         return reverse("import_detail", args=[str(self.id)])
+
+
+class Content(DetailedProcessingModel):
+    BOOK = 1
+    VIDEO = 2
+    # AUDIOBOOK = 3
+    # MUSIC = 4
+    # MANGA = 5
+    CONTENT_TYPE = [
+        (BOOK, "Book"),
+        (VIDEO, "Video"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text="Content owner")
+    the_import = models.OneToOneField(Import, on_delete=models.CASCADE, help_text="Source import")
+
+    # TODO: think about alerting if the object modification time is too old and processed = null
+    processing = models.IntegerField(choices=PROCESSING_STATUS, default=NONE, help_text="Processed status")
+
+    content_type = models.IntegerField(choices=CONTENT_TYPE, default=BOOK, help_text="Type of content")
+    author = models.CharField(max_length=150, null=True, blank=True)
+    cover = models.CharField(max_length=250, null=True, blank=True)
+    language = models.CharField(max_length=30, null=True, blank=True)
+
+    # shared, can be used by others
+    shared = models.BooleanField(default=False, help_text="Allow others to see and use this content?")
+
+    def _relative_processed_path(self):
+        return user_resources_path(self.user, self.id)
+
+    def processed_path(self):
+        return os.path.join(settings.MEDIA_ROOT, self._relative_processed_path())
+
+    def get_absolute_url(self):
+        return reverse("content_detail", args=[str(self.id)])
+
+    def get_entry_point_url(self):
+        entry_file = MANIFEST_JSON if self.content_type == Content.BOOK else WEBVTT_FILE
+        return reverse("webpub_serve", args=[str(self.id), entry_file])
 
 
 class Survey(DetailedModel):
@@ -238,8 +463,6 @@ class Sentence(models.Model):
     vocab6 = models.IntegerField()
     vocab7 = models.IntegerField()
 
-    # words = models.ManyToManyField(BingAPILookup)
-
     def __str__(self):
         return str(self.content)
 
@@ -325,6 +548,7 @@ class UserWord(models.Model):
     # lookups, which are what the *_checked correspond to
     nb_translated = models.IntegerField(null=True)
     last_translated = models.DateTimeField(null=True)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         constraints = [
@@ -372,7 +596,7 @@ class UserGrammarRule(models.Model):
         ]
 
 
-class UserList(DetailedModel):
+class UserList(DetailedProcessingModel):
     ABSOLUTE_FREQUENCY = 0
     IMPORT_FREQUENCY = 1
     # A mix of the two? With a weight?
@@ -381,8 +605,10 @@ class UserList(DetailedModel):
         (IMPORT_FREQUENCY, "Frequency in import"),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    the_import = models.ForeignKey(Import, on_delete=models.CASCADE, help_text="The import to create the list from")
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    the_import = models.ForeignKey(
+        Import, on_delete=models.CASCADE, help_text="The import to create the list from", null=True
+    )
 
     # shared, can be seen by others, and used as a template for creating their own versions
     shared = models.BooleanField(default=False, help_text="Allow others to see and use this list?")
@@ -413,29 +639,18 @@ class UserList(DetailedModel):
     # only_simplifieds = models.BooleanField(default=True)
 
     # state
-    processed = models.BooleanField(default=False, null=True)  # False = new, null = processing, True = processed
+    processing = models.IntegerField(choices=PROCESSING_STATUS, default=REQUESTED, help_text="Processed status")
 
     # actions
-    add_notes = models.BooleanField(default=False, help_text="Should Anki notes be added for each word?")
-    notes_are_known = models.BooleanField(default=False, help_text="Should the notes added be set to already known?")
+    words_are_known = models.BooleanField(default=False, help_text="Should the words added be set to already known?")
 
     def get_absolute_url(self):
         return reverse("list_detail", args=[str(self.id)])
-
-    def processing_status(self):
-        if self.processed:
-            return "Processed"
-
-        if self.processed is None:
-            return "Processing"
-
-        return "Waiting"
 
     def list_length(self):
         return UserListWord.objects.filter(user_list=self).count()
 
     def filter_words(self, import_frequencies):
-
         # FIXME: nasty hardcoding
         # abs_frequency_table = manager.metadata()[1]  # 0 = HSK, 1 = Subtlex
         word_list = list()
@@ -466,6 +681,19 @@ class UserList(DetailedModel):
 
         return word_list
 
+    def publish_updates(self, cards_updated: bool):
+        stats.KAFKA_PRODUCER.send("word_list", str(self.user.id))
+        if self.words_are_known and cards_updated:
+            stats.KAFKA_PRODUCER.send("cards", str(self.user.id))
+
+    # FIXME: why does this not work????
+    # async def publish_updates(self, cards_updated: bool):
+    #     broadcast = await get_broadcast()
+    #     # await broadcast.publish(channel=f"word_list-{self.user.id}", message=1)
+    #     await broadcast.publish(channel="word_list", message=str(self.user.id))
+    #     if self.words_are_known and cards_updated:
+    #         await broadcast.publish(channel="cards", message=str(self.user.id))
+
     def update_list_words(self, manager):  # noqa:C901 # pylint: disable=R0914,R0915
         import_frequencies = json.loads(self.the_import.analysis)
         word_list = self.filter_words(import_frequencies)
@@ -489,7 +717,8 @@ class UserList(DetailedModel):
                                                 word_id int null,
                                                 freq float null
                                                 )"""
-            # FIXME: this needs some serious optimisation!!!
+
+            # FIXME: this algorithm needs some serious optimisation!!!
 
             cur.execute(sql)
 
@@ -498,16 +727,16 @@ class UserList(DetailedModel):
             # Get the ID for each word from the reference table (currently enrich_bingapilookup)
             cur.execute(
                 f"""UPDATE {temp_table}
-                                SET word_id = enrich_bingapilookup.id
-                                FROM enrich_bingapilookup
-                                WHERE word = enrich_bingapilookup.source_text"""
+                    SET word_id = enrich_bingapilookup.id
+                    FROM enrich_bingapilookup
+                    WHERE word = enrich_bingapilookup.source_text"""
             )
 
             cur.execute(
                 f"""UPDATE {temp_table}
-                                SET freq = ((enrichers_zh_subtlexlookup.response_json::json->0)::jsonb->>'wcpm')::float
-                                FROM enrichers_zh_subtlexlookup
-                                WHERE word = enrichers_zh_subtlexlookup.source_text"""
+                    SET freq = ((enrichers_zh_subtlexlookup.response_json::json->0)::jsonb->>'wcpm')::float
+                    FROM enrichers_zh_subtlexlookup
+                    WHERE word = enrichers_zh_subtlexlookup.source_text"""
             )
 
             sql = f"SELECT word FROM {temp_table} WHERE word_id IS NULL"
@@ -532,7 +761,7 @@ class UserList(DetailedModel):
 
             for word in new_words:
                 # TODO: this is a nasty hack with a side effect of creating bing_lookups, which are
-                # our reference values
+                # our reference values, thus ensuring that all words in the import exist in the db
                 token = {"word": word[0], "pos": "NN", "lemma": word[0]}
                 manager.default().get_standardised_defs(token)
 
@@ -549,7 +778,7 @@ class UserList(DetailedModel):
                 FROM {temp_table}
                     INNER JOIN enrich_bingapilookup ON enrich_bingapilookup.id = word_id """
 
-            if self.only_dictionary_words:
+            if self.only_dictionary_words:  # FIXME: this should include the other dictionaries also!!!
                 filters += ["json_array_length(enrich_bingapilookup.response_json::json->0->'translations') > 0"]
 
             sql += (" WHERE " + " AND ".join(filters)) if filters else ""
@@ -566,9 +795,9 @@ class UserList(DetailedModel):
 
             new_userwords = []
             new_userlistwords = []
-            for word_id in cur.fetchall():
+            for i, word_id in enumerate(cur.fetchall()):
                 new_userwords.append(UserWord(user=self.user, word_id=word_id[0]))
-                new_userlistwords.append(UserListWord(user_list=self, word_id=word_id[0]))
+                new_userlistwords.append(UserListWord(user_list=self, word_id=word_id[0], default_order=i))
 
             # bulk create using objects
             # TODO: if this is slow due to ignore_conflicts, maybe update with the id
@@ -577,36 +806,26 @@ class UserList(DetailedModel):
             UserListWord.objects.bulk_create(new_userlistwords, ignore_conflicts=True)  # can there be conflicts?
 
             logger.info(f"Added {len(new_userlistwords)} list words for user_list_{self.id} for {self.user.username}")
-            if self.add_notes:
-                with Ankrobes(self.user.username) as userdb:
-                    for ulword in UserListWord.objects.filter(user_list=self):
-                        # TODO: decide how to best deal with when to next review
-                        # at least this should maybe have a random date set
-                        review_in = 7 if self.notes_are_known else 0
-
-                        word = ulword.word.source_text
-
-                        defin = default_definition(manager, word)
-                        if not userdb.set_word_known(
-                            simplified=defin["Simplified"],
-                            pinyin=defin["Pinyin"],
-                            meanings=[defin["Meaning"]],
-                            tags=[f"user_list_{self.id}"],  # FIXME: should this add tags, or overwrite?
-                            review_in=review_in,
-                        ):
-                            logger.error(
-                                f"Error setting the word_known status for {word} for user {self.user.username}"
+            new_cards = []
+            if self.words_are_known:
+                # FIXME: make this not so ugly
+                for ul_word in UserListWord.objects.filter(user_list=self):
+                    for card_type in Card.CARD_TYPE:
+                        new_cards.append(
+                            Card(
+                                user=self.user,
+                                word=ul_word.word,
+                                card_type=card_type,
+                                known=self.words_are_known,
                             )
-                            raise Exception(f"Error updating the user database for {self.user.username}")
+                        )
 
-                    logger.info(f"Set {len(new_userlistwords)} notes for user_list_{self.id} for {self.user.username}")
-
-                    # FIXME: remove nasty hack
-                    self.user.transcrober.refresh_vocabulary()
+                Card.objects.bulk_create(new_cards, ignore_conflicts=True)
 
             cur.execute(f"DROP TABLE {temp_table}")
-            self.processed = True
-            self.save()
+            # FIXME: the async version doesn't work :-(
+            # asyncio.run(self.publish_updates((len(new_cards) > 0)))
+            self.publish_updates((len(new_cards) > 0))
 
 
 class UserListGrammarRule(models.Model):
@@ -622,6 +841,7 @@ class UserListGrammarRule(models.Model):
 class UserListWord(models.Model):
     user_list = models.ForeignKey(UserList, on_delete=models.CASCADE)
     word = models.ForeignKey(BingAPILookup, on_delete=models.CASCADE)
+    default_order = models.IntegerField(default=0)  # FIXME: shouldn't be a default?
 
     class Meta:
         constraints = [
@@ -661,11 +881,6 @@ class Goal(DetailedModel):
             all_words += sum_progress[1]
 
         return known_words, all_words
-
-    # def get_progress_percent(self):
-    #     known_words, all_words = self.get_progress()
-    #     # return f"{(known_words*100/all_words):.0f}" if all_words else ""
-    #     return (known_words*100/all_words) if all_words else None
 
     def get_progress_percent(self):
         known_words, all_words = self.get_progress()

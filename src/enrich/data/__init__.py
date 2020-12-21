@@ -6,6 +6,9 @@ import json
 import logging
 from abc import ABC, abstractmethod
 
+from asgiref.sync import sync_to_async
+from django.conf import settings
+
 from enrich import Enricher
 from enrich.lemmatize import WordLemmatizer
 from enrich.metadata import Metadata
@@ -46,16 +49,33 @@ class PersistenceProvider(ABC):
 
         return self._from_db(lword)
 
-    # @ecached('{self.__class__.__name__}_{lword}', settings.MODELS_CACHE_TIMEOUT)
+    async def aentry(self, lword):
+        if self._inmem:
+            return self.dico.get(lword)
+
+        return await self._afrom_db(lword)
+
     def _from_db(self, lword):
-        # dbentries = self.model_type.objects.filter(source_text__iexact=lword)
         dbentries = self.model_type.objects.filter(source_text=lword)
         # TODO: we can probably have duplicates if we don't make sure not to have
         # everything lowercased in the _dict and DB
         return json.loads(dbentries.first().response_json) if len(dbentries) > 0 else None
 
+    async def _afrom_db(self, lword):
+        dbentries = self.model_type.objects.filter(source_text=lword)
+        # TODO: we can probably have duplicates if we don't make sure not to have
+        # everything lowercased in the _dict and DB
+        word = await sync_to_async(dbentries.first, thread_sensitive=settings.THREAD_SENSITIVE)()
+        if word:
+            return json.loads(word.response_json)
+
+        return None
+
     def _get_def(self, lword):
         return self.entry(lword)
+
+    async def _aget_def(self, lword):
+        return await self.aentry(lword)
 
     @abstractmethod
     def _load(self):
@@ -169,3 +189,7 @@ class EnrichmentManager:  # pylint: disable=R0902
 
     def transliterator(self):
         return self._transliterator
+
+    @property
+    def lang_pair(self):
+        return f"{self.from_lang}:{self.to_lang}"

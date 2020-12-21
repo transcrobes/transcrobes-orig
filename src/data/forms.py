@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from django import forms
+from django.forms import ModelForm
+
+from data.models import Transcrober
 
 
-class CreateListForm(forms.Form):
-    your_name = forms.CharField(label="Your name", max_length=100)
+class TranscroberForm(ModelForm):
+    class Meta:
+        model = Transcrober
+        fields = ["default_glossing", "reading_mode", "font_size_percent"]

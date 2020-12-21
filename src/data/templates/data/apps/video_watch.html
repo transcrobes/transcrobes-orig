@@ -1,0 +1,293 @@
+<!-- templates/data/video_watch.html-->
+{% extends 'data/base_no_menus.html' %}
+{% load static %}
+
+{% block title %}Transcrobes Video Player{% endblock %}
+
+{% block extra_header_elements %}
+  <link rel="stylesheet" type="text/css" href="{% static 'data/css/player.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'data/css/media-themes.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div id="root"> <!-- DO NOT REMOVE used to avoid reloading unreloadable pages -->
+  <div id="videoWrapper" class="video-wrapper">
+    <div class="video-player" id="video-player">
+      <video id="videoElement" preload="metadata" crossOrigin="anonymous">
+        <track id="track" label="transcrobes" kind="metadata" srclang="{{ from_lang }}" src="{{ media_url }}" />
+      </video>
+      <div class="video-controls">
+        <div class="video-top-controls">
+          <div class="video-seekbar seekbar">
+            <span class="progress"></span>
+          </div>
+        </div>
+        <div class="video-playback-controls">
+          <button title="Play/Pause" class="control-btn toggle-play-pause play">
+            <i class="fas fa-play play-icon icon"></i>
+            <i class="fas fa-pause pause-icon icon"></i>
+          </button>
+          <div title="Load a video" class="video-input-control">
+            <label for="file-input">
+              <span class="control-btn">
+                <i class="fas fa-file-import icon"></i>
+              </span>
+            </label>
+            <input id="file-input" type="file" accept="video/*"/>
+            <button class="control-btn toggle-volume on">
+              <i class="fas fa-volume-up icon volume-on"></i>
+              <i class="fas fa-volume-mute icon volume-off"></i>
+            </button>
+          </div> <!-- video-input-control -->
+
+          <div title="More controls" class="video-toggle-collapse">
+            <div class="video-btn-control">
+              <button class="control-btn" onclick="toggleCollapse()">
+                <i class="fa fa-bars icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="collapsed-navigation collapsed" id="collapsed-navigation">
+            <div title="Subtitle skipper" class="video-btn-control">
+              <button title="Seek to previous subtitle" class="control-btn" onclick="media.previousCue()">
+                <i class="fas fa-angle-left icon"></i>
+              </button>
+              <button title="Seek to next subtitle" class="control-btn" onclick="media.nextCue()">
+                <i class="fas fa-angle-right icon"></i>
+              </button>
+            </div>
+            <div title="Skip 5 seconds" class="video-btn-control">
+              <button title="Skip forward 5s" class="control-btn" onclick="media.skipBack()">
+                <i class="fas fa-angle-double-left icon"></i>
+              </button>
+              <button title="Skip backwards 5s" class="control-btn" onclick="media.skipForward()">
+                <i class="fas fa-angle-double-right icon"></i>
+              </button>
+            </div> <!-- -->
+            <div title="Volume control" class="video-btn-control">
+              <button title="Decrease volume" class="control-btn" onclick="media.decreaseVolume()">
+                <i class="fas fa-minus-circle icon"></i>
+              </button>
+              <span id="currentVolume"></span>
+              <button title="Increase volume" class="control-btn" onclick="media.increaseVolume()">
+                <i class="fas fa-plus-circle icon"></i>
+              </button>
+            </div> <!-- video-volume-control -->
+            <div title="Playback speed" class="video-btn-control">
+              <button title="Slow down 5%" class="control-btn" onclick="media.slowDown()"><i class="fas fa-minus icon"></i></button>
+              <span id="currentPlaybackRate"></span>
+              <button title="Speed up 5%" class="control-btn" onclick="media.speedUp()"><i class="fas fa-plus icon"></i></button>
+            </div>
+            <div title="Subtitle synchronisation" class="video-btn-control">
+              <button title="Delay subtitle 0.5s" class="control-btn" onclick="media.delaySubtitle()">
+                <i class="fas fa-minus-circle icon"></i>
+              </button>
+              <span id="currentSubDelay"></span>
+              <button title="Advance subtitle 0.5s" class="control-btn" onclick="media.advanceSubtitle()">
+                <i class="fas fa-plus-circle icon"></i>
+              </button>
+            </div>
+            <div title="Subtitle font size" class="video-btn-control">
+              <button title="Decrease font size 10%" class="control-btn" onclick="media.decreaseFontSize(subsDiv)">
+                <i class="fas fa-minus-circle icon"></i>
+              </button>
+              <span id="currentFontSize"></span>
+              <button title="Increase font size 10%" class="control-btn" onclick="media.increaseFontSize(subsDiv)">
+                <i class="fas fa-plus-circle icon"></i>
+              </button>
+            </div>
+            <div title="Subtitle box max width" class="video-btn-control">
+              <button title="Increase subtitle box max width 5%" class="control-btn"
+                onclick="media.decreaseSubBoxWidth(subsDiv)">
+                <i class="fas fa-minus-circle icon"></i>
+              </button>
+              <span id="currentSubBoxWidth"></span>
+              <button title="Decrease subtitle box max width" class="control-btn"
+                onclick="media.increaseSubBoxWidth(subsDiv)">
+                <i class="fas fa-plus-circle icon"></i>
+              </button>
+            </div>
+          </div> <!-- collapsed-navigation -->
+
+          <div class="video-timings">
+            <div title="Media current time" class="start-time time">00:00:00</div>
+            /
+            <div title="Media total duration" class="end-time time">00:00:00</div>
+          </div>
+          <button title="Toggle fullscreen" class="control-btn" onclick="media.toggleFullscreen(document, wrapper)">
+            <i class="fas fa-expand icon"></i>
+          </button>
+        </div> <!-- video-playback-controls -->
+      </div> <!-- video-controls -->
+
+    </div> <!-- video-player -->
+    <div class="subtitle-box" id="subsDiv"></div>
+  </div> <!-- videoWrapper -->
+</div> <!-- root container -->
+{% endblock %}
+
+{% block bottom %}
+  <!-- Footer -->
+  <footer>
+    <div style="padding:10px;"><a href="{% url 'video_list' %}" class="bg-gray-900 btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Media</a></div>
+  </footer>
+{% endblock %}
+
+{% block extrajs %}
+
+<script src="{{ transcrobes_model_url }}"></script>
+
+<script src="{% static 'media-bundle.js' %}"></script>
+
+<script type="text/javascript">
+var video;
+var subsDiv;
+var timeoutId;
+
+const TIMER_CLEAR_PREVIOUS_MS = 5000;
+const tmpBaseUrl = window.location.origin + "/";
+
+// const dbConfig = media.createRxDBConfig(tmpBaseUrl, "{{ user.get_username }}", "{{ jwt_access }}", "{{ jwt_refresh }}");
+
+// media.setupMedia({{ content_id }}, dbConfig, {{ glossing }}, {{ segment }}, '{{ reading_mode }}',
+// {{ font_size_percent }}, {{ sub_box_width_percent }}, "{% get_static_prefix %}data/css/");
+
+media.setupMedia({{ content_id }}, {{ glossing }}, {{ segment }}, '{{ reading_mode }}',
+  {{ font_size_percent }}, {{ sub_box_width_percent }});
+
+// media.setFromLang("{{ from_lang }}")
+media.setLangPair("{{ app_config.lang_pair }}");
+
+function toggleCollapse() {
+  document.getElementById("collapsed-navigation").classList.toggle("collapsed");
+}
+
+window.onload = function() {
+  video = document.getElementById("videoElement");
+  wrapper = document.getElementById("videoWrapper");
+  subsDiv = document.getElementById("subsDiv");
+  htmlTrack = document.getElementById("track");
+  currentTime = document.getElementById("currentTime");
+
+  var textTrack = htmlTrack.track;
+  if(htmlTrack.readyState === 2) {
+    readContent(textTrack);
+  } else {
+    textTrack.mode = "hidden";
+    htmlTrack.addEventListener('load', function(e) {
+      readContent(textTrack);
+    });
+  }
+
+  touchClick = function(e) {
+    var clientX, clientY;
+    if (e.clientX) {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    } else {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    }
+    if (clientX/e.target.width < 0.33) {
+      media.previousCue();
+    } else if (clientX/e.target.width > 0.67) {
+      media.nextCue();
+    } else {
+      if (clientY/e.target.getBoundingClientRect().height < 0.33) {
+        var element = document.getElementById("video-player");
+        if (element.classList.contains("hide-controls")) {
+          element.classList.remove("hide-controls");
+        } else {
+          element.classList.add("hide-controls");
+        }
+      } else {
+        media.togglePause();
+      }
+    }
+    return media.stopPropagation(e);
+  }
+	video.addEventListener('touchend', touchClick, false);
+	video.addEventListener('click', touchClick, false);
+	video.addEventListener('playing', resize, false);
+}
+window.addEventListener('resize', resize, false);
+
+(function localFileVideoPlayer() {
+  'use strict'
+  var URL = window.URL || window.webkitURL;
+  var displayMessage = function(message, isError) {
+    console.log(isError);
+    console.log(message);
+    var element = document.querySelector('#message');
+    if (element) {
+      element.innerHTML = message;
+      element.className = isError ? 'error' : 'info';
+    }
+  }
+  var playSelectedFile = function(event) {
+    var file = this.files[0];
+    var type = file.type;
+    var videoNode = document.querySelector('video');
+    var canPlay = videoNode.canPlayType(type);
+    if (canPlay === '') canPlay = 'no';
+    var message = 'Can play type "' + type + '": ' + canPlay;
+    var isError = canPlay === 'no';
+    displayMessage(message, isError);
+
+    var fileURL = URL.createObjectURL(file);
+    videoNode.src = fileURL;
+    videoNode.play();
+    // MUST be done twice...
+    resize(); resize();
+    media.initPositions();
+  }
+  var inputNode = document.querySelector('input');
+  inputNode.addEventListener('change', playSelectedFile, false);
+})();
+
+function resize() {
+  // Make sure the video adapts to the size of the window
+  videoRatio = video.height / video.width;
+  windowRatio = window.innerHeight / window.innerWidth; /* browser size */
+
+  if (windowRatio < videoRatio) {
+    if (window.innerHeight > 50) { /* smallest video height */
+      video.height = window.innerHeight;
+    } else {
+      video.height = 50;
+    }
+  } else {
+    video.width = isNaN(videoRatio) ? 10 : document.documentElement.clientWidth;
+  }
+};
+
+function readContent(track) {
+  subsDiv.innerHTML = "";
+
+  track.addEventListener("cuechange", (e) => {
+    var cue = e.target.activeCues[0];
+    if (cue !== undefined) {
+      clearTimeout(timeoutId);
+      subsDiv.innerHTML = cue.text;
+    } else { // keep the subs until they get replaced or TIMER_CLEAR_PREVIOUS_MS after they would have been removed
+      timeoutId = setTimeout(() => {
+        if (!video.paused) {
+          subsDiv.innerHTML = '';
+        }
+      }, TIMER_CLEAR_PREVIOUS_MS);
+    }
+    return;
+ });
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll("token-details").forEach(el => el.remove());
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  media.setupPlayer(document);
+})
+</script>
+{% endblock %}

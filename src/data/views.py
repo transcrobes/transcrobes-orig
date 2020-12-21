@@ -1,37 +1,103 @@
-# -*- coding: utf-8 -*-
+import copy
+import json
 import logging
+import mimetypes
+import os
 
+import strawberry
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-from django.db import connection
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
+from django.http import Http404, HttpRequest
+from django.http.response import FileResponse, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template import RequestContext, Template
+from django.template.exceptions import TemplateDoesNotExist
+from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
+from django.templatetags.static import static
+from django.urls import reverse as r
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import DetailView, TemplateView
+from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from strawberry.django.views import AsyncGraphQLView as StrawberryAsyncGraphQLView
 
 import stats
-from ankrobes import Ankrobes  # FIXME: should probably not do the note creation here, as we are mixing modules...
-from data.models import Goal, Import, Survey, UserList, UserSurvey
+from data.context import Context, get_broadcast
+from data.models import (
+    DATA_JS_SUFFIX,
+    ENRICH_JSON_SUFFIX,
+    FINISHED,
+    MANIFEST_JSON,
+    PARSE_JSON_SUFFIX,
+    REQUESTED,
+    WEBVTT_FILE,
+    Content,
+    Goal,
+    Import,
+    Survey,
+    Transcrober,
+    UserList,
+    UserSurvey,
+)
 from data.permissions import IsOwner
 from data.serialisers import SurveySerialiser, UserSerialiser, UserSurveySerialiser
-from data.utils import update_user_rules, update_user_words_known
-from enrich.data import managers
-from utils import default_definition
+from ndutils import do_response
 
 logger = logging.getLogger(__name__)
 
 
-def user_onboarded(user, onboarding_survey_id):
-    return user.usersurvey_set.filter(survey__id=onboarding_survey_id).first()
+class AsyncGraphQLView(StrawberryAsyncGraphQLView):
+    async def get_context(self, request: HttpRequest) -> Context:
+        broadcast = await get_broadcast()
+        return Context(broadcast, request)
+
+    # @staticmethod
+    # def is_admin(user):
+    #     return user.is_superuser
+
+    def _render_graphiql(self, request: HttpRequest, context=None):
+        if not self.graphiql:
+            raise Http404()
+
+        # # probably need to make upstream test and return inspect.isawaitable
+        # if not self.is_admin(request.user):
+        #     raise PermissionDenied("You do not have permission to access this page")
+
+        try:
+            template = Template(render_to_string("graphql/graphiql.html"))
+        except TemplateDoesNotExist:
+            template = Template(
+                open(
+                    os.path.join(
+                        os.path.dirname(os.path.abspath(strawberry.__file__)),
+                        "static/graphiql.html",
+                    ),
+                    "r",
+                ).read()
+            )
+
+        context = context or {}
+        # THIS enables subscriptions
+        context.update({"SUBSCRIPTION_ENABLED": "true"})
+
+        response = TemplateResponse(request=request, template=None, context=context)
+        response.content = template.render(RequestContext(request, context))
+
+        return response
 
 
 class SurveyView(LoginRequiredMixin, TemplateView):
-    template_name = "data/survey_detail.html"
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["survey"] = get_object_or_404(Survey, pk=kwargs["survey_id"])
@@ -41,20 +107,53 @@ class SurveyView(LoginRequiredMixin, TemplateView):
 
 
 class OnboardedView(LoginRequiredMixin, UserPassesTestMixin):
-    ONBOARDING_SURVEY_ID = 1  # TODO: this is hard-coded in a couple of places - NASTY!!!
-
     def test_func(self):
-        return self.request.user.usersurvey_set.filter(survey__id=self.ONBOARDING_SURVEY_ID).exists()
+        ids = settings.USER_ONBOARDING_SURVEY_IDS
+        return self.request.user.usersurvey_set.filter(survey__id__in=ids).count() == len(ids)
 
     def handle_no_permission(self):
         if not self.request.user.is_authenticated:
             return redirect(f"{super().get_login_url()}?next={self.request.path}")
-        return redirect("ui_survey_detail", survey_id=self.ONBOARDING_SURVEY_ID)
+
+        ids = copy.deepcopy(settings.USER_ONBOARDING_SURVEY_IDS)
+        for user_survey in self.request.user.usersurvey_set.filter(survey__id__in=ids):
+            ids.remove(user_survey.survey.id)
+
+        if not ids:  # user is auth'ed and has answered all obligatory surveys, must be a perms issue
+            raise PermissionDenied("You do not have permission to access this page")
+
+        return redirect("ui_survey_detail", survey_id=ids[0])  # any obligatory survey will do!
 
     def get_login_url(self):
         if not self.request.user.is_authenticated:
             return super().get_login_url()
-        return reverse("survey")
+        return r("survey")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # this has the extra info, which we don't need here?
+        # token = TranscrobesTokenObtainPairSerializer.get_token(self.request.user)
+        token = RefreshToken.for_user(self.request.user)
+        context["app_config"] = {
+            "jwt_access": str(token.access_token),
+            "jwt_refresh": str(token),
+            "lang_pair": self.request.user.transcrober.lang_pair(),
+            "username": self.request.user.username,
+            "resource_root": static("data/css/"),  # FIXME: this is ugly
+        }
+        return context
+
+        # context["jwt_access"] = str(token.access_token)
+        # context["jwt_refresh"] = str(token)
+        # context["lang_pair"] = self.request.user.transcrober.lang_pair()
+
+
+class OnboardedOwnerView(OnboardedView):
+    # FIXME: I should probably add an official parent here - self.get_object() could fail because OnboardedView
+    # doesn't have that method - it really needs SingleObjectMixin but also one of the edit/update mixins...
+    # How does one do both?
+    def test_func(self):
+        return super().test_func() and self.request.user == self.get_object().user
 
 
 class OnboardedTemplateView(OnboardedView, TemplateView):
@@ -102,17 +201,173 @@ class HomeView(OnboardedTemplateView):
         return context
 
 
-# FIXME: currently unused, delete if not required!
-# class SurveyListView(LoginRequiredMixin, ListView):
-#     queryset = Survey.objects.prefetch_related("usersurvey_set").filter(is_obligatory=False)
-#     paginate_by = 10
-#     template_name = "data/survey_list.html"
-#     context_object_name = "surveys"
+class ReaderSettingsUpdate(SuccessMessageMixin, OnboardedView, UpdateView):
+    model = Transcrober
+    fields = ["default_glossing", "default_segment", "reading_mode", "font_size_percent"]
+    success_message = "Settings updated successfully"
+
+    def get_object(self, _queryset=None):
+        return self.request.user.transcrober
+
+    def get_success_url(self):
+        return r("reader_settings")
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["lang_pair"] = self.request.user.transcrober.lang_pair()
+    #     return context
+
+
+class MediaSettingsUpdate(SuccessMessageMixin, OnboardedView, UpdateView):
+    model = Transcrober
+    fields = [
+        "subtitle_default_glossing",
+        "subtitle_default_segment",
+        "media_mode",
+        "subtitle_font_size_percent",
+        "subtitle_box_width_percent",
+    ]
+    success_message = "Settings updated successfully"
+
+    def get_object(self, _queryset=None):
+        return self.request.user.transcrober
+
+    def get_success_url(self):
+        return r("media_settings")
+
+
+class VideoList(OnboardedView, ListView):
+    model = Content
+
+    def post(self, request, *_args, **_kwargs):
+        content_id = request.POST.get("request_content_id")
+        content = self.get_queryset().filter(id=content_id).first()
+        if not content or content.processing:  # it has already been requested, for the moment no redos
+            raise PermissionDenied("You are not permitted to perform this action")
+        content.processing = REQUESTED
+        content.save()
+        return render(
+            request,
+            self.template_name,
+            {
+                "message": "Content enrichment request successful",
+                "request_content_id": content_id,
+                "object_list": self.get_queryset(),
+            },
+        )
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user, content_type=Content.VIDEO).order_by("-created")
+
+
+class VideoWatchView(OnboardedOwnerView, DetailView):
+    model = Content
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["content_id"] = self.object.id
+        context["media_url"] = self.object.get_entry_point_url()
+        context["transcrobes_model_url"] = self.object.get_entry_point_url() + ".data.js"
+
+        # context["from_lang"] = self.request.user.transcrober.lang_pair().split(":")[0]
+        # context["db_versions"] = self.request.user.transcrober.db_versions()
+        context["glossing"] = self.request.user.transcrober.subtitle_default_glossing
+        context["segment"] = "true" if self.request.user.transcrober.subtitle_default_segment else "false"
+        context["reading_mode"] = self.request.user.transcrober.media_mode
+        context["font_size_percent"] = self.request.user.transcrober.subtitle_font_size_percent
+        context["sub_box_width_percent"] = self.request.user.transcrober.subtitle_box_width_percent
+        return context
+
+
+class WebpubList(OnboardedView, ListView):
+    model = Content
+
+    def post(self, request, *_args, **_kwargs):
+        content_id = request.POST.get("request_content_id")
+        content = self.get_queryset().filter(id=content_id).first()
+        if not content or content.processing:  # it has already been requested, for the moment no redos
+            raise PermissionDenied("You are not permitted to perform this action")
+        content.processing = REQUESTED
+        content.save()
+        return render(
+            request,
+            self.template_name,
+            {
+                "message": "Content enrichment request successful",
+                "request_content_id": content_id,
+                "object_list": self.get_queryset(),
+            },
+        )
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user, content_type=Content.BOOK).order_by("-created")
+
+
+@method_decorator(xframe_options_sameorigin, name="dispatch")
+class WebPubServeView(SingleObjectMixin, OnboardedOwnerView, View):
+    model = Content
+    DATA_SUFFIX = ".data.js"
+
+    def get(self, _request, *_args, **kwargs):  # pylint: disable=R0914
+        output = self.get_object()
+        if "resource_path" not in kwargs:
+            raise Http404("No resource specified")
+
+        destination = os.path.join(output.processed_path(), kwargs["resource_path"])
+        if not os.path.isfile(destination.removesuffix(DATA_JS_SUFFIX)):
+            raise Http404("Resource specified is not a file")
+
+        if not destination.endswith(self.DATA_SUFFIX):
+            response = FileResponse(open(destination, "rb"))
+            response.content_type = mimetypes.guess_type(destination)[0]
+            return response
+
+        parse_path = f"{destination.removesuffix(DATA_JS_SUFFIX)}{PARSE_JSON_SUFFIX}"
+        enrich_path = f"{destination.removesuffix(DATA_JS_SUFFIX)}{ENRICH_JSON_SUFFIX}"
+
+        if not os.path.isfile(parse_path):
+            raise Http404("Resource specified is not a file")
+
+        with open(parse_path) as parse_file:
+            combined = json.load(parse_file)
+
+            if os.path.isfile(enrich_path):
+                with open(enrich_path) as enrich_file:
+                    enrich = json.load(enrich_file)
+                    for parse_id, text_parse in combined.items():
+                        for sindex, sentence in enumerate(text_parse["s"]):
+                            sentence["l1"] = enrich[parse_id]["s"][sindex]["l1"]
+                            for tindex, token in enumerate(sentence["t"]):
+                                for prop, value in enrich[parse_id]["s"][sindex]["t"][tindex].items():
+                                    token[prop] = value
+            return HttpResponse(
+                f'var transcrobesModel = {json.dumps(combined, separators=(",", ":"))};', content_type="text/javascript"
+            )
+
+
+class WebPubReadView(OnboardedOwnerView, DetailView):
+    model = Content
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["media_url"] = self.object.get_entry_point_url()
+        context["glossing"] = self.request.user.transcrober.default_glossing
+        context["segment"] = "true" if self.request.user.transcrober.default_segment else "false"
+        context["reading_mode"] = self.request.user.transcrober.reading_mode
+        context["font_size_percent"] = self.request.user.transcrober.font_size_percent
+
+        return context
+
+
+class InitialisationView(OnboardedTemplateView):
+    # FIXME: why do I need to call this?
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
 class UserSurveysView(OnboardedTemplateView):
-    template_name = "data/surveys.html"
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["new_surveys"] = Survey.objects.exclude(usersurvey__user=self.request.user).filter(is_obligatory=False)
@@ -131,7 +386,7 @@ class UserSurveyViewSet(viewsets.ModelViewSet):
     serializer_class = UserSurveySerialiser
     filterset_fields = ["user__username", "survey__id"]
 
-    permission_classes = [permissions.IsAdminUser | IsOwner]
+    permission_classes = [permissions.IsAdminUser | IsOwner]  # pylint: disable=E1131  # FIXME is this really correct?
 
     def get_queryset(self):
         if self.request.user.is_staff:
@@ -169,7 +424,7 @@ class ImportList(OnboardedView, ListView):
     exclude = ["user"]
 
     def get_queryset(self):
-        return self.model.objects.filter(user=self.request.user)
+        return self.model.objects.filter(user=self.request.user).order_by("-modified")
 
 
 class ImportDetail(OnboardedView, DetailView):
@@ -190,8 +445,7 @@ class ListCreate(OnboardedView, CreateView):
         "only_dictionary_words",
         "minimum_doc_frequency",
         "minimum_abs_frequency",
-        "add_notes",
-        "notes_are_known",
+        "words_are_known",
     )
 
     def form_valid(self, form):
@@ -200,7 +454,9 @@ class ListCreate(OnboardedView, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"].fields["the_import"].queryset = Import.objects.filter(user=self.request.user)
+        context["form"].fields["the_import"].queryset = Import.objects.filter(
+            user=self.request.user, processing=FINISHED
+        )
         return context
 
 
@@ -208,7 +464,7 @@ class ListList(OnboardedView, ListView):
     model = UserList
 
     def get_queryset(self):
-        return self.model.objects.filter(user=self.request.user)
+        return self.model.objects.filter(user=self.request.user).order_by("-modified")
 
 
 class ListDetail(OnboardedView, DetailView):
@@ -226,7 +482,9 @@ class GoalCreate(OnboardedView, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"].fields["user_list"].queryset = UserList.objects.filter(user=self.request.user)
+        context["form"].fields["user_list"].queryset = UserList.objects.filter(
+            user=self.request.user, processing=FINISHED
+        )
         return context
 
 
@@ -234,7 +492,7 @@ class GoalList(OnboardedView, ListView):
     model = Goal
 
     def get_queryset(self):
-        return self.model.objects.filter(user=self.request.user)
+        return self.model.objects.filter(user=self.request.user).order_by("-modified")
 
 
 class GoalDetail(OnboardedView, DetailView):
@@ -256,148 +514,132 @@ class GoalUpdate(OnboardedView, UpdateView):
         return super().form_valid(form)
 
 
-# Ideas for improvements
-# - instead of just recording the word as seen/checked, add POS for the actual tokens in the text
-@permission_classes((permissions.IsAuthenticated,))
-@api_view(["POST", "OPTIONS"])
-def update_model(request):
-    if request.method == "POST":
-        voc = request.data["vocab"]
-        rlz = request.data["rules"]
-        update_user_words_known(voc, request.user)
-        update_user_rules(rlz, request.user)
-        # FIXME: remove nasty hack
-        request.user.transcrober.refresh_vocabulary()
+def submit_event(event, user):
+    if "data" not in event:
+        logger.warning("Received empty %s event type for user %s", event["type"], user)
+        return False
 
-    data = {"status": "success"}
-    response = JsonResponse(data)
-    response["Access-Control-Allow-Origin"] = "*"
-    response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-    response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type, Authorization"
-    return response
+    if "userStatsMode" in event:
+        stats_mode = int(event["userStatsMode"])
+    else:
+        stats_mode = stats.USER_STATS_MODE_IGNORE
+
+    try:
+        if event["type"] == "bulk_vocab":
+            stats.KAFKA_PRODUCER.send(
+                "vocab",
+                {
+                    "user_id": user.id,
+                    "tstats": event["data"],
+                    "source": event.get("source"),
+                    "user_stats_mode": stats_mode,
+                },
+            )
+        else:
+            stats.KAFKA_PRODUCER.send(
+                "actions",
+                {
+                    "user_id": user.id,
+                    "type": event["type"],
+                    "data": event["data"],
+                    "source": event.get("source"),
+                    "user_stats_mode": stats_mode,
+                },
+            )
+        return True
+    except Exception:
+        logger.error("Unable to submit event: %s", event)
+        raise
 
 
 @permission_classes((permissions.IsAuthenticated,))
 @api_view(["POST", "OPTIONS"])
 def user_event(request):
+    output = {}
     if request.method == "POST":
-
-        if "userStatsMode" in request.data:
-            stats_mode = int(request.data["userStatsMode"])
+        if not isinstance(request.data, list):  # we check specifically for lists, because dicts are iterable
+            submit_event(request.data, request.user)
         else:
-            stats_mode = stats.USER_STATS_MODE_IGNORE
+            for event in request.data:
+                submit_event(event, request.user)
+        output = {"status": "success"}
 
-        stats.KAFKA_PRODUCER.send(
-            "actions",
-            {
-                "user_id": request.user.id,
-                "type": request.data["type"],
-                "data": request.data["data"],
-                "user_stats_mode": stats_mode,
-            },
-        )
-
-    data = {"status": "success"}
-    response = JsonResponse(data)
-    response["Access-Control-Allow-Origin"] = "*"
-    response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-    response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type, Authorization"
-    return response
+    return do_response(Response(output))
 
 
-# Ideas for improvements
-# - instead of just recording the word as seen/checked, add POS for the actual tokens in the text
+@api_view(["GET", "POST", "OPTIONS"])
 @permission_classes((permissions.IsAuthenticated,))
-@api_view(["POST", "OPTIONS"])
-def update_model_add_notes(request):
-    if request.method == "POST":
-        manager = managers.get(request.user.transcrober.lang_pair())
-        if not manager:
-            raise Exception(f"Server does not support language pair {request.user.transcrober.lang_pair()}")
+def precache_urls(request):
+    user = request.user
+    with_content = request.GET.get("with_content", "").lower() == "true"
 
-        vocab = request.data["vocab"]
-        clicked_means_known = request.data["clicked_means_known"]
-        add_all_to_learning = request.data["add_all_to_learning"]
+    output = {}
+    if request.method == "GET" or request.method == "POST":
+        home_urls = [
+            r("home"),
+            r("settings"),
+            r("reader_settings"),
+            r("media_settings"),
+            r("profile"),
+            r("coming_soon"),
+            r("listrobes"),
+            r("notrobes"),
+            r("srsrobes"),
+        ]
 
-        # invert so that 1 always means knows and 0 means doesn't know
-        if not int(clicked_means_known):
-            for _k, v in vocab.items():
-                v[3] ^= 1
+        list_urls = [
+            r("list_list"),
+            r("list_create", args=[0]),
+        ]
+        list_urls += [r("list_detail", args=[ul.id]) for ul in UserList.objects.filter(user=user)]
+        import_urls = [
+            r("import_list"),
+            r("import_create"),
+        ]
+        import_urls += [r("import_detail", args=[i.id]) for i in Import.objects.filter(user=user)]
+        goal_urls = [
+            r("goal_list"),
+            r("goal_create", args=[0]),
+        ]
+        goal_urls += [r("goal_detail", args=[g.id]) for g in Goal.objects.filter(user=user)]
+        goal_urls += [r("goal_update", args=[g.id]) for g in Goal.objects.filter(user=user)]
 
-        update_user_words_known(vocab, request.user)
+        webpub_urls = [
+            r("webpub_list"),
+        ]
+        webpub_urls += [
+            r("webpub_read", args=[g.id]) for g in Content.objects.filter(user=user, content_type=Content.BOOK)
+        ]
 
-        # FIXME: this should be done via async, probably by putting in a kafka or similar
-        # it is actually quite slow!
-        with Ankrobes(request.user.username) as userdb:
-            for word, actions in vocab.items():
-                if not add_all_to_learning and not actions[3]:
-                    continue  # not adding all and we don't know the word so we are not adding it
+        video_urls = [
+            r("video_list"),
+        ]
+        video_urls += [
+            r("video_watch", args=[g.id]) for g in Content.objects.filter(user=user, content_type=Content.VIDEO)
+        ]
 
-                # TODO: decide how to best deal with when to next review
-                review_in = 1
+        # Transcrobed Content
+        if with_content:
+            webpub_urls += [
+                r("webpub_serve", args=[g.id, MANIFEST_JSON])
+                for g in Content.objects.filter(user=user, content_type=Content.BOOK)
+            ]
 
-                defin = default_definition(manager, word)
-                if not userdb.set_word_known(
-                    simplified=defin["Simplified"],
-                    pinyin=defin["Pinyin"],
-                    meanings=[defin["Meaning"]],
-                    tags=["bootstrap"],
-                    review_in=review_in,
-                ):
-                    logger.error(f"Error setting the word_known status for {word} for user {request.user.username}")
-                    raise Exception(f"Error updating the user database for {request.user.username}")
+            for book in Content.objects.filter(user=user, content_type=Content.BOOK):
+                destination = os.path.join(book.processed_path(), MANIFEST_JSON)
+                with open(destination, "r") as manifest:
+                    for webfile in json.load(manifest)["resources"]:
+                        webpub_urls += [r("webpub_serve", args=[book.id, webfile["href"]])]
+                        webpub_urls += [r("webpub_serve", args=[book.id, webfile["href"] + DATA_JS_SUFFIX])]
+            video_urls += [
+                r("webpub_serve", args=[g.id, WEBVTT_FILE])
+                for g in Content.objects.filter(user=user, content_type=Content.VIDEO)
+            ]
+            video_urls += [
+                r("webpub_serve", args=[g.id, WEBVTT_FILE + DATA_JS_SUFFIX])
+                for g in Content.objects.filter(user=user, content_type=Content.VIDEO)
+            ]
 
-            logger.info(f"Set {vocab.keys()} for {request.user.username}")
+        output = home_urls + list_urls + goal_urls + import_urls + webpub_urls + video_urls
 
-        # FIXME: remove nasty hack
-        request.user.transcrober.refresh_vocabulary()
-
-    data = {"status": "success"}
-    response = JsonResponse(data)
-    response["Access-Control-Allow-Origin"] = "*"
-    response["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-    response["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type, Authorization"
-    return response
-
-
-class VocabList(OnboardedTemplateView):
-    @staticmethod
-    def vocab_list(user, manager, _list_type="SUB", start=0, window_size=100):
-        # TODO: the following
-        # get list of words from list X that are not in username.notes with definitions from bingapilookup
-        # ordered by list X
-
-        # FIXME: this should allow for re-running the tool!
-        sql = r"""
-            select sub.source_text, bal.id, w.user_id from enrichers_zh_subtlexlookup sub
-                    inner join enrich_bingapilookup bal on sub.source_text = bal.source_text
-                    left join data_userword w on w.word_id = bal.id and w.user_id = %(user_id)s
-                where w.user_id is null
-                order by sub.id
-                limit %(window_size)s
-                offset %(start)s
-        """  # noqa: E501
-
-        page_words = None
-        with connection.cursor() as cursor:
-            cursor.execute(sql, {"window_size": window_size, "start": start, "user_id": user.id})
-            page_words = cursor.fetchall()
-
-        data = []
-        for pw in page_words:
-            w = pw[0]
-            data.append([default_definition(manager, w), pw[1]])
-        return data
-
-    def get_context_data(self, **kwargs):
-        manager = managers.get(self.request.user.transcrober.lang_pair())
-        if not manager:
-            raise Exception(f"Server does not support language pair {self.request.user.transcrober.lang_pair()}")
-
-        context = super().get_context_data(**kwargs)
-        context["data"] = self.vocab_list(self.request.user, manager)
-        context["vocab"] = {x[0]["Simplified"]: [x[1], 1, 0, 0] for x in context["data"]}
-        context["selected_word_start"] = self.request.GET.get("selected_word_start") or "red"
-        context["add_all_to_learning"] = (self.request.GET.get("add_all_to_learning") == "true") or False
-
-        return context
+    return do_response(Response(output))

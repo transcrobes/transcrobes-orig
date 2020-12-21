@@ -1,0 +1,139 @@
+<!-- templates/settings/initialisation.html -->
+{% extends 'data/base_footer_with_copyright.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Transcrobes initialisation{% endblock %}
+
+{% block content %}
+<!-- Outer Row -->
+<div class="row justify-content-center">
+  <div class="col-xl-10 col-lg-12 col-md-9">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="p-5">
+              <div class="text-center">
+                <div id="toInitialisation">
+                  <h1 class="h4 text-gray-900 mb-4">Welcome! It's Transcrobes initialisation time!</h1>
+                  <p>Even though Transcrobes is entirely browser-based, a lot of Transcrobes' functionality is available offline (it's a <a href="https://web.dev/progressive-web-apps/">"Progressive Web App"</a>), which means you can keep reading your favourite books, watching your favourite movies or doing active learning exercises wherever you are, whenever you want. On a mountain or behind a Great Big Firewall, nothing should get in the way of your learning! This does mean that the system needs to download and prepare some things, and that is going to take a while (15-30 minutes depending on how fast your phone/tablet/computer is).</p>
+                  <p>The system needs to do quite a lot of work (mainly building indexeddb indexes), so don't be alarmed if your devices heat up a bit (should be less than a gaming session though!) and the fan switches on. It's normal, and will only happen once, at initialisation time. It's better to not interrupt the initialisation while it's happening (like any initialisation!), so make sure your device has plenty of battery (or is plugged in). On an Android device you MUST plug it in and keep the screen from going off or the initialisation will freeze due to system optimisations. It will also download 25-50MB of data so if you are not on wifi, make sure that is not a problem for your data plan.</p>
+                  <p></p>
+                  <form class="user" method="post" enctype="multipart/form-data"> {% csrf_token %}
+                    <div id="reinitialisationDiv" class="hidden" style="display:flex; justify-content: center; padding-bottom: 2em">
+                      <button id="reinitialisationButton" onclick="startInitialisation(true)" type="button" style="width: 90%; font-size:1.5em" class="btn btn-primary btn-user btn-block">Reinitialise from scratch (try if continuing fails)</button>
+                    </div>
+                    <div style="display:flex; justify-content: center; padding-bottom: 2em">
+                      <button id="initialiseButton" onclick="startInitialisation(false)" type="button" style="width: 90%; font-size:1.5em" class="btn btn-primary btn-user btn-block">Initialise the system now</button>
+                    </div>
+                  </form>
+                </div>
+                <div id="initialising" class="hidden">
+                  <h1 class="h4 text-gray-900 mb-4">Initialisation started</h1>
+                  <p>Please be patient while the initialisation finishes. The initialisation will give some updates but you should not be worried unless you see no update for over 5 minutes. No harm should come if you stop the initialisation by navigating away or closing the browser. The initialisation will pick up where it left off when you return.</p>
+                  <div id="loading"><img src="{% static 'img/loader.gif' %}" /></div>
+                  <div class="text-center" style="font-size: 2em; color:black;" id="initialisationMessages"></div>
+                  <div class="text-center" style="font-size: 2em; color:black;" id="initialisationStarted"></div>
+                  <div class="text-center" style="font-size: 2em; color:black;" id="lastUpdated"></div>
+                  <div id="homeButton" class="hidden" style="display:flex; justify-content: center; padding-bottom: 2em">
+                    <a style="width: 90%; font-size: 1.5em;" href="{% url 'home' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Get started with Transcrobes!</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+
+caches.has(INITIALISATION_CACHE_NAME).then((has) => {
+  if (has || !!(localStorage.getItem('isDbInitialised'))) {
+       document.querySelector("#reinitialisationDiv").classList.remove('hidden');
+    document.querySelector("#initialisationButton").innerText = "Continue previous initialisation (much quicker)";
+  }
+});
+
+function launchInitialisation(reinitialise=false) {
+  if (reinitialise) {
+    caches.delete(CACHE_NAME).then((deleted)=>{
+      console.debug("The main cache was deleted?", deleted);
+      caches.delete(INITIALISATION_CACHE_NAME).then((init_deleted) => {
+        console.debug("The init cache was deleted?", init_deleted);
+        startInitialisation(reinitialise);
+      })
+    })
+  } else {
+    startInitialisation(reinitialise);
+  }
+}
+
+function startInitialisation(reinitialise=false){
+  document.removeEventListener('click', startInitialise, false);
+  noSleep.enable();
+
+  document.querySelector("#toInitialise").classList.add('hidden');
+  document.querySelector("#initialising").classList.remove('hidden');
+
+  const appConfig = JSON.parse(document.querySelector("#appConfig").textContent);
+  console.debug('the appConfig is ', appConfig);
+  if (Object.entries(appConfig).length > 0) {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(function (reg) {
+      if (reg.initialising) { console.log('Service worker initialising');
+      } else if (reg.waiting) { console.log('Service worker initialised');
+      } else if (reg.active) { console.log('Service worker active'); }
+    }).catch(function (error) {
+      // registration failed
+      console.error('ServiceWorker Registration failed with ' + error);
+
+      document.querySelector("#homeButton").classList.remove('hidden');
+      document.querySelector("#loading").classList.add('hidden');
+      document.querySelector("#initialisationMessages").innerHTML = `There was a problem initialising the Service Worker. Please contact <a href="https://transcrob.es/page/contact/">Transcrobes Support</a>`;
+    });
+    let finished = false;
+    const progressUpdate = () => {
+      if (!finished) {
+        wproxy.sendMessage(
+          {source: DATA_SOURCE,
+          type: "heartbeat",
+          value: ""},
+          (datetime) => {
+            if (!document.querySelector("#initialisationStarted").innerHTML) {
+              document.querySelector("#initialisationStarted").innerHTML = `Initialisation started at: ${datetime}`
+            };
+            document.querySelector("#lastUpdated").innerHTML = `Last updated at: ${datetime}`;
+            setTimeout(progressUpdate, 10000);
+          });
+        }
+      }
+
+    setTimeout(progressUpdate, 10000)
+
+    document.querySelector("#initialisationStarted").innerHTML = `Initialisation started at: ${dayjs().format()}`
+
+    appConfig.syncURL = location.origin;  // FIXME: this is ugly and wrong
+    appConfig.reinitialise = reinitialisation;
+    wproxy.init(appConfig, (message) => {
+      console.log('The system has been initialised from data/settings/initialisation.html', message);
+      document.querySelector("#homeButton").classList.remove('hidden');
+      document.querySelector("#loading").classList.add('hidden');
+      document.querySelector("#initialisationMessages").innerText = "Initialisation Complete!";
+      finished = true;
+      noSleep.disable();
+    }, (progress) => {
+      console.debug('In initialisation.html in progress callback with progress ', progress)
+      document.querySelector("#initialisationMessages").innerText = progress.message;
+      document.querySelector("#lastUpdated").innerHTML = `Last updated at: ${dayjs().format()}`
+    });
+  }
+}
+
+</script>
+{% endblock %}

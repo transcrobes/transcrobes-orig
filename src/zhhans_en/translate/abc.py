@@ -5,14 +5,11 @@ import re
 
 from enrich.data import PersistenceProvider
 from enrich.translate import Translator
+from ndutils import lemma
 from zhhans_en.models import ABCLookup
 from zhhans_en.translate import decode_pinyin
 
-# from zhhans_en.translate import ZHHANS_EN_Translator
-
-
 logger = logging.getLogger(__name__)
-
 
 # TODO: This was a little arbitrary...
 # see https://gitlab.com/Wenlin/WenlinTushuguan/blob/master/Help/abbrev.wenlin
@@ -56,10 +53,9 @@ ZH_TB_POS_TO_ABC_POS = {
     "URL": "other",
 }
 
-# p_entries = {}  p_entries was originally here to check for duplicates that we might squash
-
 
 class ZHHANS_EN_ABCDictTranslator(PersistenceProvider, Translator):
+    SHORT_NAME = "abc"
     p = re.compile(r"^(\d*)(\w+)(\S*)\s+(.+)$")
     model_type = ABCLookup
 
@@ -144,23 +140,19 @@ class ZHHANS_EN_ABCDictTranslator(PersistenceProvider, Translator):
     # override Metadata
     @staticmethod
     def name():
-        return "second"
+        return ZHHANS_EN_ABCDictTranslator.SHORT_NAME
 
     @staticmethod
     def _decode_pinyin(s):
         # TODO: don't use the generic method here
         return decode_pinyin(s)
 
-    # TODO: fix the POS correspondences
-    # override Translator
-    def get_standardised_defs(self, token):
+    def _def_from_entry(self, token, entry):
         std_format = {}
-
-        entry = self._get_def(token["lemma"])
         if entry:
-            logger.debug("'%s' is in abcdict cache", token["lemma"])
+            logger.debug("'%s' is in abcdict cache", lemma(token))
             for abc in entry:
-                logger.debug("Iterating on '%s''s different definitions in abcdict cache", token["lemma"])
+                logger.debug("Iterating on '%s''s different definitions in abcdict cache", lemma(token))
                 for defin in abc["definitions"]:
                     token_pos = ZH_TB_POS_TO_ABC_POS[token["pos"]]
 
@@ -182,8 +174,16 @@ class ZHHANS_EN_ABCDictTranslator(PersistenceProvider, Translator):
                     defie["pinyin"] = self._decode_pinyin(abc["pinyin"])
                     std_format[defin[1]].append(defie)
 
-        logger.debug("Finishing looking up '%s' in abcedict", token["lemma"])
+        logger.debug("Finishing looking up '%s' in abcedict", lemma(token))
         return std_format
+
+    # TODO: fix the POS correspondences
+    # override Translator
+    def get_standardised_defs(self, token):
+        return self._def_from_entry(token, self._get_def(lemma(token)))
+
+    async def aget_standardised_defs(self, token):
+        return self._def_from_entry(token, await self._aget_def(lemma(token)))
 
     # override Translator
     def get_standardised_fallback_defs(self, token):
@@ -193,3 +193,13 @@ class ZHHANS_EN_ABCDictTranslator(PersistenceProvider, Translator):
     # override Translator
     def synonyms(self, token, std_pos, max_synonyms=5):
         raise NotImplementedError
+
+    # override Translator
+    async def sound_for(self, token):
+        entry = await self._aget_def(lemma(token))
+        if entry:
+            logger.debug("'%s' is in abcdict cache", lemma(token))
+            for abc in entry:
+                logger.debug("Iterating on '%s''s different definitions in abcdict cache", lemma(token))
+                return self._decode_pinyin(abc["pinyin"])
+        return ""

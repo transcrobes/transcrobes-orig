@@ -6,6 +6,7 @@ import re
 from enrich.data import PersistenceProvider
 from enrich.translate import Translator
 from enrichers.zhhans import ZH_TB_POS_TO_SIMPLE_POS
+from ndutils import lemma
 from zhhans_en.models import CCCLookup
 from zhhans_en.translate import decode_pinyin
 
@@ -13,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class ZHHANS_EN_CCCedictTranslator(PersistenceProvider, Translator):
+    SHORT_NAME = "ccc"
     model_type = CCCLookup
 
     # override PersistenceProvider
@@ -51,25 +53,22 @@ class ZHHANS_EN_CCCedictTranslator(PersistenceProvider, Translator):
     # override Translator
     @staticmethod
     def name():
-        return "third"
+        return "ccc"
 
     @staticmethod
     def _decode_pinyin(s):
         # TODO: don't use the generic method here
         return decode_pinyin(s)
 
-    # TODO: investigate git@github.com:wuliang/CedictPlus.git - it has POS. It also hasn't been updated in 6 years...
-    # override Translator
-    def get_standardised_defs(self, token):
+    def _def_from_entry(self, token, cccl):
         std_format = {}
-        cccl = self._get_def(token["lemma"])
         if cccl:
-            logger.debug("'%s' is in cccedict cache", token["lemma"])
+            logger.debug("'%s' is in cccedict cache", lemma(token))
             for cc in cccl:
-                logger.debug("Iterating on '%s''s different forms in cccedict cache", token["lemma"])
+                logger.debug("Iterating on '%s''s different forms in cccedict cache", lemma(token))
                 for defin in cc["definitions"]:
-                    logger.debug("Iterating on '%s''s different definitions in cccedict cache", token["lemma"])
-                    logger.debug("Checking for POS hint for '%s' in cccedict", token["lemma"])
+                    logger.debug("Iterating on '%s''s different definitions in cccedict cache", lemma(token))
+                    logger.debug("Checking for POS hint for '%s' in cccedict", lemma(token))
                     token_pos = ZH_TB_POS_TO_SIMPLE_POS[token["pos"]]
 
                     if defin.startswith("to "):
@@ -97,8 +96,16 @@ class ZHHANS_EN_CCCedictTranslator(PersistenceProvider, Translator):
                     defie["pinyin"] = self._decode_pinyin(cc["pinyin"])
                     std_format[defin_pos].append(defie)
 
-        logger.debug("Finishing looking up '%s' in cccedict", token["lemma"])
+        logger.debug("Finishing looking up '%s' in cccedict", lemma(token))
         return std_format
+
+    async def aget_standardised_defs(self, token):
+        return self._def_from_entry(token, await self._aget_def(lemma(token)))
+
+    # TODO: investigate git@github.com:wuliang/CedictPlus.git - it has POS. It also hasn't been updated in 6 years...
+    # override Translator
+    def get_standardised_defs(self, token):
+        return self._def_from_entry(token, self._get_def(lemma(token)))
 
     # override Translator
     def get_standardised_fallback_defs(self, token):
@@ -108,3 +115,14 @@ class ZHHANS_EN_CCCedictTranslator(PersistenceProvider, Translator):
     # override Translator
     def synonyms(self, token, std_pos, max_synonyms=5):
         raise NotImplementedError
+
+    # override Translator
+    async def sound_for(self, token):
+        cccl = await self._aget_def(lemma(token))
+        if cccl:
+            for cc in cccl:
+                logger.debug("Iterating on '%s''s different forms in cccedict cache", lemma(token))
+                for sound in cc["pinyin"]:
+                    if sound:
+                        return self._decode_pinyin(sound)
+        return ""

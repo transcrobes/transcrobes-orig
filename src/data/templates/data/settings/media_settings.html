@@ -1,0 +1,97 @@
+<!-- templates/data/media_settings.html-->
+{% extends 'data/base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block title %}Media player settings{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Media player settings</h1>
+</div>
+
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <form class="user" method="post" enctype="multipart/form-data"> {% csrf_token %}
+      {% for hidden_field in form.hidden_fields %}
+      {{ hidden_field }}
+      {% endfor %}
+
+      {% if messages %}
+      <div class="form-group">
+        <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if form.non_field_errors %}
+      <div class="form-group form-error">
+        <p>
+        {{ form.non_field_errors }}
+        </p>
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="id_subtitle_default_glossing">Glossing type</label>
+        {% render_field form.subtitle_default_glossing class+="form-control" aria-describedby="subtitleGlossingHelp" placeholder="Enter subtitle glossing..." %}
+      </div>
+      {% if form.subtitle_default_glossing.errors %}
+      <div class="form-group form-error">
+        {{ form.subtitle_default_glossing.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="id_subtitle_default_segment">Segment texts into words</label>
+        {% render_field form.subtitle_default_segment class+="" aria-describedby="subtitleSegmentationHelp" placeholder="Enter subtitle segmentation..." %}
+      </div>
+      {% if form.subtitle_default_segment.errors %}
+      <div class="form-group form-error">
+        {{ form.subtitle_default_segment.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="id_media_mode">Media mode</label>
+        {% render_field form.media_mode class+="form-control" aria-describedby="mediaModeHelp" placeholder="Select media mode..." title="Media mode" %}
+      </div>
+      {% if form.media_mode.errors %}
+      <div class="form-group form-error">
+        {{ form.media_mode.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="id_subtitle_box_width_percent">Subtitle box max width (in %)</label>
+        {% render_field form.subtitle_box_width_percent class+="form-control" aria-describedby="subBoxWidthPercentHelp" placeholder="Subtitle box width..." title="Subtitles box width percent" %}
+      </div>
+      {% if form.subtitle_box_width_percent.errors %}
+      <div class="form-group form-error">
+        {{ form.subtitle_box_width_percent.errors }}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <label for="id_subtitle_font_size_percent">Subtitle font size (in %)</label>
+        {% render_field form.subtitle_font_size_percent class+="form-control" aria-describedby="fontSizePercentHelp" placeholder="Font size..." title="Font size percent" %}
+      </div>
+      {% if form.subtitle_font_size_percent.errors %}
+      <div class="form-group form-error">
+        {{ form.subtitle_font_size_percent.errors }}
+      </div>
+      {% endif %}
+
+      <button class="btn btn-primary btn-user btn-block" type="submit">Update</button>
+    </form>
+    <hr>
+    <p><a href="{% url 'settings' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Settings</a></p>
+  </div>
+</div>
+
+{% endblock %}

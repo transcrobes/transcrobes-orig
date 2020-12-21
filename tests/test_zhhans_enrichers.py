@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import glob
 import json
 import os
@@ -189,11 +190,15 @@ class CoreNLP_ZHHANS_EnricherMixin(VCRMixin):
 
         after_dir = os.path.dirname(sys.modules["tests.assets.enrichers.guess.after"].__file__)
 
+        # 习近平在贺电中指出，中葡友谊源远流长。
         s = pkgutil.get_data("tests.assets.enrichers.guess", "sentence1.json").decode("utf-8")
 
         for fname in files_before:
             with open(fname) as in_json, open(os.path.join(after_dir, os.path.basename(fname))) as out_json:
                 t = json.load(in_json)
+                print("toto")
+                print(t)
+                print("titi")
                 self.enricher._set_best_guess(s, t)  # pylint: disable=W0212
                 self.assertEqual(t, json.load(out_json))
 
@@ -223,7 +228,7 @@ class FullEnrichMixin(VCRMixin):
 
         # test with no known entries
         model = self.manager.enricher().enrich_to_json(
-            intxt_txt, self.user, self.manager, stats_mode=stats.USER_STATS_MODE_L1
+            intxt_txt, self.user, self.manager, stats_mode=stats.GLOSSING_MODE_L1
         )
         enriched = pkgutil.get_data("tests.assets.enrichers.bing", "enriched_model_no_notes.json").decode("utf-8")
 

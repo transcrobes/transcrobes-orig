@@ -641,7 +641,7 @@ interactions:
       X-ClientTraceId:
       - 0a99e631-d821-428b-9072-e4f8b23172f0
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"In his congratulatory message, Xi pointed
@@ -789,7 +789,7 @@ interactions:
       X-ClientTraceId:
       - 78e42141-c062-4979-9fbd-0f3543903a22
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Xi Jinping.","to":"en","alignment":{"proj":"0:2-0:10"}}]}]'
@@ -926,7 +926,7 @@ interactions:
       X-ClientTraceId:
       - c88faa57-cf4b-4f21-bdf6-1f805cab678c
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"In.","to":"en","alignment":{"proj":"0:0-0:2"}}]}]'
@@ -1072,7 +1072,7 @@ interactions:
       X-ClientTraceId:
       - 6056ef0c-3ed8-43ef-b6fd-1dfb0db5ca18
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Message.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -1209,7 +1209,7 @@ interactions:
       X-ClientTraceId:
       - 21f16c04-9a8d-40d9-bf5a-ba0cebcb64cc
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":".","to":"en","alignment":{"proj":"0:0-0:0"}}]}]'
@@ -1362,7 +1362,7 @@ interactions:
       X-ClientTraceId:
       - b1401c9c-1737-4347-b8f8-1844e562d5b9
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Pointed out.","to":"en","alignment":{"proj":"0:1-0:11"}}]}]'
@@ -1507,7 +1507,7 @@ interactions:
       X-ClientTraceId:
       - ece70444-72bd-4e3a-acab-1eacb20f9356
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Portuguese.","to":"en","alignment":{"proj":"0:0-0:10"}}]}]'
@@ -1652,7 +1652,7 @@ interactions:
       X-ClientTraceId:
       - 393018af-4f10-4910-b892-3de113a8f100
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Friendship.","to":"en","alignment":{"proj":"0:1-0:10"}}]}]'
@@ -1799,7 +1799,7 @@ interactions:
       X-ClientTraceId:
       - 3f7829e1-ebc8-4a1e-b9a7-26f8e9356b67
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"It has a long history.","to":"en","alignment":{"proj":"0:0-0:1
@@ -1898,7 +1898,7 @@ interactions:
       X-ClientTraceId:
       - 0ba201c2-2b44-4495-9ad9-ecff639d315c
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Since the establishment of diplomatic ties
@@ -2045,7 +2045,7 @@ interactions:
       X-ClientTraceId:
       - 529e3a42-45b0-46b1-94ec-0b71e3e368c3
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Diplomatic ties.","to":"en","alignment":{"proj":"0:1-0:15"}}]}]'
@@ -2192,7 +2192,7 @@ interactions:
       X-ClientTraceId:
       - c2a88456-656f-40b5-9373-1bb109e1ba0d
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Years.","to":"en","alignment":{"proj":"0:0-0:5"}}]}]'
@@ -2337,7 +2337,7 @@ interactions:
       X-ClientTraceId:
       - ecc6541c-8e68-4dc0-895d-98d7bf2720b5
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"To.","to":"en","alignment":{"proj":"0:0-0:2"}}]}]'
@@ -2491,7 +2491,7 @@ interactions:
       X-ClientTraceId:
       - dfe43604-1ee4-45cf-883b-cf9305fae9b6
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Both sides.","to":"en","alignment":{"proj":"0:1-0:10"}}]}]'
@@ -2636,7 +2636,7 @@ interactions:
       X-ClientTraceId:
       - 403b306f-69db-43c5-a96f-68f902b75088
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Uphold.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -2787,7 +2787,7 @@ interactions:
       X-ClientTraceId:
       - 86986d44-7296-4c50-8e71-120ab4beea99
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Each other.","to":"en","alignment":{"proj":"0:1-0:10"}}]}]'
@@ -2938,7 +2938,7 @@ interactions:
       X-ClientTraceId:
       - 7903f670-caed-4460-a632-a9aa2dd9991e
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Respect.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -3089,7 +3089,7 @@ interactions:
       X-ClientTraceId:
       - 93009e27-dabe-48e3-8cd2-a487f6f6e97d
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Equal.","to":"en","alignment":{"proj":"0:1-0:5"}}]}]'
@@ -3238,7 +3238,7 @@ interactions:
       X-ClientTraceId:
       - c31e64dc-ccd9-4d0c-bcf4-bcfef8f6e3de
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Phase.","to":"en","alignment":{"proj":"0:0-0:5"}}]}]'
@@ -3388,7 +3388,7 @@ interactions:
       X-ClientTraceId:
       - 72517c5f-c7bb-4972-a28c-03fd7ab881f4
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Stay.","to":"en","alignment":{"proj":"0:0-0:4"}}]}]'
@@ -3535,7 +3535,7 @@ interactions:
       X-ClientTraceId:
       - bccc7b04-ae9e-4d5b-bdd9-bf40f159ded8
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Mutually beneficial.","to":"en","alignment":{"proj":"0:1-0:19"}}]}]'
@@ -3624,7 +3624,7 @@ interactions:
       X-ClientTraceId:
       - 10104be9-79c1-4753-b453-c2020d3ef099
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Win-win situation.","to":"en","alignment":{"proj":"0:1-0:6
@@ -3807,7 +3807,7 @@ interactions:
       X-ClientTraceId:
       - a9dc19f6-3b6c-4d2b-9a54-ebc5bd6ad749
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"of the .","to":"en","alignment":{"proj":"0:0-0:1
@@ -3962,7 +3962,7 @@ interactions:
       X-ClientTraceId:
       - 1156d36b-af2d-45f9-a755-fa0cdd517a87
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Spirit.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -4120,7 +4120,7 @@ interactions:
       X-ClientTraceId:
       - 042e6f5a-861e-4779-b2c0-60c40de3c249
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Promote.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -4266,7 +4266,7 @@ interactions:
       X-ClientTraceId:
       - 87394ef4-c9ff-44e1-b2af-593fc1718d8b
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Bilateral.","to":"en","alignment":{"proj":"0:1-0:9"}}]}]'
@@ -4418,7 +4418,7 @@ interactions:
       X-ClientTraceId:
       - 7afa45ed-174b-4a6d-8c57-4590f95b7e8e
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Relationship.","to":"en","alignment":{"proj":"0:1-0:12"}}]}]'
@@ -4566,7 +4566,7 @@ interactions:
       X-ClientTraceId:
       - 96a779a3-71d2-4034-a72e-a552fbddc08e
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Health.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -4718,7 +4718,7 @@ interactions:
       X-ClientTraceId:
       - 25e4db8c-de2f-4ed5-8b26-1ade70fedc11
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Stability.","to":"en","alignment":{"proj":"0:1-0:9"}}]}]'
@@ -4871,7 +4871,7 @@ interactions:
       X-ClientTraceId:
       - 623107df-3c47-425c-8a99-837c936f3533
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Development.","to":"en","alignment":{"proj":"0:1-0:11"}}]}]'
@@ -4968,7 +4968,7 @@ interactions:
       X-ClientTraceId:
       - c5d1592f-b03b-4d97-b780-62a579230d31
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"In 1999, the two sides properly resolved
@@ -5062,7 +5062,7 @@ interactions:
       X-ClientTraceId:
       - 6ad141fd-409c-43c2-9772-7590dc231dec
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"1999.","to":"en","alignment":{"proj":"0:3-0:4"}}]}]'
@@ -5256,7 +5256,7 @@ interactions:
       X-ClientTraceId:
       - dbf45958-6a20-4d12-8f84-da94c521a3a2
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Properly.","to":"en","alignment":{"proj":"0:1-0:8"}}]}]'
@@ -5413,7 +5413,7 @@ interactions:
       X-ClientTraceId:
       - 48838de2-cc69-47b9-aa32-009436829876
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Solve.","to":"en","alignment":{"proj":"0:1-0:5"}}]}]'
@@ -5550,7 +5550,7 @@ interactions:
       X-ClientTraceId:
       - 3032138b-4a0f-4003-aa7d-229877776167
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Macao.","to":"en","alignment":{"proj":"0:1-0:5"}}]}]'
@@ -5699,7 +5699,7 @@ interactions:
       X-ClientTraceId:
       - 5a373589-0a01-4f6d-99f7-1ffd99f522cc
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Problem.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -5853,7 +5853,7 @@ interactions:
       X-ClientTraceId:
       - 1e1c06e4-50f5-4c5d-89e1-d1265ff032a1
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Establish.","to":"en","alignment":{"proj":"0:1-0:9"}}]}]'
@@ -5990,7 +5990,7 @@ interactions:
       X-ClientTraceId:
       - bcb00b18-83f7-4cf4-a64f-bdbf5219bff9
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"It''s gone.","to":"en","alignment":{"proj":"0:0-0:3
@@ -6144,7 +6144,7 @@ interactions:
       X-ClientTraceId:
       - d2eb9862-fd31-4d80-b768-d12e83c7dbba
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Country.","to":"en","alignment":{"proj":"0:0-0:7"}}]}]'
@@ -6281,7 +6281,7 @@ interactions:
       X-ClientTraceId:
       - f19e0df3-b09c-4f09-91e5-3cbd84c0192e
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"And.","to":"en","alignment":{"proj":"0:0-0:3"}}]}]'
@@ -6428,7 +6428,7 @@ interactions:
       X-ClientTraceId:
       - c24286c0-a8bd-4572-a9e7-6991b9651a18
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Pass.","to":"en","alignment":{"proj":"0:1-0:4"}}]}]'
@@ -6579,7 +6579,7 @@ interactions:
       X-ClientTraceId:
       - 9bff375d-5509-44d2-9d80-f8f8d3a6eaf5
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Friendly.","to":"en","alignment":{"proj":"0:1-0:8"}}]}]'
@@ -6734,7 +6734,7 @@ interactions:
       X-ClientTraceId:
       - a8a1ef22-9975-4032-9680-6fd4e73623a2
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Consultation.","to":"en","alignment":{"proj":"0:1-0:12"}}]}]'
@@ -6881,7 +6881,7 @@ interactions:
       X-ClientTraceId:
       - f799bc47-9568-4e0c-84a2-306f76da50bc
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"History.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -7030,7 +7030,7 @@ interactions:
       X-ClientTraceId:
       - 5d68bacc-644b-4205-9507-0bbba3baf97b
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Legacy.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -7180,7 +7180,7 @@ interactions:
       X-ClientTraceId:
       - c46c6128-f6fb-4f35-9b2e-0fe4fecc24ba
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Model.","to":"en","alignment":{"proj":"0:1-0:5"}}]}]'
@@ -7278,7 +7278,7 @@ interactions:
       X-ClientTraceId:
       - 74ed5183-9bf2-408a-bfcc-1a0358e4ca8c
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Since the establishment of the comprehensive
@@ -7375,7 +7375,7 @@ interactions:
       X-ClientTraceId:
       - 29d03d0c-30a1-4919-90a4-249552654e4f
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"2005.","to":"en","alignment":{"proj":"0:3-0:4"}}]}]'
@@ -7577,7 +7577,7 @@ interactions:
       X-ClientTraceId:
       - 434de0b8-ada3-439e-926a-68fa77594f19
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Establish.","to":"en","alignment":{"proj":"0:1-0:9"}}]}]'
@@ -7736,7 +7736,7 @@ interactions:
       X-ClientTraceId:
       - fabeaefd-70e0-45fe-83d9-5124160db0ec
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Comprehensive.","to":"en","alignment":{"proj":"0:1-0:13"}}]}]'
@@ -7883,7 +7883,7 @@ interactions:
       X-ClientTraceId:
       - a99d12e5-dca6-4c68-b2ad-be53adfb03de
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Strategy.","to":"en","alignment":{"proj":"0:1-0:8"}}]}]'
@@ -8038,7 +8038,7 @@ interactions:
       X-ClientTraceId:
       - f02d943c-a164-4659-b43f-91e540150ace
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Partner.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -8175,7 +8175,7 @@ interactions:
       X-ClientTraceId:
       - ef1319a8-d2a4-4c48-b606-6bec40892abb
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Since.","to":"en","alignment":{"proj":"0:1-0:5"}}]}]'
@@ -8329,7 +8329,7 @@ interactions:
       X-ClientTraceId:
       - 957b86ca-0d54-4c62-85e5-662d047ead07
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Senior.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -8466,7 +8466,7 @@ interactions:
       X-ClientTraceId:
       - bd5fd768-7bcf-4cf4-a75e-a605afc7e55b
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Visits.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -8617,7 +8617,7 @@ interactions:
       X-ClientTraceId:
       - 8a3cc216-0e13-4a0e-9d1b-b047fb69add5
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Frequent.","to":"en","alignment":{"proj":"0:1-0:8"}}]}]'
@@ -8763,7 +8763,7 @@ interactions:
       X-ClientTraceId:
       - 53359a06-ebb7-40d3-93b3-e83ebb6b23b2
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Political.","to":"en","alignment":{"proj":"0:1-0:9"}}]}]'
@@ -8901,7 +8901,7 @@ interactions:
       X-ClientTraceId:
       - fac0e450-4d8f-4d36-a41d-7cc5011373de
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Mutual trust.","to":"en","alignment":{"proj":"0:1-0:12"}}]}]'
@@ -9056,7 +9056,7 @@ interactions:
       X-ClientTraceId:
       - 8dd29f48-64ea-409a-87fa-11455196bdc7
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Constantly.","to":"en","alignment":{"proj":"0:1-0:10"}}]}]'
@@ -9204,7 +9204,7 @@ interactions:
       X-ClientTraceId:
       - bc5ffbc9-652d-417b-b15f-0969841d35f4
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Deepen.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -9350,7 +9350,7 @@ interactions:
       X-ClientTraceId:
       - 03c8ba0b-97d8-4e93-a71e-4f9e14e81290
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"each.","to":"en","alignment":{"proj":"0:0-0:4"}}]}]'
@@ -9505,7 +9505,7 @@ interactions:
       X-ClientTraceId:
       - 784e1643-b4bf-4b71-b3bd-585598076b88
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Field.","to":"en","alignment":{"proj":"0:1-0:5"}}]}]'
@@ -9660,7 +9660,7 @@ interactions:
       X-ClientTraceId:
       - 638f3a95-e1cd-48aa-850c-0fdc4b7f2329
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Cooperation.","to":"en","alignment":{"proj":"0:1-0:11"}}]}]'
@@ -9815,7 +9815,7 @@ interactions:
       X-ClientTraceId:
       - 41379499-e07c-463b-ad88-88a2159fa1ab
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Results.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -9973,7 +9973,7 @@ interactions:
       X-ClientTraceId:
       - 133dad7d-0df5-41cd-9680-e84651b61e67
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Significant.","to":"en","alignment":{"proj":"0:1-0:11"}}]}]'
@@ -10070,7 +10070,7 @@ interactions:
       X-ClientTraceId:
       - bb2f7313-6b17-489f-8597-097b83eab165
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Not long ago, I made a successful visit
@@ -10222,7 +10222,7 @@ interactions:
       X-ClientTraceId:
       - 25f615f7-f365-4efe-a9d7-3c95d06cd77f
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Recently.","to":"en","alignment":{"proj":"0:2-0:8"}}]}]'
@@ -10359,7 +10359,7 @@ interactions:
       X-ClientTraceId:
       - a989631b-81a1-49b6-81c2-8da25e27a2c6
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"I.","to":"en","alignment":{"proj":"0:0-0:1"}}]}]'
@@ -10509,7 +10509,7 @@ interactions:
       X-ClientTraceId:
       - 9e34ad17-6da8-4094-b1e4-d9057eb76cd1
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Success.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -10661,7 +10661,7 @@ interactions:
       X-ClientTraceId:
       - aafeb331-9ce3-415b-842d-e91a9792ab96
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Access.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -10798,7 +10798,7 @@ interactions:
       X-ClientTraceId:
       - 6ea07302-245f-475a-bb34-ed15686446a4
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Your.","to":"en","alignment":{"proj":"0:1-0:4"}}]}]'
@@ -10944,7 +10944,7 @@ interactions:
       X-ClientTraceId:
       - 00c3314d-7f0c-49f2-8646-d5e3802bf5ac
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"With.","to":"en","alignment":{"proj":"0:0-0:4"}}]}]'
@@ -11081,7 +11081,7 @@ interactions:
       X-ClientTraceId:
       - e7b20dc7-e705-43d8-9398-05a93a41c1a2
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"You.","to":"en","alignment":{"proj":"0:0-0:3"}}]}]'
@@ -11232,7 +11232,7 @@ interactions:
       X-ClientTraceId:
       - 35734624-4a17-40ce-af40-577715591066
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"to be carried out.","to":"en","alignment":{"proj":"0:1-0:1
@@ -11390,7 +11390,7 @@ interactions:
       X-ClientTraceId:
       - 0295fcfc-9cec-4dd3-a4ef-7011ac973529
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Depth.","to":"en","alignment":{"proj":"0:1-0:5"}}]}]'
@@ -11544,7 +11544,7 @@ interactions:
       X-ClientTraceId:
       - 3bf8673e-27c8-4c03-bac1-91e257ebec03
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Communication.","to":"en","alignment":{"proj":"0:1-0:13"}}]}]'
@@ -11699,7 +11699,7 @@ interactions:
       X-ClientTraceId:
       - 21794913-c736-41b7-9a74-2e37b9650599
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Common.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -11848,7 +11848,7 @@ interactions:
       X-ClientTraceId:
       - 01723eec-9a67-4342-9df3-b1ac4999c240
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Planning.","to":"en","alignment":{"proj":"0:1-0:8"}}]}]'
@@ -12000,7 +12000,7 @@ interactions:
       X-ClientTraceId:
       - ccdd7dcf-a40c-4401-bea2-4f4aba221534
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"New.","to":"en","alignment":{"proj":"0:0-0:3"}}]}]'
@@ -12145,7 +12145,7 @@ interactions:
       X-ClientTraceId:
       - 7d0a70db-39ac-4fd1-a922-e026575389b2
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Blueprint.","to":"en","alignment":{"proj":"0:1-0:9"}}]}]'
@@ -12246,7 +12246,7 @@ interactions:
       X-ClientTraceId:
       - e16f7570-92fc-4ddb-aedd-331beb11fc10
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"I attach great importance to the development
@@ -12405,7 +12405,7 @@ interactions:
       X-ClientTraceId:
       - fae23633-27d5-4a44-96fc-a2a19906a495
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Height.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -12560,7 +12560,7 @@ interactions:
       X-ClientTraceId:
       - ce951e48-20c8-4587-8ace-29fafa50fac7
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Attention.","to":"en","alignment":{"proj":"0:1-0:9"}}]}]'
@@ -12697,7 +12697,7 @@ interactions:
       X-ClientTraceId:
       - 4419a88b-e963-4b0e-a4f9-036b6a2f6ec1
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"May.","to":"en","alignment":{"proj":"0:0-0:3"}}]}]'
@@ -12834,7 +12834,7 @@ interactions:
       X-ClientTraceId:
       - 670fa83b-430c-49c1-a17b-0fe6c191d7c8
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"A.","to":"en","alignment":{"proj":"0:1-0:1"}}]}]'
@@ -12993,7 +12993,7 @@ interactions:
       X-ClientTraceId:
       - 4d6f41ab-d454-459d-b229-e674aacb98ed
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Efforts.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -13130,7 +13130,7 @@ interactions:
       X-ClientTraceId:
       - c4afa422-499a-4982-9123-9a6d54a655b3
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"To.","to":"en","alignment":{"proj":"0:0-0:2"}}]}]'
@@ -13279,7 +13279,7 @@ interactions:
       X-ClientTraceId:
       - b776f148-0cb5-4f51-a2e6-aa810be7ee50
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Two.","to":"en","alignment":{"proj":"0:0-0:3"}}]}]'
@@ -13426,7 +13426,7 @@ interactions:
       X-ClientTraceId:
       - 5d61a7b5-00a4-465c-bce2-dd5b5379633f
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Anniversary.","to":"en","alignment":{"proj":"0:1-0:11"}}]}]'
@@ -13563,7 +13563,7 @@ interactions:
       X-ClientTraceId:
       - 8bf01fb9-0317-490a-9475-399139131e53
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"For.","to":"en","alignment":{"proj":"0:0-0:3"}}]}]'
@@ -13714,7 +13714,7 @@ interactions:
       X-ClientTraceId:
       - d0fed9ee-db8d-45a0-843a-2d148856e635
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Starting point.","to":"en","alignment":{"proj":"0:1-0:14"}}]}]'
@@ -13803,7 +13803,7 @@ interactions:
       X-ClientTraceId:
       - bfac27a2-e882-4750-8671-7ba1336c7985
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Step up.","to":"en","alignment":{"proj":"0:0-0:3
@@ -13999,7 +13999,7 @@ interactions:
       X-ClientTraceId:
       - f203bd35-6952-42d7-bb40-52ba88b69072
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Steps.","to":"en","alignment":{"proj":"0:1-0:5"}}]}]'
@@ -14154,7 +14154,7 @@ interactions:
       X-ClientTraceId:
       - 918bbb68-b44b-4b2e-a4be-a71d250a8a9b
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"More.","to":"en","alignment":{"proj":"0:0-0:4"}}]}]'
@@ -14313,7 +14313,7 @@ interactions:
       X-ClientTraceId:
       - fdd0ef20-78dc-4be8-b05a-78c5d5ada95a
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Good.","to":"en","alignment":{"proj":"0:0-0:4"}}]}]'
@@ -14450,7 +14450,7 @@ interactions:
       X-ClientTraceId:
       - 66f16c4f-e0ef-4281-b9ef-b1ac58a2ee91
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Benefit.","to":"en","alignment":{"proj":"0:1-0:7"}}]}]'
@@ -14587,7 +14587,7 @@ interactions:
       X-ClientTraceId:
       - ea70837d-a6bf-483a-93f7-15df3386769a
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"And.","to":"en","alignment":{"proj":"0:0-0:3"}}]}]'
@@ -14735,7 +14735,7 @@ interactions:
       X-ClientTraceId:
       - 70dd1181-1ceb-49c6-afd8-83c8da790dd2
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"People.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'

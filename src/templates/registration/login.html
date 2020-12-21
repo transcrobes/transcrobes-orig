@@ -5,6 +5,14 @@
 
 {% block title %}Login{% endblock %}
 
+{% block extrajs %}
+<script>
+  if ('serviceWorker' in navigator === false) {
+    window.location.replace("{% url 'unsupported_browser' %}");
+  }
+</script>
+{% endblock%}
+
 {% block content %}
 <!-- Outer Row -->
 <div class="row justify-content-center">

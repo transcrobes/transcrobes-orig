@@ -120,7 +120,7 @@ class ZH_SubtlexMetadata(PersistenceProvider, Metadata):
     # override Metadata
     @staticmethod
     def name():
-        return "freq"
+        return "frq"
 
     # override Metadata
     def meta_for_word(self, lword):

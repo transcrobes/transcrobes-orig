@@ -3,13 +3,15 @@ import os
 
 from django.core.management.base import BaseCommand, CommandError
 
-# from en_zhhans.translate.abc import EN_ZHHANS_ABCDictTranslator
-# from enrichers.en.metadata.subtlex import EN_SubtlexMetadata
-# from enrichers.en.transliterate.cmu import CMU_EN_Transliterator
 from enrichers.zhhans.metadata.hsk import ZH_HSKMetadata
 from enrichers.zhhans.metadata.subtlex import ZH_SubtlexMetadata
 from zhhans_en.translate.abc import ZHHANS_EN_ABCDictTranslator
 from zhhans_en.translate.ccc import ZHHANS_EN_CCCedictTranslator
+
+# from en_zhhans.translate.abc import EN_ZHHANS_ABCDictTranslator
+# from enrichers.en.metadata.subtlex import EN_SubtlexMetadata
+# from enrichers.en.transliterate.cmu import CMU_EN_Transliterator
+
 
 DATA_PROVIDERS = {
     # English support removed for the moment

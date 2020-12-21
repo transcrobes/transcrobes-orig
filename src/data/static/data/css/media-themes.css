@@ -1,0 +1,61 @@
+/* black theme */
+.black {
+	background: #000;
+	color: #fff
+}
+
+/* dark theme */
+.dark {
+  background-color: #121212;
+  color: white;
+  opacity: 0.7;
+}
+.dark a:link {
+  color: #659EC7;
+}
+
+/* light theme, currently the same as white */
+.light {
+	background: #fff;
+	color: #000;
+}
+
+/* white theme */
+.white {
+	background: #fff;
+	color: #000;
+}
+
+hr {
+	margin: 0;
+}
+
+.tcrobe-entry { position: relative; cursor: pointer; }
+.tcrobe-def-Popup {
+	all: initial;
+	height: 400px;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 3px 0;
+	position: absolute;
+	z-index: 99999;
+	top: 120%;
+	right: 50%;
+	margin-right: -80px;
+	display: none;
+	width: 350px;
+}
+.tcrobe-def-container { text-align: left; }
+.tcrobe-def-source { margin-left: 6px; padding: 5px 0; }
+.tcrobe-def-source-header { box-sizing: border-box; }
+.tcrobe-def-source-name { box-sizing: border-box; float: left; text-align: left; width: 50%; }
+.tcrobe-def-icons { box-sizing: border-box; float: left; text-align: right; width: 50%; }
+.tcrobe-def-source-pos { margin-left: 12px; }
+.tcrobe-def-source-pos-defs { margin-left: 18px; padding: 0 0 0 5px; }
+.tcrobe-def-header { box-sizing: border-box; display: flex; }
+.tcrobe-def-pinyin { box-sizing: border-box; float: left; width: 20%; padding: 2px; }
+.tcrobe-def-best { box-sizing: border-box; float: left; width: 60%; padding: 2px; }
+.tcrobe-def-sentbutton { box-sizing: border-box; float: left; width: 50%; padding: 2px; }
+.tcrobe-stats { margin-left: 6px; padding: 5px 0; }

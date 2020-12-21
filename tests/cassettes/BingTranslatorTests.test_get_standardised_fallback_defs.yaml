@@ -19,7 +19,7 @@ interactions:
       X-ClientTraceId:
       - 74af7231-5129-422c-82f8-cac088889183
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Swarmed.","to":"en","alignment":{"proj":"0:3-0:7"}}]}]'
@@ -66,7 +66,7 @@ interactions:
       X-ClientTraceId:
       - eab6abab-17e5-4924-80b1-039c4f10593e
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Living.","to":"en","alignment":{"proj":"0:1-0:6"}}]}]'
@@ -113,7 +113,7 @@ interactions:
       X-ClientTraceId:
       - 8af8ecf8-f24e-4518-aff7-5a4eb822aa65
     method: POST
-    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=True
+    uri: https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=zh-Hans&to=en&includeAlignment=true
   response:
     body:
       string: '[{"translations":[{"text":"Longmen Grotto.","to":"en","alignment":{"proj":"0:0-0:6

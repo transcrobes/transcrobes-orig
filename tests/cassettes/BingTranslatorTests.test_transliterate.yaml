@@ -1,0 +1,45 @@
+interactions:
+- request:
+    body: "[{\"Text\": \"\u9F99\u95E8\u77F3\u7A9F\"}]"
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '26'
+      Content-type:
+      - application/json
+      Ocp-Apim-Subscription-Key:
+      - a_key_that_isnt_really_private
+      User-Agent:
+      - python-requests/2.25.1
+      X-ClientTraceId:
+      - de47c67b-23ed-463c-85c6-a7eeff9c8f9b
+    method: POST
+    uri: https://api.cognitive.microsofttranslator.com/transliterate?api-version=3.0&from=zh-Hans&to=en&language=zh-Hans&fromScript=Hans&toScript=Latn
+  response:
+    body:
+      string: '{"error":{"code":401000,"message":"The request is not authorized because
+        credentials are missing or invalid."}}'
+    headers:
+      Access-Control-Expose-Headers:
+      - X-RequestId
+      Content-Length:
+      - '111'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Thu, 14 Jan 2021 05:43:38 GMT
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-RequestId:
+      - TLIT.TYO1.0016.0114T0543.1304D6DD
+    status:
+      code: 401
+      message: Unauthorized
+version: 1

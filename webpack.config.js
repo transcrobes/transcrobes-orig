@@ -1,9 +1,14 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
-    survey: ['./src/assets/survey.app.jsx' ],
-    notrobes: ['./src/assets/notrobes.app.jsx']
+    app: ['./src/assets/js/app.js'],
+    sw: ['./src/assets/js/sw.js'],
+    notrobes: ["regenerator-runtime/runtime.js", './src/assets/react-apps/notrobes.app.jsx'],
+    srsrobes: ["regenerator-runtime/runtime.js", './src/assets/react-apps/srsrobes.app.jsx'],
+    listrobes: ["regenerator-runtime/runtime.js", './src/assets/react-apps/listrobes.app.jsx'],
+    survey: ["regenerator-runtime/runtime.js", './src/assets/react-apps/survey.app.jsx'],
   },
   output: {
     filename: '[name]-bundle.js',  // output bundle file name
@@ -12,7 +17,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(mjs|js|jsx)$/,
         exclude: /node_modules/,
         loader: "babel-loader",
         options: {
@@ -32,5 +37,10 @@ module.exports = {
         }]
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
+  ]
 };

@@ -8,6 +8,7 @@ from django.db import migrations, models
 
 import data.models
 import data.validators
+import ndutils
 
 
 class Migration(migrations.Migration):
@@ -28,7 +29,7 @@ class Migration(migrations.Migration):
             model_name="import",
             name="import_file",
             field=models.FileField(
-                upload_to=data.models.user_directory_path,
+                upload_to=ndutils.user_imports_path,
                 validators=[
                     upload_validator.FileTypeValidator(allowed_types=["text/plain", "text/csv", "application/csv"]),
                     django.core.validators.FileExtensionValidator(allowed_extensions=["txt", "csv"]),

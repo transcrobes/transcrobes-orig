@@ -1,10 +1,10 @@
+<!-- templates/data/data_input_base.html-->
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="icon" href="{% static 'data/img/favicon.ico'%}" />
@@ -47,7 +47,7 @@
   </div>
   <div class="container my-auto">
     <div class="copyright text-center my-auto">
-      <span>Copyright &copy; Anton Melser 2020</span>
+      <span>Copyright &copy; Anton Melser 2021</span>
     </div>
   </div>
 </footer>
@@ -65,5 +65,6 @@
 
 {% block extrajs %}{% endblock %}
 
+<div id="pg_ts" style="display: none">{% now 'Y-m-d H:i:s.u e' %}</div>
 </body>
 </html>

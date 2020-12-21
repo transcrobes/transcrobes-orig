@@ -1,0 +1,79 @@
+<!-- templates/data/base_no_menus.html-->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="icon" href="{% static 'data/img/favicon.ico'%}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Anton Melser">
+
+  <title>{% block title %}Transcrobes app base page{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="{% static 'data/css/all.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'data/css/sb-admin-2.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'data/css/transcrobes.css' %}">
+  <script>
+    const cookies = document.cookie.split('; ').reduce((acc, c) => {const [key, val] = c.split('='); acc[key] = val; return acc;}, {});
+    const csrftoken = cookies["csrftoken"];
+  </script>
+  {% block extra_header_elements %}{% endblock %}
+</head>
+<body>
+<div id="wrapper" style="min-height: 100vh">
+<div id="error-bar" class="error-bar"></div>
+
+<div id="content-wrapper" class="d-flex flex-column">
+
+<div id="content">
+{% block content %} {% endblock %}
+{% block bottom %}{% endblock %}
+</div>
+
+{% block copyright %}{% endblock %}
+
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="{% static 'data/js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'data/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- Core plugin JavaScript -->
+<script type="text/javascript" src="{% static 'data/js/jquery.easing.min.js' %}"></script>
+
+<!-- Custom scripts for all pages -->
+<script type="text/javascript" src="{% static 'data/js/sb-admin-2.min.js' %}"></script>
+
+{{ app_config|json_script:"appConfig" }}
+<script src="{% static 'app-bundle.js' %}"></script>
+<script>
+const DATA_SOURCE = "base_no_menus.html"
+if (window.location.pathname !== "{% url 'initialisation' %}") {
+  wproxy.sendMessage({source: DATA_SOURCE, type: "isDbInitialised", value: "" }, (response) => {
+    if (response) {
+      const appConfig = JSON.parse(document.querySelector("#appConfig").textContent);
+
+      if (Object.entries(appConfig).length > 0) {
+        appConfig.syncURL = window.location.origin;
+
+        wproxy.init(appConfig, (message) => {
+          console.debug('The system has been initialised from data/base_no_menus.html', message);
+        }, (message) => {
+          console.debug('The progressCallback from data/base_no_menus.html', message);
+        });
+      }
+    }
+  });
+}
+</script>
+
+{% block extrajs %} {% endblock %}
+
+</div>
+</div>
+<div id="pg_ts" style="display: none">{% now 'Y-m-d H:i:s.u e' %}</div>
+</body>
+</html>

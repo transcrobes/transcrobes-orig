@@ -9,6 +9,6 @@ fi
 
 export PYTHONPATH=$PYTHONPATH:tests
 
-coverage run --source="${APP_PATH}" $APP_PATH/manage.py test --verbosity=1 tests $1
+coverage run --source="${APP_PATH}" $APP_PATH/manage.py test --verbosity=0 tests $1
 
 coverage report -m --skip-covered --skip-empty --fail-under 60

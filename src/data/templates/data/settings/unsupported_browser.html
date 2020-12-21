@@ -1,0 +1,62 @@
+<!-- templates/registration/unsupported_browser.html -->
+{% extends 'data/unauth_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Unsupported Browser{% endblock %}
+
+{% block content %}
+<!-- Outer Row -->
+<div class="row justify-content-center">
+  <div class="col-xl-10 col-lg-12 col-md-9">
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+          <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+          <div class="col-lg-6">
+            <div class="p-5">
+              <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Unsupported Browser</h1>
+                <p>Unfortunately, it looks like your browser isn't yet supported for using <a href="https://transcrob.es">Transcrobes</a>. Please make sure to regularly check <a href="https://transcrob.es">the information site</a> as updates on browser compatibility will be made there as soon as they happen.</p>
+                <p>Transcrobes currently supports Kiwi browser on Android; Google Chrome, Microsoft Edge and Yandex Browser on both the desktop and Android, and Firefox on the desktop.</p>
+                <p>We hope to support Safari on both Mac and iOS soon but Apple has decided not to support several standard Web APIs, so it will require significant extra effort. We are working on it.</p>
+                <div id="reasons"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+const reasons = [];
+
+if ('storage' in navigator && 'estimate' in navigator.storage) {
+  navigator.storage.estimate().then(function (estimate) {
+    const availableSpace = estimate.quota - estimate.usage;
+    const minimumSpace = 500 * 1024 * 1024; // 500MB
+    console.log("Using " + estimate.usage + " out of " + estimate.quota + " bytes.");
+    if (availableSpace < minimumSpace) {
+      console.error('Insufficient space remaining');
+      reasons.push("Transcrobes requires at least " + minimumSpace
+        + "MB of space available to the browser but only has " + availableSpace + "MB.");
+    }
+  });
+} else {
+  reasons.push("Storage API is not supported");
+}
+if ('serviceWorker' in navigator === false) {
+  reasons.push("Service Worker API not supported");
+}
+
+if (reasons.length == 0) {
+  reasons.push("There appears to be a problem with the browser cache. Your browser SHOULD be supported. Please contact Transcrobes support.");
+}
+
+document.querySelector("#reasons").innerHTML = "<ul>" + reasons.map(function(x) { return "<li style='color:red'>" + x + "</li>"; } ).join("") + "</ul>";
+
+</script>
+{% endblock %}

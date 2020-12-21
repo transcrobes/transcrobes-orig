@@ -9,7 +9,10 @@ import logging
 import re
 import unicodedata
 
-from enrich import Enricher
+import opencc
+
+from enrich import Enricher, TransliterationException
+from ndutils import lemma
 from zhhans_en.translate.abc import ZH_TB_POS_TO_ABC_POS
 
 logger = logging.getLogger(__name__)
@@ -128,25 +131,34 @@ ZH_TB_POS_TO_SIMPLE_POS = {
 CORENLP_IGNORABLE_POS = ["PU", "OD", "CD", "NT", "URL", "FW"]
 CORENLP_IGNORABLE_POS_SHORT = ["PU", "URL"]
 
+_HAS_LANG_CHARS = re.compile(".*[\u4e00-\u9fff]+.*")
+
 
 class CoreNLP_ZHHANS_Enricher(Enricher):
+    def __init__(self, config):
+        super().__init__(config)
+        self.converter = opencc.OpenCC("t2s.json")
 
-    _has_lang_chars = re.compile(".*[\u4e00-\u9fa5]+.*")
-
-    def get_simple_pos(self, token):
+    @staticmethod
+    def get_simple_pos(token):
         return ZH_TB_POS_TO_SIMPLE_POS[token["pos"]]
 
-    def needs_enriching(self, token):
+    @staticmethod
+    def needs_enriching(token):
+        word = lemma(token)
+        if "pos" not in token:
+            logger.debug("'%s' has not POS so not adding to translatables", word)
+            return False
         # FIXME: this was previously the following, trying to change and see whether it's bad...
         # if token['pos'] in CORENLP_IGNORABLE_POS:
         if token["pos"] in CORENLP_IGNORABLE_POS_SHORT:
-            logger.debug("'%s' has POS '%s' so not adding to translatables", token["word"], token["pos"])
+            logger.debug("'%s' has POS '%s' so not adding to translatables", word, token["pos"])
             return False
 
         # TODO: decide whether to continue removing if doesn't contain any Chinese chars?
         # Sometimes yes, sometimes no!
-        if not self._has_lang_chars.match(token["word"]):
-            logger.debug("Nothing to translate, exiting: %s", token["word"])
+        if not _HAS_LANG_CHARS.match(word):
+            logger.debug("Nothing to translate, exiting: %s", word)
             return False
 
         return True
@@ -160,19 +172,164 @@ class CoreNLP_ZHHANS_Enricher(Enricher):
 
         return out_string
 
-    def _get_transliteratable_sentence(self, tokens):
+    @staticmethod
+    def _get_transliteratable_sentence(tokens):
         t_sent = ""
         for t in tokens:
-            w = t["originalText"]
-            t_sent += w if self._has_lang_chars.match(w) else " {}".format(w)
+            w = t.get("ot") or t.get("l") or t.get("originalText") or t.get("lemma")
+            t_sent += w if _HAS_LANG_CHARS.match(w) else f" {w}"
         return t_sent
 
     # override Enricher
     # FIXME: make less complex to get rid of C901
+    # FIXME: PROBABLY TO DELETE
+    async def _aadd_transliterations(self, sentence, transliterator):  # noqa:C901  # pylint: disable=R0912
+        tokens = sentence["tokens"]
+        clean_text = self._get_transliteratable_sentence(tokens)
+        trans = await transliterator.atransliterate(clean_text)
+
+        clean_trans = " "
+
+        i = 0
+        while i < len(trans):
+            if not unicodedata.category(trans[i]).startswith("L") or not unicodedata.category(trans[i - 1]).startswith(
+                "L"
+            ):
+                clean_trans += " "
+            clean_trans += trans[i]
+            i += 1
+
+        # ensure we have one and only one space between all word tokens
+        clean_trans = " ".join(list(filter(None, clean_trans.split(" "))))
+
+        deq = collections.deque(clean_trans.split(" "))
+        try:
+            for t in tokens:
+                w = t["originalText"]
+                pinyin = []
+                i = 0
+                nc = ""
+
+                # originally
+                # if w == '…':  # TODO: pure nastiness - this gets translit'ed as '...'
+                #     t['pinyin'] = deq.popleft() + deq.popleft() + deq.popleft()
+                #     continue
+                if not w.replace("…", ""):  # only contains the ...
+                    t["pinyin"] = deq.popleft()
+                    while deq and deq[0] == ".":
+                        t["pinyin"] += deq.popleft()
+                    continue
+
+                while i < len(w):
+                    if unicodedata.category(w[i]) == ("Lo"):  # it's a Chinese char
+                        pinyin.append(deq.popleft())
+                    else:
+                        if not nc:
+                            nc = deq.popleft()
+                        if w[i] != nc[0]:
+                            logger.error(f"{w[i]} should equal {nc} for '{clean_trans}'")
+                            raise TransliterationException(
+                                f"{w[i]} should equal {nc} for '{clean_trans}' "
+                                f"and tokens '{tokens}' with original {clean_text}"
+                            )
+                        pinyin.append(w[i])
+                        if len(nc) > 1:
+                            nc = nc[1:]
+                        else:
+                            nc = ""
+                    i += 1
+                t["pinyin"] = pinyin
+            return True
+        except Exception:  # pylint: disable=W0703
+            logger.error(
+                "Error calculating context-informed pinyin, trying from tokens "
+                f"'{tokens}' with original {clean_text}"
+            )
+            for token in tokens:
+                token["pinyin"] = (await transliterator.atransliterate(token["originalText"])).split()
+            return False
+
+    # override Enricher
+    # FIXME: make less complex to get rid of C901
+    async def _aadd_slim_transliterations(self, sentence, transliterator):  # noqa:C901  # pylint: disable=R0912
+        tokens = sentence["t"]
+        clean_text = self._get_transliteratable_sentence(tokens)
+        trans = await transliterator.atransliterate(clean_text)
+
+        clean_trans = " "
+
+        i = 0
+        while i < len(trans):
+            if not unicodedata.category(trans[i]).startswith("L") or not unicodedata.category(trans[i - 1]).startswith(
+                "L"
+            ):
+                clean_trans += " "
+            clean_trans += trans[i]
+            i += 1
+
+        # ensure we have one and only one space between all word tokens
+        clean_trans = " ".join(list(filter(None, clean_trans.split(" "))))
+
+        deq = collections.deque(clean_trans.split(" "))
+        try:
+            for t in tokens:
+                w = t.get("ot") or t.get("l") or t.get("originalText") or t.get("lemma")
+                pinyin = []
+                i = 0
+                nc = ""
+
+                # originally
+                # if w == '…':  # TODO: pure nastiness - this gets translit'ed as '...'
+                #     t['pinyin'] = deq.popleft() + deq.popleft() + deq.popleft()
+                #     continue
+                if not w.replace("…", ""):  # only contains the ...
+                    t["p"] = deq.popleft()
+                    while deq and deq[0] == ".":
+                        t["p"] += deq.popleft()
+                    continue
+
+                while i < len(w):
+                    if unicodedata.category(w[i]) == ("Lo"):  # it's a Chinese char
+                        pinyin.append(deq.popleft())
+                    else:
+                        if not nc:
+                            nc = deq.popleft()
+                        if w[i] != nc[0]:
+                            logger.error(f"{w[i]} should equal {nc} for '{clean_trans}'")
+                            raise TransliterationException(
+                                f"{w[i]} should equal {nc} for '{clean_trans}' "
+                                f"and tokens '{tokens}' with original {clean_text}"
+                            )
+                        pinyin.append(w[i])
+                        if len(nc) > 1:
+                            nc = nc[1:]
+                        else:
+                            nc = ""
+                    i += 1
+                t["p"] = pinyin
+
+            for token in tokens:
+                if not self.is_clean(token) or not self.needs_enriching(token):
+                    token.pop("p")
+
+            return True
+        except Exception:  # pylint: disable=W0703
+            logger.error(
+                "Error calculating context-informed pinyin, trying from tokens "
+                f"'{tokens}' with original {clean_text}"
+            )
+            for token in tokens:
+                if not self.is_clean(token) or not self.needs_enriching(token):
+                    continue
+                word = token.get("ot") or token.get("l") or token.get("originalText") or token["lemma"]
+                token["p"] = (await transliterator.atransliterate(word)).split()
+            return False
+
+    # override Enricher
+    # FIXME: make less complex to get rid of C901
+    # FIXME: PROBABLY TO DELETE
     def _add_transliterations(self, sentence, transliterator):  # noqa:C901
         tokens = sentence["tokens"]
-        # if tokens[0]['word'] == '2005年':
-        #     breakpoint()
         clean_text = self._get_transliteratable_sentence(tokens)
         trans = transliterator.transliterate(clean_text)
 
@@ -261,7 +418,7 @@ class CoreNLP_ZHHANS_Enricher(Enricher):
 
         if not best_guess and len(others) > 0:
             # it's bad
-            logger.debug("No best_guess found for '%s', using the best 'other' POS defs %s", token["word"], others)
+            logger.debug("No best_guess found for '%s', using the best 'other' POS defs %s", lemma(token), others)
 
             best_guess = sorted(others, key=lambda i: i["confidence"], reverse=True)[0]
 
@@ -271,9 +428,74 @@ class CoreNLP_ZHHANS_Enricher(Enricher):
             logger.debug(
                 """No best_guess found with the correct POS or OTHER for '%s',
                 using the highest confidence with the wrong POS all_defs %s""",
-                token["word"],
+                lemma(token),
                 all_defs,
             )
 
-        logger.debug("Setting best_guess for '%s' POS %s to best_guess %s", token["word"], token["pos"], best_guess)
+        logger.debug("Setting best_guess for '%s' POS %s to best_guess %s", lemma(token), token["pos"], best_guess)
         token["best_guess"] = best_guess  # .split(',')[0].split(';')[0]
+
+    # override Enricher
+    def _set_best_guess_async(self, _sentence, token, token_definition):
+        # TODO: do something intelligent here - sentence isn't used yet
+        # ideally this will translate the sentence using some sort of statistical method but get the best
+        # translation for each individual word of the sentence, not the whole sentence, giving us the
+        # most appropriate definition to show (gloss) to the user
+
+        # This could be bumped to the parent class but for the POS correspondance dicts
+        # This is ugly and stupid
+
+        best_guess = None
+        others = []
+        all_defs = []
+        for t in token_definition.keys():
+            # FIXME: currently the tokens are stored in keyed order of the "best" source, "fallback" and then the
+            # secondary dictionaries. Actually only the "best" currently has any notion of confidence (cf)
+            # and all the "fallback" are "OTHER", meaning the "fallback" will only be considered after
+            # the secondaries. If anything changes in that, this algo may well not return the "best"
+            # translation
+            for def_pos, defs in token_definition[t].items():
+                # {ZH_TB_POS_TO_SIMPLE_POS[token['pos']]=}, {ZH_TB_POS_TO_ABC_POS[token['pos']]=} {defs=}")
+                if not defs:
+                    continue
+                all_defs += defs
+                if def_pos in (  # pylint: disable=R1723
+                    ZH_TB_POS_TO_SIMPLE_POS[token["pos"]],
+                    ZH_TB_POS_TO_ABC_POS[token["pos"]],
+                ):
+                    # get the most confident for the right POS
+                    sorted_defs = sorted(defs, key=lambda i: i["cf"], reverse=True)
+                    best_guess = sorted_defs[0]
+                    break
+                elif def_pos == "OTHER":
+                    others += defs
+            if best_guess:
+                break
+
+        if not best_guess and len(others) > 0:
+            # it's bad
+            logger.debug("No best_guess found for '%s', using the best 'other' POS defs %s", lemma(token), others)
+
+            best_guess = sorted(others, key=lambda i: i["cf"], reverse=True)[0]
+
+        if not best_guess and len(all_defs) > 0:
+            # it's really bad
+            best_guess = sorted(all_defs, key=lambda i: i["cf"], reverse=True)[0]
+            logger.debug(
+                """No best_guess found with the correct POS or OTHER for '%s',
+                using the highest confidence with the wrong POS all_defs %s""",
+                lemma(token),
+                all_defs,
+            )
+
+        logger.debug("Setting best_guess for '%s' POS %s to best_guess %s", lemma(token), token["pos"], best_guess)
+        token["bg"] = best_guess
+
+    def _set_slim_best_guess_async(self, sentence, token, token_definition):
+        self._set_best_guess_async(sentence, token, token_definition)
+        token["bg"] = token["bg"]["nt"]
+
+    # override Enricher
+    def clean_text(self, text):
+        # Make sure it is simplified, so we don't pollute the DB
+        return self.converter.convert(text)

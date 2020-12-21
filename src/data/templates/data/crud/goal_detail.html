@@ -1,0 +1,55 @@
+<!-- templates/data/goal_detail.html-->
+{% extends 'data/base.html' %}
+{% load static %}
+
+{% block title %}Goal {{ goal.title }}{% endblock %}
+
+{% block content %}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Goal {{ goal.title }} ({{ goal.id }})</h1>
+</div>
+
+<div class="card-body">
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr><th>Field</th><th>Value</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Id</td><td>{{ goal.id }}</td></tr>
+                <tr><td>Is Active</td><td>{% if goal.status %} Active {% else %} Inactive {% endif %}</td></tr>
+                <tr><td>Title</td><td>{{ goal.title }}</td></tr>
+                <tr><td>Description</td><td>{{ goal.description|default:"" }}</td></tr>
+                <tr><td>Priority</td><td>{{ goal.priority }}</td></tr>
+                <tr><td>Created</td><td>{{ goal.created }}</td></tr>
+                <tr><td>Modified</td><td>{{ goal.modified }}</td></tr>
+                <tr><td>Associated List</td><td>{{ goal.user_list|default_if_none:"No List"}}</td></tr>
+                <tr><td>Parent</td><td>{{ goal.parent|default:"No Parent" }}</td></tr>
+                <tr><td>Children</td><td>{{ goal.sub_goal_names|join:"<br>"|default:"No Children" }}</td></tr>
+                <tr><td>Progress</td><td>{% widthratio goal.get_progress_percent 1 100 %}%</td></tr>
+              </tbody>
+            </table>
+          </div><!-- /.table-responsive -->
+        </div><!-- /.panel-body -->
+      </div><!-- /.panel -->
+    </div><!-- /.col-lg-6 -->
+  </div><!-- /.row -->
+</div>
+
+<div class="card-body">
+  <div class="row">
+    <div class="col-lg-6">
+      <a class="btn btn-primary btn-user btn-block" href="{% url 'goal_update' pk=goal.id %}">Update this goal <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</div>
+
+<p><a href="{% url 'goal_list' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Goals</a></p>
+<hr>
+
+{% endblock %}

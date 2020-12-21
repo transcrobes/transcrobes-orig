@@ -1,0 +1,28 @@
+<!-- templates/data/profile.html-->
+{% extends 'data/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Update Learner Profile{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Update Learner Profile</h1>
+</div>
+
+<div class="row">
+  <div class="col-xl-8 col-lg-7">
+    <p class="mb-4">If you would like to stop using the platform, you have a number of options:
+    <ul>
+      <li>You can simply not use the platform any more and uninstall any client applications, like the Brocrobes Chrome Extension, this website, etc. In this case your existing data will continue to be used in the active university research programme. You can always start using the platform again if you change your mind.</li>
+      <li>You can ask for your account to be completely deactivated by contacting Anton MELSER, anton.melser@my.cityu.edu.hk. In this case your existing data will continue to be used in the active university research programme. You can always start using the platform again if you change your mind by writing to Anton MELSER and requesting your account be reactivated.</li>
+      <li>You can ask for your account to be completely deleted by contacting Anton MELSER, anton.melser@my.cityu.edu.hk, including any existing data generated. This is the nuclear option, and all data will be irreversibly deleted. Except in very exceptional circumstances this will mean the end of your participation in the research, though you are obviously more than welcome to download and run the system yourself on your own resources!</li>
+    </ul>
+    </p>
+
+    <hr>
+    <p><a href="{% url 'settings' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Settings</a></p>
+  </div>
+</div>
+{% endblock %}

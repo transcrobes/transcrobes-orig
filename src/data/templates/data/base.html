@@ -1,3 +1,4 @@
+<!-- templates/data/base.html-->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +16,7 @@
   <!-- Styles for this template-->
   <link href="{% static 'data/css/all.min.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'data/css/sb-admin-2.min.css' %}" rel="stylesheet" type="text/css">
-  <link href="{% static 'data/css/custom.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'data/css/transcrobes.css' %}" rel="stylesheet" type="text/css">
 
   <!-- Custom fonts for this template-->
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
@@ -23,6 +24,7 @@
   <script>
     const cookies = document.cookie.split('; ').reduce((acc, c) => {const [key, val] = c.split('='); acc[key] = val; return acc;}, {});
     const csrftoken = cookies["csrftoken"];
+    window.csrftoken = cookies["csrftoken"];
   </script>
 
 </head>
@@ -61,7 +63,7 @@
         Language
       </div>
 
-      <!-- Nav Item - Tables -->
+      <!-- Nav Item - Vocabulary -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVocabulary" aria-expanded="true" aria-controls="collapseVocabulary">
           <i class="fas fa-fw fa-table"></i>
@@ -71,7 +73,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Vocabulary:</h6>
             <a class="collapse-item" href="{% url 'notrobes' %}">Lookup/Add</a>
-            <a class="collapse-item" href="{% url 'vocab_list' %}">Mass update</a>
+            <a class="collapse-item" href="{% url 'listrobes' %}">Mass update</a>
           </div>
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Import:</h6>
@@ -84,6 +86,7 @@
       <!-- Divider -->
       <hr class="sidebar-divider">
 
+      <!-- Nav Item - Goals -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGoals" aria-expanded="true" aria-controls="collapseGoals">
           <i class="fas fa-fw fa-table"></i>
@@ -99,6 +102,32 @@
             <h6 class="collapse-header">Goals:</h6>
             <a class="collapse-item" href="{% url 'goal_create' from_list=0 %}">New Goal</a>
             <a class="collapse-item" href="{% url 'goal_list' %}">Goals</a>
+          </div>
+        </div>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Nav Item - Applications -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseApplications" aria-expanded="true" aria-controls="collapseApplications">
+          <i class="fas fa-fw fa-table"></i>
+          <span>Learning apps</span>
+        </a>
+        <div id="collapseApplications" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Reading:</h6>
+            <a class="collapse-item" href="{% url 'webpub_list' %}">EBooks</a>
+            <a class="collapse-item" target="_blank" href="https://chrome.google.com/webstore/detail/brocrobes/akeangohpdjllngpjiodmebgfhejbbpo?hl=en-GB">Chrome extension</a>
+          </div>
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Media:</h6>
+            <a class="collapse-item" href="{% url 'video_list' %}">Subtitled (videos, etc.)</a>
+          </div>
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Active:</h6>
+            <a class="collapse-item" href="{% url 'srsrobes' %}">Vocabulary revision (SRS)</a>
           </div>
         </div>
       </li>
@@ -273,7 +302,7 @@
         </div>
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Anton Melser 2020</span>
+            <span>Copyright &copy; Anton Melser 2021</span>
           </div>
         </div>
       </footer>
@@ -327,7 +356,89 @@
   <script src="js/demo/chart-pie-demo.js"></script>
   -->
 
-  {% block extrajs %}{% endblock %}
-</body>
+{{ app_config|json_script:"appConfig" }}
+<script src="{% static 'app-bundle.js' %}"></script>
+<script id="currentTime" type="application/json">{% now "U" %}</script>
 
+<script>
+function updateFromCache(countChecks){
+  // don't do apps, which should all have a <div id="root">
+  if (!!document.querySelector("#root")) {
+    return;
+  }
+
+  // FIXME: hard-coded
+  caches.open('v1').then((currentCache) => {
+    currentCache.match(location.href).then((meInCache) => {
+      console.log('I am in the cache', meInCache);
+      if (meInCache) {
+        console.log('i was in the cache for run ', countChecks);
+        // I'm in the cache, need to refresh if I can
+        meInCache.text().then((text) => {
+          const cachedVersion = (new DOMParser()).parseFromString(text, 'text/html')
+          console.debug('cachedVersion', cachedVersion);
+          const newCachedTime = parseInt(cachedVersion.querySelector("#currentTime").innerText, 10);
+          const currentTime = parseInt(document.querySelector("#currentTime").innerText, 10);
+          console.debug('newCachedTime : currentTime', newCachedTime, currentTime);
+          if (newCachedTime == currentTime) {
+            // FIXME: actually there is no point after a minute or two for this, at least until
+            // we have a way to get the underlying fetch in the sw to retry
+            setTimeout(() => updateFromCache(countChecks + 1), (countChecks < 10 ? 300 : 1000));
+          } else {
+            document.body.innerHTML = cachedVersion.body.innerHTML;
+          }
+        })
+      } else {
+        console.log('Not in the cache');
+      }
+    })
+  })
+}
+const DATA_SOURCE = "base.html";
+
+if (window.location.pathname !== "{% url 'ui_survey_detail' 1 %}") {  // if it's the onboarding, don't redirect!
+  if ('storage' in navigator && 'estimate' in navigator.storage) {
+    navigator.storage.estimate().then((estimate) => {
+        console.log(`Using ${estimate.usage} out of ${estimate.quota} bytes.`);
+        if (estimate.quota - estimate.usage < 500 * 1024 * 1024) {
+          console.error('Insufficient space remaining');
+          window.location.replace("{% url 'unsupported_browser' %}?r1");
+        }
+      });
+  } else { window.location.replace("{% url 'unsupported_browser' %}?r2"); }
+
+  if ('serviceWorker' in navigator) {
+    wproxy.sendMessage({source: DATA_SOURCE, type: "isDbInitialised", value: "" }, (isInitialised) => {
+      if (isInitialised) {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(function (reg) {
+          if (reg.installing) { console.log('Service worker installing');
+          } else if (reg.waiting) { console.log('Service worker installed');
+          } else if (reg.active) { console.log('Service worker active'); }
+        }).catch(function (error) {
+          // registration failed
+          console.error('ServiceWorker Registration failed with ' + error);
+        });
+        const appConfig = JSON.parse(document.querySelector("#appConfig").textContent);
+        if (Object.entries(appConfig).length > 0) {
+          appConfig.syncURL = window.location.origin;  // FIXME: this is ugly and wrong
+          wproxy.init(appConfig, () => {
+            console.log('The system has been initialised from data/base.html');
+            setTimeout(()=>{ updateFromCache(0) }, 300)
+          }, (progress) => {
+            console.log("The progress for init() in base.html is", progress)
+          });
+        } // else it's a survey, and could be the Onboarding survey, so don't bother with loading yet
+      } else {
+        window.location.replace("{% url 'initialisation' %}");
+      }
+    });
+  } else {
+    window.location.replace("{% url 'unsupported_browser' %}?r3");
+  }
+}
+</script>
+{% block extrajs %}{% endblock %}
+
+<div id="pg_ts" style="display: none">{% now 'Y-m-d H:i:s.u e' %}</div>
+</body>
 </html>

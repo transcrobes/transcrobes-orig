@@ -1,0 +1,76 @@
+<!-- templates/data/ebook_list.html-->
+{% extends 'data/base.html' %}
+
+{% block title %}Ebooks{% endblock %}
+
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+  <h1 class="h3 mb-0 text-gray-800">Ebooks</h1>
+</div>
+
+<div class="row">
+  <div class="col-xl-10 col-lg-11">
+    <div class="card shadow mb-4">
+      <div class="card-body">
+        <p>To read ebooks with Transcrobes you will first need to import an ebook into the system.</p>
+        <p><a href="{% url 'import_create' %}" class="btn btn-primary btn-user btn-block">Import an EPUB ebook</a></p>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                {% if message %}
+                <div class="text-center" style="font-weight: 800; padding-bottom:1em">
+                  {{ message }}
+                </div>
+                {% endif %}
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr><th>Name</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                      {% for book in object_list %}
+                      <tr>
+                        <td><a href="{% url 'import_detail' pk=book.the_import.id %}" class="btn btn-primary btn-user btn-block">{{ book.title }} ({{book.id}})</a></td>
+                        <td>{{ book.created }}</td>
+                        <td>{{ book.processing_status }}</td>
+                        <td>
+                          {% if book.processing == 3 %}
+                            <a class="btn btn-primary btn-user btn-block" href="{% url 'webpub_read' pk=book.id %}">Read</a>
+                          {% elif not book.processing %}
+                            <form method="POST">
+                              {% csrf_token %}
+                              <button class="btn btn-primary btn-user btn-block" type="submit">Enrich</button>
+                              <input type="hidden" name="request_content_id" value="{{book.id}}">
+                            </form>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% empty %}
+                      <tr>
+                        <td colspan="4">No ebooks yet. <a href="{% url 'import_create' %}" class="btn btn-primary btn-user btn-block">Import one</a></td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div><!-- /.table-responsive -->
+              </div><!-- /.panel-body -->
+            </div><!-- /.panel -->
+          </div><!-- /.col-lg-12 -->
+        </div><!-- /.row -->
+      </div><!-- /.card-body -->
+
+      <div class="card-body">
+        <h5>Further information</h5>
+        <p>Importing will analyse the book, giving you important information about the unique benefits and challenges you will face with this particular book, at this particular point in your learning journey. </p>
+        <p>The system currently supports non-DRM-protected ebooks in the widely used EPUB format. The Calibre eBook application allows the import/export of many different formats, including importing some DRM-protected books that can then be exported to non-DRM-protected EPUB. Please make sure to comply with any local laws in the place you live when converting ebooks from one format to another.</p>
+      </div>
+    </div><!-- /.card shadow mb-4 -->
+  </div><!-- /.col-xl-8 col-lg-7-->
+</div> <!-- /.row -->
+
+{% endblock %}
