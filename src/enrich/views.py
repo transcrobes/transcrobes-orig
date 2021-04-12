@@ -15,7 +15,7 @@ from rest_framework.response import Response
 
 from data.models import UserWord
 from data.schema import DefinitionSet
-from enrich import definitions_json, definitions_json_paths, definitions_path_json
+from enrich import definitions_json_paths, definitions_path_json
 from enrich.data import managers
 from enrich.models import CachedDefinition, cached_definitions, definition, reload_definitions_cache
 from ndutils import do_response, note_format
@@ -102,18 +102,6 @@ def definitions_export_json(request, resource_path):
 @api_view(["GET", "OPTIONS"])
 def definitions_export_urls(request):
     inmem_file = definitions_json_paths(request.user)
-    if inmem_file:
-        return Response(inmem_file)
-
-    return Response(
-        f"Server does not support user dictionaries for {request.user}",
-        status=status.HTTP_501_NOT_IMPLEMENTED,
-    )
-
-
-@api_view(["GET", "OPTIONS"])
-def definitions_export(request):
-    inmem_file = definitions_json(request.user)
     if inmem_file:
         return Response(inmem_file)
 

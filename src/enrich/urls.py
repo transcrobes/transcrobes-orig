@@ -4,7 +4,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("definitions.json", views.definitions_export, name="definitions_json"),
     path("exports.json", views.definitions_export_urls, name="exports_json_urls"),
     path("exports/<path:resource_path>", views.definitions_export_json, name="exports_json"),
     path("word_definitions", views.word_definitions, name="word_definitions"),

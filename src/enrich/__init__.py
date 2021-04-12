@@ -11,6 +11,7 @@ from asgiref.sync import SyncToAsync
 from django.conf import settings
 from django.db import close_old_connections
 from django.template import Context, Template
+from django.urls import reverse
 
 from ndutils import lemma
 
@@ -47,31 +48,16 @@ def latest_definitions_json_dir_path(user) -> str:
         + "-".join(user.transcrober.dictionary_ordering.split(","))
         + DEFINITIONS_JSON_CACHE_DIR_SUFFIX_REGEX
     )
-    print(f"{find_re=}")
+    logger.debug(f"Looking for the latest definitions dir using regex: {find_re=}")
     try:
         return sorted(
             [f.path for f in os.scandir(settings.DEFINITIONS_CACHE_DIR) if f.is_dir() and re.match(find_re, f.name)]
         )[-1]
     except IndexError:
         logger.error(
-            "Unable to find a definitions file for user %s using %s", user, user.transcrober.dictionary_ordering
-        )
-    return ""
-
-
-def latest_definitions_json_path(user) -> str:
-    find_re = (
-        DEFINITIONS_JSON_CACHE_FILE_PREFIX_REGEX
-        + "-".join(user.transcrober.dictionary_ordering.split(","))
-        + DEFINITIONS_JSON_CACHE_FILE_SUFFIX_REGEX
-    )
-    try:
-        return sorted(
-            [f.path for f in os.scandir(settings.DEFINITIONS_CACHE_DIR) if f.is_file() and re.match(find_re, f.name)]
-        )[-1]
-    except IndexError:
-        logger.error(
-            "Unable to find a definitions file for user %s using %s", user, user.transcrober.dictionary_ordering
+            "Unable to find a definitions file for user %s using %s with re %s",
+            user,
+            user.transcrober.dictionary_ordering,
         )
     return ""
 
@@ -79,9 +65,10 @@ def latest_definitions_json_path(user) -> str:
 def definitions_json_paths(user) -> dict:
     jsons_path = latest_definitions_json_dir_path(user)
     find_re = r"\d{1,8}\.json"
-    print(f"{jsons_path=}")
-    exports_base = os.path.join("/enrich/exports", os.path.basename(jsons_path))
-    print(f"{exports_base=}")
+
+    # os.path.join("/enrich/exports", os.path.basename(jsons_path))
+    exports_base = reverse("exports_json", args=[os.path.basename(jsons_path)])
+    logger.debug(f"Getting list of export files in dir: {exports_base=}")
     files = sorted(
         [
             os.path.join(exports_base, os.path.basename(f.path))
@@ -89,7 +76,7 @@ def definitions_json_paths(user) -> dict:
             if f.is_file() and re.match(find_re, f.name)
         ]
     )
-    print(f"{files=}")
+    logger.debug("The latest export files for user %s are %s", user, files)
 
     return files
 
@@ -98,13 +85,6 @@ def definitions_path_json(path) -> dict:
     json_path = os.path.join(settings.DEFINITIONS_CACHE_DIR, path)
     with open(json_path) as fh:
         return json.load(fh)
-
-
-def definitions_json(user) -> dict:
-    json_path = latest_definitions_json_path(user)
-    if json_path:
-        return json.load(open(json_path))
-    return None
 
 
 class TransliterationException(Exception):

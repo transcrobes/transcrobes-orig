@@ -20,7 +20,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from strawberry.utils.str_converters import to_camel_case
 
 from data import clean_broadcaster_string, models
-from enrich import database_sync_to_async, latest_definitions_json_path
+from enrich import database_sync_to_async, latest_definitions_json_dir_path
 from enrich.data import managers
 from enrich.models import CachedDefinition
 
@@ -169,7 +169,7 @@ def filter_cached_definitions(
         # FIXME: Here we get the last object from the most recent generated file. There is a small
         # chance that there has been a new file generated since the user downloaded their version
         # so that needs to be fixed. We will only regenarate once a week or so, so later...
-        latest_name = os.path.basename(latest_definitions_json_path(user))
+        latest_name = os.path.basename(latest_definitions_json_dir_path(user))
         latest_cached_date = datetime.fromtimestamp(float(latest_name.split("-")[1]), timezone.utc)
         latest_word_id = int(latest_name.split("-")[2])
 
