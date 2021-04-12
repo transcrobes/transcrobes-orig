@@ -8,7 +8,7 @@ See https://transcrob.es
 
 Status
 ======
-Transcrobes is experimental software, and is not yet fully stable.
+Transcrobes is experimental software developed in the context of a PhD research project, and is not yet fully stable.
 
 Installation
 ============
