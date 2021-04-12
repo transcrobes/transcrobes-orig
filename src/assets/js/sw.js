@@ -149,7 +149,7 @@ self.addEventListener('message', event => {
     utils.setUsername(message.value.username);
 
     const dbConfig = createRxDBConfig(message.value.syncURL, message.value.username, message.value.jwt_access,
-      message.value.jwt_refresh, CACHE_VERSION, !!message.value.recreate);
+      message.value.jwt_refresh, CACHE_VERSION, !!message.value.reinitialise);
     console.debug(`dbConfig`, dbConfig);
 
     const progressCallback = (progressMessage, isFinished) => {

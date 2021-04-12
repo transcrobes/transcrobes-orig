@@ -378,17 +378,17 @@ async function cacheExports(initialisationCache, progressCallback) {
 }
 
 async function loadFromExports(config, progressCallback) {
-  const { activateSubscription, recreate } = config;
+  const { activateSubscription, reinitialise } = config;
   const initialisationCacheName = `${config.cacheName}.initialisation`;
   const dbName = getDatabaseName(config);
   progressCallback(`Setting up db ${dbName} : 0% complete`, false);
-  if (recreate) {
+  if (reinitialise) {
     await deleteDatabase(dbName);
   }
   const db = await createDatabase(dbName);
   const justCreated = await createCollections(db);
   progressCallback("Structure created, fetching the data from the server : 3% complete", false);
-  if (justCreated || recreate) {
+  if (justCreated || reinitialise) {
     let fetchInfo = {
       method: "GET",
       cache: "no-store",
@@ -397,16 +397,16 @@ async function loadFromExports(config, progressCallback) {
     fetchInfo = addAuthHeader(fetchInfo);
 
     const initialisationCache = await getFileStorage({name: initialisationCacheName});
-    if (recreate && await (await initialisationCache.list()).length > 0) {
-      console.debug('The initialisation cache existing and we want to recreate, deleting')
+    if (reinitialise && await (await initialisationCache.list()).length > 0) {
+      console.debug('The initialisation cache existing and we want to reinitialise, deleting')
       await initialisationCache.clear();
     }
     let cacheFiles;
     const existingKeys = await initialisationCache.list();
     console.debug('Found the following existing items in the cache', existingKeys);
-    if (justCreated && !recreate && existingKeys.length > 0) {
+    if (justCreated && !reinitialise && existingKeys.length > 0) {
       // we have unsuccessfully started an initialisation, and want to continue from where we left off
-      console.debug('Using the existing keys of the cache because', justCreated, recreate, existingKeys.length);
+      console.debug('Using the existing keys of the cache because', justCreated, reinitialise, existingKeys.length);
       cacheFiles = existingKeys;
     } else {
       cacheFiles = await cacheExports(initialisationCache, progressCallback);
@@ -469,16 +469,16 @@ async function loadFromExports(config, progressCallback) {
 
 async function getDb(config, progressCallback) {
   console.debug('Loading config to database dbmulti', config);
-  if (!dbPromise || !!config.recreate) {
+  if (!dbPromise || !!config.reinitialise) {
     ({ username, syncURL, exportURL, batchSize, wsEndpointUrl, jwtAccessToken, jwtRefreshToken } = config);
     dbPromise = loadFromExports(config, progressCallback);
   }
   return await dbPromise;
 }
 
-function createRxDBConfig(urlString, username, accessToken, refreshToken, cacheName, recreate=false, batchSize=10000) {
-  console.debug("parameters in createRxDBConfig (urlString, username, accessToken, refreshToken, batchSize)",
-    urlString, username, accessToken, refreshToken, batchSize);
+function createRxDBConfig(urlString, username, accessToken, refreshToken, cacheName, reinitialise=false, batchSize=10000) {
+  console.debug("parameters in createRxDBConfig (urlString, username, accessToken, refreshToken, cacheName, reinitialise, batchSize)",
+    urlString, username, accessToken, refreshToken, cacheName, reinitialise, batchSize);
   const url = new URL(urlString);
   return {
     username,
@@ -489,7 +489,7 @@ function createRxDBConfig(urlString, username, accessToken, refreshToken, cacheN
   	wsEndpointUrl: `ws${url.protocol == "https:" ? "s" : ""}://${url.host}/subscriptions`,
   	jwtAccessToken: accessToken,
   	jwtRefreshToken: refreshToken,
-  	recreate: recreate,
+    reinitialise: reinitialise,
   	activateSubscription: true,
   	testDb: false,
   }
