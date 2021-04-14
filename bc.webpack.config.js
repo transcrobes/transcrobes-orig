@@ -24,7 +24,7 @@ module.exports = {
     filename: '[name]-bundle.js',  // output bundle file name
     path: path.resolve(__dirname, './build/bc/'),
   },
-  devtool: 'source-map',
+  // devtool: 'source-map',
   // devtool: 'inline-source-map',
   // devtool: 'cheap-module-source-map',
   module: {

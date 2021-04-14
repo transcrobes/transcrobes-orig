@@ -1,7 +1,6 @@
 import * as utils from '../../js/lib.js';
 import * as syncdb from '../../js/syncdb.js';
 import { CACHE_NAME } from '../../js/schemas.js';
-// const CACHE_NAME = "v1";
 
 // Saves options to chrome.storage
 function saveOptions(recreate) {

@@ -55,23 +55,11 @@ function loadDb(callback, message) {
 
 chrome.browserAction.onClicked.addListener(
   function(message, callback) {
-    console.debug('i am got clicked or somfin wif message', message);
-
+    console.debug('Browser action triggered with message', message);
     chrome.tabs.executeScript({ file: 'webcomponents-sd-ce.js' });
     chrome.tabs.executeScript({ file: 'content-bundle.js' });
-
-    // if (message == "runContentScript"){
-    // }
   }
 );
-
-// chrome.browserAction.onClicked.addListener(function(){
-//   console.log('onClicked.addListener being executed');
-//   chrome.tabs.query({active : true, lastFocusedWindow : true}, function (tabs) {
-//     var CurrTab = tabs[0];
-//     chrome.tabs.sendMessage(CurrTab.id, 'run');
-//   })
-// })
 
 chrome.runtime.onMessage.addListener(
   (request, _sender, sendResponse) => {
@@ -84,45 +72,6 @@ chrome.runtime.onMessage.addListener(
     } else if (message.type === "syncDB") {
       console.log('Starting a background db load');
       loadDb(sendResponse, message);
-      // loadDb(sendResponse, message).then((amistg) => {
-      //   console.debug('the new dbugs is', amistg);
-      // });
-      // chrome.storage.local.get({
-      //   username: '',
-      //   password: '',
-      //   baseUrl: '',
-      //   glossing: ''
-      // }, (items) => {
-      //   utils.setUsername(items.username);
-      //   utils.setPassword(items.password);
-      //   const baseUrl = items.baseUrl + (items.baseUrl.endsWith('/') ? '' : '/')
-      //   utils.setBaseUrl(baseUrl);
-      //   utils.setGlossing(items.glossing);
-
-      //   const recreate = false;
-
-      //   const progressCallback = (progressMessage, isFinished) => {
-      //     const progress = { message: progressMessage, isFinished };
-      //     console.debug('got the progress message in sw.js', progress);
-      //     // MUST NOT SEND A RESPONSE HERE!!!!!
-      //     // sendResponse({source: message.source, type: message.type + "-progress", value: progress});
-      //   };
-      //   utils.fetchWithNewToken().then((tokens) => {
-      //     console.debug('Returned with tokens', tokens)
-      //     const dbConfig = createRxDBConfig(utils.baseUrl, utils.username, tokens.access, tokens.refresh,
-      //       CACHE_NAME, recreate);
-      //     getDb(dbConfig, progressCallback).then((dbHandle) => {
-      //         db = dbHandle;
-      //         console.debug('db object after getDb is', dbHandle)
-      //         if (!eventQueueTimer) {
-      //           eventQueueTimer = setInterval(() => data.sendUserEvents(db), utils.EVENT_QUEUE_PROCESS_FREQ);
-      //         }
-      //         sendResponse({source: message.source, type: message.type, value: "success"});
-      //       }).catch(err => {
-      //         console.error('getDb() threw an error:', err);
-      //     });
-      //   });
-      // });
     } else if (message.type === "heartbeat") {
       console.debug('got a heartbeat request in sw.js, replying with datetime');
       sendResponse({source: message.source, type: message.type, value: dayjs().format()});
