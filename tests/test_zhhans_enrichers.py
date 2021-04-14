@@ -13,7 +13,6 @@ from rest_framework.test import APITransactionTestCase
 from vcr_unittest import VCRMixin, VCRTestCase
 
 import stats
-from ankrobes import Ankrobes  # pylint: disable=E0611  # pylint is dumb
 from enrich.apis import bing as bing_api
 from enrich.data import managers
 
@@ -196,9 +195,6 @@ class CoreNLP_ZHHANS_EnricherMixin(VCRMixin):
         for fname in files_before:
             with open(fname) as in_json, open(os.path.join(after_dir, os.path.basename(fname))) as out_json:
                 t = json.load(in_json)
-                print("toto")
-                print(t)
-                print("titi")
                 self.enricher._set_best_guess(s, t)  # pylint: disable=W0212
                 self.assertEqual(t, json.load(out_json))
 
@@ -233,21 +229,6 @@ class FullEnrichMixin(VCRMixin):
         enriched = pkgutil.get_data("tests.assets.enrichers.bing", "enriched_model_no_notes.json").decode("utf-8")
 
         self.assertEqual(model, json.loads(enriched))
-
-        notes_dir = os.path.dirname(sys.modules["tests.assets.enrichers.notes"].__file__)
-        with Ankrobes(self.user.username) as userdb:
-            for fname in glob.glob(os.path.join(notes_dir, "*.json")):
-                with open(fname) as json_file:
-                    in_note = json.load(json_file)
-                    userdb.add_ankrobes_note(
-                        simplified=in_note["Simplified"],
-                        pinyin=in_note["Pinyin"],
-                        meanings=[in_note["Meaning"]],
-                        tags=in_note["Tags"],
-                        review_in=0,
-                    )
-
-        self.user.transcrober.refresh_vocabulary()
 
         model = self.manager.enricher().enrich_to_json(
             intxt_txt, self.user, self.manager, stats_mode=stats.USER_STATS_MODE_L1

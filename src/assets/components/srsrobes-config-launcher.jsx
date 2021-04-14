@@ -4,7 +4,6 @@ import { StyledPopup, ConfigButton } from "./config.jsx";
 
 export class SRSrobesConfigLauncher extends Component {
   render() {
-    console.log(`this.props srsconflau props with you muva`, this.props)
     return (
         <StyledPopup
           disabled={this.props.loading}

@@ -195,10 +195,10 @@ async def definition(manager, token, refresh=False):  # noqa:C901  # pylint: dis
         try:
             logger.debug("Before cached_entry.save for %s", str(cached_entry.id))
             await sync_to_async(cached_entry.save, thread_sensitive=settings.THREAD_SENSITIVE)()
-            print("After cached_entry.save, before publish broadcast definitions for  %s", str(cached_entry.id))
+            logger.debug("After cached_entry.save, before publish broadcast definitions for  %s", str(cached_entry.id))
             # await (await get_broadcast()).publish(channel="definitions", message=str(cached_entry.id))
             stats.KAFKA_PRODUCER.send("definitions", str(cached_entry.id))
-            print("Managed to submit broadcast definitions for  %s", str(cached_entry.id))
+            logger.debug("Managed to submit broadcast definitions for  %s", str(cached_entry.id))
             if refresh:
                 return cached_entry
         except IntegrityError:

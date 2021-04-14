@@ -455,7 +455,7 @@ class Mutation:
     @strawberry.mutation
     async def set_card(self, info, card: CardInput = None) -> Card:
         user = await database_sync_to_async(get_user, thread_sensitive=settings.THREAD_SENSITIVE)(info.context)
-
+        logger.debug(f"{info=}, {card=}")
         word_id, card_type = map(int, card.card_id.split("-"))
         try:
             dj_card = await database_sync_to_async(models.Card.objects.get, thread_sensitive=settings.THREAD_SENSITIVE)(

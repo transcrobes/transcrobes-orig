@@ -19,8 +19,15 @@ function stopEventsSender(timerId) {
 }
 
 function loadDb(callback, message) {
+  if (!!db) {
+    console.debug('DB loaded, using that', db)
+    callback({ source: message.source, type: message.type, value: "success" });
+    return Promise.resolve(db);
+  }
+  clearTimeout(timerId || eventQueueTimer);
   chrome.storage.local.get({ username: '', password: '', baseUrl: '', glossing: ''
-  }, (items) => {
+      }, (items) => {
+    console.debug('DB NOT loaded, (re)loading', db)
     utils.setUsername(items.username);
     utils.setPassword(items.password);
     const baseUrl = items.baseUrl + (items.baseUrl.endsWith('/') ? '' : '/')
@@ -30,7 +37,7 @@ function loadDb(callback, message) {
 
     const progressCallback = (progressMessage, isFinished) => {
       const progress = { message: progressMessage, isFinished };
-      console.debug('got the progress message in sw.js', progress);
+      console.debug('Got the progress message in background.js', progress);
       // MUST NOT SEND A RESPONSE HERE!!!!!
       // sendResponse({source: message.source, type: message.type + "-progress", value: progress});
     };
@@ -70,28 +77,19 @@ chrome.runtime.onMessage.addListener(
       const result = !!(localStorage.getItem('isDbInitialised'));
       sendResponse({source: message.source, type: message.type, value: result});
     } else if (message.type === "syncDB") {
-      console.log('Starting a background db load');
+      console.log('Starting a background syncDB db load');
       loadDb(sendResponse, message);
     } else if (message.type === "heartbeat") {
       console.debug('got a heartbeat request in sw.js, replying with datetime');
       sendResponse({source: message.source, type: message.type, value: dayjs().format()});
     } else if (message.type === "getWordFromDBs") {
-      if (!!db) {
-        console.debug('We have a loaded db in background, using that', db)
-        data.getWordFromDBs(db, message.value).then((values) => {
+      loadDb(console.debug, message).then((ldb) => {
+        console.debug('We have a loaded db in background, using that for getWordFromDBs', ldb)
+        data.getWordFromDBs(ldb, message.value).then((values) => {
           console.debug('back from data.getWordFromDBs', values)
           sendResponse({ source: message.source, type: message.type, value: values.toJSON() });
         });
-      } else {
-        console.debug('We DO NOT have a loaded db in background, reloading', db)
-        loadDb(console.debug, message).then((ldb) => {
-          console.debug('what i got back was', ldb);
-          data.getWordFromDBs(ldb, message.value).then((values) => {
-            console.debug('back from data.getWordFromDBs', values)
-            sendResponse({ source: message.source, type: message.type, value: values.toJSON() });
-          });
-        });
-      }
+      });
     } else if (message.type === "getCardWords") {
       if (knownCardWordGraphs || allCardWordGraphs || knownWordIdsCounter) {
         sendResponse({
@@ -100,39 +98,47 @@ chrome.runtime.onMessage.addListener(
           value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs), knownWordIdsCounter]
         });
       } else {
-        data.getCardWords(db).then((values) => {
-          // convert to arrays or Set()s get silently purged... Because JS is sooooooo awesome!
-          knownCardWordGraphs = values[0]
-          allCardWordGraphs = values[1]
-          knownWordIdsCounter = values[2]
-          sendResponse({
-            source: message.source, type: message.type,
-            value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs),
-              knownWordIdsCounter]
+        loadDb(console.debug, message).then((ldb) => {
+          data.getCardWords(ldb).then((values) => {
+            // convert to arrays or Set()s get silently purged... Because JS is sooooooo awesome!
+            knownCardWordGraphs = values[0]
+            allCardWordGraphs = values[1]
+            knownWordIdsCounter = values[2]
+            sendResponse({
+              source: message.source, type: message.type,
+              value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs),
+                knownWordIdsCounter]
+            });
           });
         });
       }
     } else if (message.type === "submitLookupEvents") {
-      data.submitLookupEvents(db, message.value.lookupEvents, message.value.userStatsMode).then((values) => {
-        console.debug('submitLookupEvents results in sw.js', message, values);
-        sendResponse({ source: message.source, type: message.type, value: 'Lookup Events submitted' });
+      loadDb(console.debug, message).then((ldb) => {
+        data.submitLookupEvents(ldb, message.value.lookupEvents, message.value.userStatsMode).then((values) => {
+          console.debug('submitLookupEvents results in background.js', message, values);
+          sendResponse({ source: message.source, type: message.type, value: 'Lookup Events submitted' });
+        });
       });
     } else if (message.type === "submitUserEvents") {
-      data.submitUserEvents(db, message.value).then((values) => {
-        console.debug(message, values);
-        sendResponse({source: message.source, type: message.type, value: 'User Events submitted'});
+      loadDb(console.debug, message).then((ldb) => {
+        data.submitUserEvents(ldb, message.value).then((values) => {
+          console.debug(message, values);
+          sendResponse({ source: message.source, type: message.type, value: 'User Events submitted' });
+        });
       });
     } else if (message.type === "practiceCardsForWord") {
       const practiceDetails = message.value;
       const { wordInfo, grade } = practiceDetails;
-      data.practiceCardsForWord(db, practiceDetails).then((values) => {
-        allCardWordGraphs.add(wordInfo.graph)
-        if (grade > GRADE.UNKNOWN) {
-          knownCardWordGraphs.add(wordInfo.graph)
-          knownWordIdsCounter[wordInfo.wordId] = (knownWordIdsCounter[wordInfo.wordId] ? knownWordIdsCounter[wordInfo.wordId] + 1 : 1)
-        }
-        console.debug("Practiced", message, values);
-        sendResponse({source: message.source, type: message.type, value: 'Cards Practiced'});
+      loadDb(console.debug, message).then((ldb) => {
+        data.practiceCardsForWord(ldb, practiceDetails).then((values) => {
+          allCardWordGraphs.add(wordInfo.graph)
+          if (grade > GRADE.UNKNOWN) {
+            knownCardWordGraphs.add(wordInfo.graph)
+            knownWordIdsCounter[wordInfo.wordId] = (knownWordIdsCounter[wordInfo.wordId] ? knownWordIdsCounter[wordInfo.wordId] + 1 : 1)
+          }
+          console.debug("Practiced", message, values);
+          sendResponse({ source: message.source, type: message.type, value: 'Cards Practiced' });
+        });
       });
     }
     return true;

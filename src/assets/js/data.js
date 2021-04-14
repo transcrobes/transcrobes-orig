@@ -297,7 +297,7 @@ async function sendUserEvents(db, baseUrl, maxSendEvents=500) {
       return { 'status': 'success' };
     }).catch((err) => {
       console.error(err);
-      throw 'user_event update failed! That is bad!';
+      throw 'user_event update failed! Probably due to expired token, will try again later.';
     });
 }
 

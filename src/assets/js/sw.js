@@ -12,6 +12,10 @@ let knownCardWordGraphs;
 let knownWordIdsCounter;
 let eventQueueTimer;  // FIXME: find some way to be able to stop the timer if required/desired
 
+// NOTES:
+// - there is a loadDb in every call with a db, because the file can be unloaded from memory, and
+// so loses all object refs (and timers?)
+
 self.addEventListener('install', function(event) {
   // FIXME: for some reason getting with the potentially hundreds (thousands?) of content files
   // doesn't appear to work currently. This may not be absolutely necessary to do *here*, so
@@ -122,6 +126,50 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+function loadDb(message, event) {
+  if (!!db) {
+    console.debug('DB loaded, using that', db)
+    if (!!event) {
+      event.source.postMessage({ source: message.source, type: message.type, value: "success" });
+    }
+    return Promise.resolve(db);
+  }
+  console.debug('Setting up the db in the service worker');
+
+  if (eventQueueTimer) { clearInterval(eventQueueTimer) };
+  // FIXME: there should be a proper way to manage this!!!
+  // FIXME: maybe do some validation on the event.data.val?
+  const localBaseUrl = new URL(message.value.syncURL).origin;
+  utils.setBaseUrl(localBaseUrl);
+  utils.setLangPair(message.value.langPair);
+  utils.setAccessToken(message.value.jwt_access);
+  utils.setRefreshToken(message.value.jwt_refresh);
+  utils.setUsername(message.value.username);
+
+  const dbConfig = createRxDBConfig(message.value.syncURL, message.value.username, message.value.jwt_access,
+    message.value.jwt_refresh, CACHE_VERSION, !!message.value.reinitialise);
+  console.debug(`dbConfig`, dbConfig);
+
+  const progressCallback = (progressMessage, isFinished) => {
+    const progress = { message: progressMessage, isFinished };
+    console.debug('got the progress message in sw.js', progress);
+    if (!!event) {
+      event.source.postMessage({ source: message.source, type: message.type + "-progress", value: progress });
+    }
+  };
+  return getDb(dbConfig, progressCallback).then((dbObj) => {
+    db = dbObj;
+    if (!eventQueueTimer) {
+      eventQueueTimer = setInterval(() => data.sendUserEvents(db), utils.EVENT_QUEUE_PROCESS_FREQ);
+    }
+    console.debug('got the db in getDb in sw.js, replying with ok');
+    if (!!event) {
+      event.source.postMessage({ source: message.source, type: message.type, value: "success" });
+    }
+    return Promise.resolve(db);
+  });
+}
+
 self.addEventListener('message', event => {
   const message = event.data;
   console.debug(`The client sent me a message:`, message);
@@ -135,44 +183,16 @@ self.addEventListener('message', event => {
   // } else
 
   if (message.type == "syncDB") {
-    if (eventQueueTimer) { clearInterval(eventQueueTimer) };
-
-    // FIXME: maybe do some validation on the event.data.val?
-    console.debug('Setting up the db in the service worker');
-
-    // FIXME: there should be a proper way to manage this!!!
-    const localBaseUrl = new URL(message.value.syncURL).origin;
-    utils.setBaseUrl(localBaseUrl);
-    utils.setLangPair(message.value.langPair);
-    utils.setAccessToken(message.value.jwt_access);
-    utils.setRefreshToken(message.value.jwt_refresh);
-    utils.setUsername(message.value.username);
-
-    const dbConfig = createRxDBConfig(message.value.syncURL, message.value.username, message.value.jwt_access,
-      message.value.jwt_refresh, CACHE_VERSION, !!message.value.reinitialise);
-    console.debug(`dbConfig`, dbConfig);
-
-    const progressCallback = (progressMessage, isFinished) => {
-      const progress = { message: progressMessage, isFinished };
-      console.debug('got the progress message in sw.js', progress);
-      event.source.postMessage({source: message.source, type: message.type + "-progress", value: progress});
-    };
-
-    getDb(dbConfig, progressCallback).then((dbObj) => {
-      db = dbObj;
-      if (!eventQueueTimer) {
-        eventQueueTimer = setInterval(() => data.sendUserEvents(db), utils.EVENT_QUEUE_PROCESS_FREQ);
-      }
-      console.debug('got the db in getDb in sw.js, replying with ok');
-      event.source.postMessage({source: message.source, type: message.type, value: "success"});
-    });
+    loadDb(message, event);
   } else if (message.type === "heartbeat") {
     console.debug('got a heartbeat request in sw.js, replying with datetime');
     event.source.postMessage({source: message.source, type: message.type, value: dayjs().format()});
   } else if (message.type === "getWordFromDBs") {
-    data.getWordFromDBs(db, message.value).then((values) => {
-      console.debug('back from data.getWordFromDBs', values)
-      event.source.postMessage({source: message.source, type: message.type, value: (values ? values.toJSON() : null)});
+    loadDb(message).then((ldb) => {
+      data.getWordFromDBs(ldb, message.value).then((values) => {
+        console.debug('back from data.getWordFromDBs', values)
+        event.source.postMessage({ source: message.source, type: message.type, value: (values ? values.toJSON() : null) });
+      });
     });
   } else if (message.type === "getCardWords") {
     if (knownCardWordGraphs || allCardWordGraphs || knownWordIdsCounter) {
@@ -183,121 +203,149 @@ self.addEventListener('message', event => {
         value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs), knownWordIdsCounter]
       });
     } else {
-      data.getCardWords(db).then((values) => {
-        console.debug('Loaded user card words from sw.js', values);
-        // convert to arrays or Set()s get silently purged in chrome extensions, so
-        // need to mirror here for the same return types... Because JS is sooooooo awesome!
-        knownCardWordGraphs = values[0]
-        allCardWordGraphs = values[1]
-        knownWordIdsCounter = values[2]
-        event.source.postMessage({
-          source: message.source, type: message.type,
-          value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs),
-            knownWordIdsCounter]
+      loadDb(message).then((ldb) => {
+        data.getCardWords(ldb).then((values) => {
+          console.debug('Loaded user card words from sw.js', values);
+          // convert to arrays or Set()s get silently purged in chrome extensions, so
+          // need to mirror here for the same return types... Because JS is sooooooo awesome!
+          knownCardWordGraphs = values[0]
+          allCardWordGraphs = values[1]
+          knownWordIdsCounter = values[2]
+          event.source.postMessage({
+            source: message.source, type: message.type,
+            value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs),
+              knownWordIdsCounter]
+          });
         });
       });
     }
   } else if (message.type === "submitLookupEvents") {
-    data.submitLookupEvents(db, message.value.lookupEvents, message.value.userStatsMode).then((values) => {
-      console.debug('submitLookupEvents results in sw.js', message, values);
-      event.source.postMessage({source: message.source, type: message.type, value: 'Lookup Events submitted'});
+    loadDb(message).then((ldb) => {
+      data.submitLookupEvents(ldb, message.value.lookupEvents, message.value.userStatsMode).then((values) => {
+        console.debug('submitLookupEvents results in sw.js', message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: 'Lookup Events submitted' });
+      });
     });
   } else if (message.type === "getUserListWords") {
-    data.getUserListWords(db).then((values) => {
-      console.debug('getUserListWords results in sw.js', message, values);
-      event.source.postMessage({source: message.source, type: message.type, value: values});
+    loadDb(message).then((ldb) => {
+      data.getUserListWords(ldb).then((values) => {
+        console.debug('getUserListWords results in sw.js', message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: values });
+      });
     });
   } else if (message.type === "getDefaultWordLists") {
-    data.getDefaultWordLists(db).then((values) => {
-      console.debug('getDefaultWordLists results in sw.js', message, values);
-      event.source.postMessage({source: message.source, type: message.type, value: values});
+    loadDb(message).then((ldb) => {
+      data.getDefaultWordLists(ldb).then((values) => {
+        console.debug('getDefaultWordLists results in sw.js', message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: values });
+      });
     });
   } else if (message.type === "createCards") {
-    data.createCards(db, message.value).then((values) => {
-      console.debug('createCards results in sw.js', message, values);
-      const success = values.success.map(x => x.toJSON());
-      event.source.postMessage({source: message.source, type: message.type, value: {error: values.error, success }});
+    loadDb(message).then((ldb) => {
+      data.createCards(ldb, message.value).then((values) => {
+        console.debug('createCards results in sw.js', message, values);
+        const success = values.success.map(x => x.toJSON());
+        event.source.postMessage({ source: message.source, type: message.type, value: { error: values.error, success } });
+      });
     });
   } else if (message.type === "setContentConfigToStore") {
-    data.setContentConfigToStore(db, message.value).then((values) => {
-      console.debug('setContentConfigToStore results in sw.js', message, values);
-      event.source.postMessage({source: message.source, type: message.type, value: 'Content config saved'});
+    loadDb(message).then((ldb) => {
+      data.setContentConfigToStore(ldb, message.value).then((values) => {
+        console.debug('setContentConfigToStore results in sw.js', message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: 'Content config saved' });
+      });
     });
   } else if (message.type === "getContentConfigFromStore") {
-    data.getContentConfigFromStore(db, message.value).then((values) => {
-      console.debug('getContentConfigFromStore results in sw.js', message, values);
-      event.source.postMessage({source: message.source, type: message.type, value: values});
+    loadDb(message).then((ldb) => {
+      data.getContentConfigFromStore(ldb, message.value).then((values) => {
+        console.debug('getContentConfigFromStore results in sw.js', message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: values });
+      });
     });
   } else if (message.type === "getVocabReviews") {
-    data.getVocabReviews(db, message.value).then((values) => {
-      console.debug('getVocabReviews results in sw.js', message, values);
-      event.source.postMessage({source: message.source, type: message.type, value: values});
+    loadDb(message).then((ldb) => {
+      data.getVocabReviews(ldb, message.value).then((values) => {
+        console.debug('getVocabReviews results in sw.js', message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: values });
+      });
     });
   } else if (message.type === "getSRSReviews") {
-    data.getSRSReviews(db, message.value).then((values) => {
-      console.debug('getSRSReviews results in sw.js', message, values);
-      // todaysWordIds,  // Set of words reviewed today already: string ids
-      // allNonReviewedWordsMap,  // Map of words in selected lists not already reviewed today: RxDocument
-      // existingCards,  // Map of all cards reviewed at least once: RxDocument
-      // existingWords,  // Map of all words which have had at least one card reviewed at least once: RxDocument
-      // potentialWords,  // Array of words that can be "new" words today: RxDocument
-      const allNonReviewedWordsMap = new Map();
-      for (const [k, v] of values.allNonReviewedWordsMap) { allNonReviewedWordsMap.set(k, v.toJSON()); }
-      const existingCards = new Map();
-      for (const [k, v] of values.existingCards) { existingCards.set(k, v.toJSON()); }
-      const existingWords = new Map();
-      for (const [k, v] of values.existingWords) { existingWords.set(k, v.toJSON()); }
-      const potentialWords = [];
-      for (const pw of values.potentialWords) { potentialWords.push(pw.toJSON()); }
-      const sanitised = {
-        todaysWordIds: values.todaysWordIds,
-        allNonReviewedWordsMap,
-        existingCards,
-        existingWords,
-        potentialWords,
-      }
-      event.source.postMessage({source: message.source, type: message.type, value: sanitised});
+    loadDb(message).then((ldb) => {
+      data.getSRSReviews(ldb, message.value).then((values) => {
+        console.debug('getSRSReviews results in sw.js', message, values);
+        // todaysWordIds,  // Set of words reviewed today already: string ids
+        // allNonReviewedWordsMap,  // Map of words in selected lists not already reviewed today: RxDocument
+        // existingCards,  // Map of all cards reviewed at least once: RxDocument
+        // existingWords,  // Map of all words which have had at least one card reviewed at least once: RxDocument
+        // potentialWords,  // Array of words that can be "new" words today: RxDocument
+        const allNonReviewedWordsMap = new Map();
+        for (const [k, v] of values.allNonReviewedWordsMap) { allNonReviewedWordsMap.set(k, v.toJSON()); }
+        const existingCards = new Map();
+        for (const [k, v] of values.existingCards) { existingCards.set(k, v.toJSON()); }
+        const existingWords = new Map();
+        for (const [k, v] of values.existingWords) { existingWords.set(k, v.toJSON()); }
+        const potentialWords = [];
+        for (const pw of values.potentialWords) { potentialWords.push(pw.toJSON()); }
+        const sanitised = {
+          todaysWordIds: values.todaysWordIds,
+          allNonReviewedWordsMap,
+          existingCards,
+          existingWords,
+          potentialWords,
+        }
+        event.source.postMessage({ source: message.source, type: message.type, value: sanitised });
+      });
     });
   } else if (message.type === "submitUserEvents") {
-    data.submitUserEvents(db, message.value).then((values) => {
-      console.debug('submitUserEvents results in sw.js', message, values);
-      event.source.postMessage({source: message.source, type: message.type, value: 'User Events submitted'});
+    loadDb(message).then((ldb) => {
+      data.submitUserEvents(ldb, message.value).then((values) => {
+        console.debug('submitUserEvents results in sw.js', message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: 'User Events submitted' });
+      });
     });
   } else if (message.type === "practiceCard") {
     const { currentCard, grade, badReviewWaitSecs } = message.value;
-    data.practiceCard(db, currentCard, grade, badReviewWaitSecs).then((values) => {
-      console.debug("practiceCard in sw.js", message, values);
-      event.source.postMessage({source: message.source, type: message.type, value: (values ? values.toJSON() : null )});
+    loadDb(message).then((ldb) => {
+      data.practiceCard(ldb, currentCard, grade, badReviewWaitSecs).then((values) => {
+        console.debug("practiceCard in sw.js", message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: (values ? values.toJSON() : null) });
+      });
     });
   } else if (message.type === "practiceCardsForWord") {
     const practiceDetails = message.value;
     const { wordInfo, grade } = practiceDetails;
-    data.practiceCardsForWord(db, practiceDetails).then((values) => {
-      allCardWordGraphs.add(wordInfo.graph)
-      if (grade > GRADE.UNKNOWN) {
-        knownCardWordGraphs.add(wordInfo.graph)
-        knownWordIdsCounter[wordInfo.wordId] = (knownWordIdsCounter[wordInfo.wordId] ? knownWordIdsCounter[wordInfo.wordId] + 1 : 1)
-      }
-      console.debug("Practiced in sw.js", message, values);
-      event.source.postMessage({source: message.source, type: message.type, value: 'Cards Practiced'});
+    loadDb(message).then((ldb) => {
+      data.practiceCardsForWord(ldb, practiceDetails).then((values) => {
+        allCardWordGraphs.add(wordInfo.graph)
+        if (grade > GRADE.UNKNOWN) {
+          knownCardWordGraphs.add(wordInfo.graph)
+          knownWordIdsCounter[wordInfo.wordId] = (knownWordIdsCounter[wordInfo.wordId] ? knownWordIdsCounter[wordInfo.wordId] + 1 : 1)
+        }
+        console.debug("Practiced in sw.js", message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: 'Cards Practiced' });
+      });
     });
   } else if (message.type === "addOrUpdateCards") {
     const { wordId, grade } = message.value;
-    data.addOrUpdateCards(db, wordId, grade).then((cards) => {
-      console.debug("addOrUpdateCards in sw.js", cards);
-      event.source.postMessage({source: message.source, type: message.type, value: cards.map(x => x.toJSON())});
+    loadDb(message).then((ldb) => {
+      data.addOrUpdateCards(ldb, wordId, grade).then((cards) => {
+        console.debug("addOrUpdateCards in sw.js", cards);
+        event.source.postMessage({ source: message.source, type: message.type, value: cards.map(x => x.toJSON()) });
+      });
     });
   } else if (message.type === "getWordDetails") {
     const { graph } = message.value;
-    data.getWordDetails(db, graph).then((details) => {
-      console.debug("getWordDetails in sw.js", details);
-      const safe = {
-        word: details.word ? details.word.toJSON() : null,
-        cards: [...details.cards.values()].map(x => x.toJSON()),
-        wordModelStats: details.wordModelStats ? details.wordModelStats.toJSON() : null,
-      }
-      console.debug("safe getWordDetails in sw.js", safe);
-      event.source.postMessage({source: message.source, type: message.type, value: safe});
+    loadDb(message).then((ldb) => {
+      data.getWordDetails(ldb, graph).then((details) => {
+        console.debug("getWordDetails in sw.js", details);
+        const safe = {
+          word: details.word ? details.word.toJSON() : null,
+          cards: [...details.cards.values()].map(x => x.toJSON()),
+          wordModelStats: details.wordModelStats ? details.wordModelStats.toJSON() : null,
+        }
+        console.debug("safe getWordDetails in sw.js", safe);
+        event.source.postMessage({ source: message.source, type: message.type, value: safe });
+      });
     });
   } else {
     console.warn('Service Worker received a message event that I had no manager for', event)
