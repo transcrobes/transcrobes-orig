@@ -294,8 +294,7 @@ function fetchWithNewToken(url, body = {}, retries, apiUnavailableCallback) {
       headers: { "Accept": "application/json", "Content-Type": "application/json" },
     };
     reAuthUrl = baseUrl + REFRESH_TOKEN_PATH;
-  }
-  else if (password) {
+  } else if (password) {
     fetchInfo = {
       method: "POST",
       cache: "no-store",

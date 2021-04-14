@@ -4,10 +4,8 @@
   "description": "Browser plugin for https://transcrob.es",
   "homepage_url": "https://transcrob.es",
   "permissions": [
-    "activeTab",
     "storage",
-    "tabs",
-    "<all_urls>"
+    "activeTab"
   ],
   "background": {
     "scripts": [
@@ -15,17 +13,6 @@
     ],
     "persistent": false
   },
-  "content_scripts": [
-    {
-      "js": [
-        "webcomponents-sd-ce.js",
-        "content-bundle.js"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
-    }
-  ],
   "icons": {
     "16": "img/tc16.png",
     "32": "img/tc32.png",

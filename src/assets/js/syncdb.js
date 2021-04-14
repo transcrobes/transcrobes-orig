@@ -1,5 +1,4 @@
 let username = '';  // required, do not delete
-let exportURL = '';  // required, do not delete
 let jwtRefreshToken = '';  // required, do not delete
 let syncURL = '';
 let batchSize = 10000;
@@ -62,7 +61,7 @@ import {
   CONTENT_CONFIG_SCHEMA,
 } from './schemas';
 
-import { addAuthHeader } from './lib.js';
+import { addAuthHeader, fetchWithNewToken } from './lib.js';
 
 const WORD_MODEL_STATS_CHANGED_QUERY = `
   subscription onChangedWordModelStats($token: String!) {
@@ -229,6 +228,25 @@ async function createCollections(db) {
   return ((await db.definitions.findByIds(["670"])).size == 0)  // look for "de", if exists, we aren't new
 }
 
+function refreshTokenIfRequired(replicationState, e) {
+  try {
+    // this is currently a string, but could be made to be json, meaning an elegant parse of the error. But I suck...
+    const expiredMessage = e.innerErrors[0].message;
+    if (expiredMessage.includes("'token_type': ErrorDetail(string='access', code='token_not_valid')")) {
+      console.log('Looks like the token has expired, trying to refresh');
+      fetchWithNewToken().then((tokens) => {
+        console.debug('The newly refreshed tokens set to the replicationState', tokens);
+        replicationState.setHeaders(getHeaders(tokens.accessToken));
+      });
+    } else {
+      console.log('There was an error but apparently not an expiration');
+    }
+  } catch (error) {
+    console.error(error);
+    throw error
+  }
+}
+
 async function testQueries(db) {
   // This makes sure indexes are loaded into memory. After this everything on definitions
   // will be super fast!
@@ -238,10 +256,7 @@ async function testQueries(db) {
 function setupPullOnlyReplication(collection, queryBuilder) {
   // set up replication
   console.debug('Start pullonly replication');
-  const headers = { Authorization: 'Bearer ' + jwtAccessToken };
-  if (typeof csrftoken !== 'undefined') {
-    headers["X-CSRFToken"] = csrftoken
-  }
+  const headers = getHeaders(jwtAccessToken);
   const replicationState = collection.syncGraphQL({
     url: syncURL,
     headers: headers,
@@ -257,18 +272,24 @@ function setupPullOnlyReplication(collection, queryBuilder) {
   replicationState.error$.subscribe(err => {
     console.error('replication error:');
     console.dir(err);
-    console.log(err);
+    console.log('Attempting to refresh token for pullonly, if that was the issue');
+    refreshTokenIfRequired(replicationState, err);
   });
   return replicationState;
+}
+
+function getHeaders(laccessToken){
+  const headers = { Authorization: 'Bearer ' + laccessToken };
+  if (typeof csrftoken !== 'undefined') {
+    headers["X-CSRFToken"] = csrftoken
+  }
+  return headers;
 }
 
 function setupCardsReplication(db) {
   // set up replication
   console.debug('Start cards replication');
-  const headers = { Authorization: 'Bearer ' + jwtAccessToken };
-  if (typeof csrftoken !== 'undefined') {
-    headers["X-CSRFToken"] = csrftoken
-  }
+  const headers = getHeaders(jwtAccessToken);
   const replicationState = db.cards.syncGraphQL({
     url: syncURL,
     headers: headers,
@@ -293,7 +314,8 @@ function setupCardsReplication(db) {
   replicationState.error$.subscribe(err => {
     console.error('replication cards error:');
     console.dir(err);
-    console.log(err);
+    console.log('Attempting to refresh token cards replication, if that was the issue');
+    refreshTokenIfRequired(replicationState, err);
   });
   // replicationState.change$.subscribe(change => {console.log("I just replicated something") && console.dir(change)});
   return replicationState;
@@ -470,7 +492,7 @@ async function loadFromExports(config, progressCallback) {
 async function getDb(config, progressCallback) {
   console.debug('Loading config to database dbmulti', config);
   if (!dbPromise || !!config.reinitialise) {
-    ({ username, syncURL, exportURL, batchSize, wsEndpointUrl, jwtAccessToken, jwtRefreshToken } = config);
+    ({ username, syncURL, batchSize, wsEndpointUrl, jwtAccessToken, jwtRefreshToken } = config);
     dbPromise = loadFromExports(config, progressCallback);
   }
   return await dbPromise;
@@ -485,7 +507,6 @@ function createRxDBConfig(urlString, username, accessToken, refreshToken, cacheN
   	batchSize,
     cacheName,
   	syncURL: `${url.origin}/api/graphql`,
-  	exportURL: `${url.origin}/enrich/definitions.json`,
   	wsEndpointUrl: `ws${url.protocol == "https:" ? "s" : ""}://${url.host}/subscriptions`,
   	jwtAccessToken: accessToken,
   	jwtRefreshToken: refreshToken,

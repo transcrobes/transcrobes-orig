@@ -430,9 +430,21 @@ class Query:
 
 
 def get_user(context):
-    if context.request.user.is_anonymous:
+    # FIXME: there is almost certain a way to get this done properly, so the context.request.user
+    # is already authenticated when I get here from a jwt access token. This happens from the
+    # chrome extension, where the django infra is not picking up a csrftoken (like it does with
+    # the transcrob.es queries)
+    if not context.request.user.is_anonymous:
+        return context.request.user
+
+    # FIXME: this will currently return an error that is not directly interpretable by js (it's not in json)
+    # so better would be to make the GraphQL return a parsable json field. In the meantime, just look for
+    # a string in the error string returned, like the nasty HackMeister that I am...
+    user, _token = JWTAuthentication().authenticate(context.request)
+    logger.debug(f"get_user user is {user=}")
+    if not user or user.is_anonymous:
         raise PermissionError("You are not authorised to access this page")
-    return context.request.user
+    return user
 
 
 @strawberry.type

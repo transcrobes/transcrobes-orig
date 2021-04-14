@@ -57,45 +57,43 @@ function enrichDocument() {
   });
 }
 
-chrome.runtime.onMessage.addListener(request => {
-  transcroberObserver = new IntersectionObserver(onEntryId, { threshold: [0.9] });
-  const platformHelper = new BackgroundWorkerProxy()
-  components.setPlatformHelper(platformHelper);
-  components.defineElements();
+transcroberObserver = new IntersectionObserver(onEntryId, { threshold: [0.9] });
+const platformHelper = new BackgroundWorkerProxy()
+components.setPlatformHelper(platformHelper);
+components.defineElements();
 
-  chrome.storage.local.get({
-    username: '',
-    password: '',
-    baseUrl: '',
-    glossing: ''
-  }, function (items) {
-    components.setUsername(items.username);
-    components.setPassword(items.password);
-    components.setBaseUrl(items.baseUrl + (items.baseUrl.endsWith('/') ? '' : '/'));
-    components.setGlossing(items.glossing);
+chrome.storage.local.get({
+  username: '',
+  password: '',
+  baseUrl: '',
+  glossing: ''
+}, function (items) {
+  components.setUsername(items.username);
+  components.setPassword(items.password);
+  components.setBaseUrl(items.baseUrl + (items.baseUrl.endsWith('/') ? '' : '/'));
+  components.setGlossing(items.glossing);
 
-    components.fetchWithNewToken().then(() => {
-      if (!(components.accessToken)) {
-        alert('Something is wrong, we could not authenticate. ' +
-          'Please refresh the page before attempting this action again');
-        return;  // TODO: offer to reload from here
-      } else {
-        platformHelper.init({
-          jwt_access: components.accessToken,
-          jwt_refresh: components.refreshToken,
-          lang_pair: components.langPair,
-          username: components.username,
+  components.fetchWithNewToken().then(() => {
+    if (!(components.accessToken)) {
+      alert('Something is wrong, we could not authenticate. ' +
+        'Please refresh the page before attempting this action again');
+      return;  // TODO: offer to reload from here
+    } else {
+      platformHelper.init({
+        jwt_access: components.accessToken,
+        jwt_refresh: components.refreshToken,
+        lang_pair: components.langPair,
+        username: components.username,
+      },
+        (message) => {
+          console.debug('In the init callback, starting to enrich the document', message)
+          enrichDocument()
         },
-          (message) => {
-            console.debug('In the init callback, starting to enrich the document', message)
-            enrichDocument()
-          },
-          (progress) => {
-            console.debug('Init progressCallback', progress)
-          }
-        )
-      }
-    });
-    return Promise.resolve({ response: 'Running enrich' });
+        (progress) => {
+          console.debug('Init progressCallback', progress)
+        }
+      )
+    }
   });
+  return Promise.resolve({ response: 'Running enrich' });
 });

@@ -1,6 +1,6 @@
 import * as utils from '../../js/lib.js';
 import * as data from '../../js/data.js';
-import { GRADE } from '../../js/schemas.js';
+import { GRADE, CACHE_NAME } from '../../js/schemas.js';
 import { getDb, createRxDBConfig } from '../../js/syncdb.js';
 import dayjs from 'dayjs';
 
@@ -18,13 +18,60 @@ function stopEventsSender(timerId) {
   clearTimeout(timerId || eventQueueTimer);
 }
 
-chrome.browserAction.onClicked.addListener(function(){
-  console.log('onClicked.addListener being executed');
-  chrome.tabs.query({active : true, lastFocusedWindow : true}, function (tabs) {
-    var CurrTab = tabs[0];
-    chrome.tabs.sendMessage(CurrTab.id, 'run');
-  })
-})
+function loadDb(callback, message) {
+  chrome.storage.local.get({ username: '', password: '', baseUrl: '', glossing: ''
+  }, (items) => {
+    utils.setUsername(items.username);
+    utils.setPassword(items.password);
+    const baseUrl = items.baseUrl + (items.baseUrl.endsWith('/') ? '' : '/')
+    utils.setBaseUrl(baseUrl);
+    utils.setGlossing(items.glossing);
+    const recreate = false;
+
+    const progressCallback = (progressMessage, isFinished) => {
+      const progress = { message: progressMessage, isFinished };
+      console.debug('got the progress message in sw.js', progress);
+      // MUST NOT SEND A RESPONSE HERE!!!!!
+      // sendResponse({source: message.source, type: message.type + "-progress", value: progress});
+    };
+    utils.fetchWithNewToken().then((tokens) => {
+      console.debug('Returned with tokens', tokens)
+      const dbConfig = createRxDBConfig(utils.baseUrl, utils.username, tokens.accessToken, tokens.refreshToken,
+        CACHE_NAME, recreate);
+      return getDb(dbConfig, progressCallback).then((dbHandle) => {
+        db = dbHandle;
+        console.debug('db object after getDb is', dbHandle)
+        if (!eventQueueTimer) {
+          eventQueueTimer = setInterval(() => data.sendUserEvents(db), utils.EVENT_QUEUE_PROCESS_FREQ);
+        }
+        callback({ source: message.source, type: message.type, value: "success" });
+        return Promise.resolve(db);
+      }).catch(err => {
+        console.error('getDb() threw an error:', err);
+      });
+    });
+  });
+}
+
+chrome.browserAction.onClicked.addListener(
+  function(message, callback) {
+    console.debug('i am got clicked or somfin wif message', message);
+
+    chrome.tabs.executeScript({ file: 'webcomponents-sd-ce.js' });
+    chrome.tabs.executeScript({ file: 'content-bundle.js' });
+
+    // if (message == "runContentScript"){
+    // }
+  }
+);
+
+// chrome.browserAction.onClicked.addListener(function(){
+//   console.log('onClicked.addListener being executed');
+//   chrome.tabs.query({active : true, lastFocusedWindow : true}, function (tabs) {
+//     var CurrTab = tabs[0];
+//     chrome.tabs.sendMessage(CurrTab.id, 'run');
+//   })
+// })
 
 chrome.runtime.onMessage.addListener(
   (request, _sender, sendResponse) => {
@@ -35,55 +82,67 @@ chrome.runtime.onMessage.addListener(
       const result = !!(localStorage.getItem('isDbInitialised'));
       sendResponse({source: message.source, type: message.type, value: result});
     } else if (message.type === "syncDB") {
-      console.log('Starting a background sync');
-      chrome.storage.local.get({
-        username: '',
-        password: '',
-        baseUrl: '',
-        glossing: ''
-      }, (items) => {
+      console.log('Starting a background db load');
+      loadDb(sendResponse, message);
+      // loadDb(sendResponse, message).then((amistg) => {
+      //   console.debug('the new dbugs is', amistg);
+      // });
+      // chrome.storage.local.get({
+      //   username: '',
+      //   password: '',
+      //   baseUrl: '',
+      //   glossing: ''
+      // }, (items) => {
+      //   utils.setUsername(items.username);
+      //   utils.setPassword(items.password);
+      //   const baseUrl = items.baseUrl + (items.baseUrl.endsWith('/') ? '' : '/')
+      //   utils.setBaseUrl(baseUrl);
+      //   utils.setGlossing(items.glossing);
 
-        utils.setUsername(items.username);
-        utils.setPassword(items.password);
-        const baseUrl = items.baseUrl + (items.baseUrl.endsWith('/') ? '' : '/')
-        utils.setBaseUrl(baseUrl);
-        utils.setGlossing(items.glossing);
+      //   const recreate = false;
 
-        const recreate = false;
-        const cacheName = "v1";  // exports file cache name prefix, also used as the service worker cache name
-
-        const progressCallback = (progressMessage, isFinished) => {
-          const progress = { message: progressMessage, isFinished };
-          console.debug('got the progress message in sw.js', progress);
-          // MUST NOT SEND A RESPONSE HERE!!!!!
-          // sendResponse({source: message.source, type: message.type + "-progress", value: progress});
-        };
-        utils.fetchWithNewToken().then((tokens) => {
-          console.log('i am getting here with some tokens', tokens)
-          const dbConfig = createRxDBConfig(utils.baseUrl, utils.username, tokens.access, tokens.refresh,
-            cacheName, recreate);
-          getDb(dbConfig, progressCallback).then((dbHandle) => {
-              // FIXME: only for testing!!!
-              window.transcrobesDb = dbHandle;
-              db = dbHandle;
-              console.debug('db object after getDb is', dbHandle)
-              if (!eventQueueTimer) {
-                eventQueueTimer = setInterval(() => data.sendUserEvents(db), utils.EVENT_QUEUE_PROCESS_FREQ);
-              }
-              sendResponse({source: message.source, type: message.type, value: "success"});
-            }).catch(err => {
-              console.error('getDb() threw an error:', err);
-          });
-        });
-      });
+      //   const progressCallback = (progressMessage, isFinished) => {
+      //     const progress = { message: progressMessage, isFinished };
+      //     console.debug('got the progress message in sw.js', progress);
+      //     // MUST NOT SEND A RESPONSE HERE!!!!!
+      //     // sendResponse({source: message.source, type: message.type + "-progress", value: progress});
+      //   };
+      //   utils.fetchWithNewToken().then((tokens) => {
+      //     console.debug('Returned with tokens', tokens)
+      //     const dbConfig = createRxDBConfig(utils.baseUrl, utils.username, tokens.access, tokens.refresh,
+      //       CACHE_NAME, recreate);
+      //     getDb(dbConfig, progressCallback).then((dbHandle) => {
+      //         db = dbHandle;
+      //         console.debug('db object after getDb is', dbHandle)
+      //         if (!eventQueueTimer) {
+      //           eventQueueTimer = setInterval(() => data.sendUserEvents(db), utils.EVENT_QUEUE_PROCESS_FREQ);
+      //         }
+      //         sendResponse({source: message.source, type: message.type, value: "success"});
+      //       }).catch(err => {
+      //         console.error('getDb() threw an error:', err);
+      //     });
+      //   });
+      // });
     } else if (message.type === "heartbeat") {
       console.debug('got a heartbeat request in sw.js, replying with datetime');
       sendResponse({source: message.source, type: message.type, value: dayjs().format()});
     } else if (message.type === "getWordFromDBs") {
-      data.getWordFromDBs(db, message.value).then((values) => {
-        console.debug('back from data.getWordFromDBs', values)
-        sendResponse({source: message.source, type: message.type, value: values.toJSON()});
-      });
+      if (!!db) {
+        console.debug('We have a loaded db in background, using that', db)
+        data.getWordFromDBs(db, message.value).then((values) => {
+          console.debug('back from data.getWordFromDBs', values)
+          sendResponse({ source: message.source, type: message.type, value: values.toJSON() });
+        });
+      } else {
+        console.debug('We DO NOT have a loaded db in background, reloading', db)
+        loadDb(console.debug, message).then((ldb) => {
+          console.debug('what i got back was', ldb);
+          data.getWordFromDBs(ldb, message.value).then((values) => {
+            console.debug('back from data.getWordFromDBs', values)
+            sendResponse({ source: message.source, type: message.type, value: values.toJSON() });
+          });
+        });
+      }
     } else if (message.type === "getCardWords") {
       if (knownCardWordGraphs || allCardWordGraphs || knownWordIdsCounter) {
         sendResponse({
