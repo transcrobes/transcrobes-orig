@@ -454,8 +454,8 @@ class Mutation:
     # }
     @strawberry.mutation
     async def set_card(self, info, card: CardInput = None) -> Card:
+        logger.debug(f"The info is: {info=}, and the card is: {card=}")
         user = await database_sync_to_async(get_user, thread_sensitive=settings.THREAD_SENSITIVE)(info.context)
-        logger.debug(f"{info=}, {card=}")
         word_id, card_type = map(int, card.card_id.split("-"))
         try:
             dj_card = await database_sync_to_async(models.Card.objects.get, thread_sensitive=settings.THREAD_SENSITIVE)(
@@ -511,7 +511,7 @@ class Subscription:
             async for event in subscriber:
                 if clean_broadcaster_string(event.message) == str(user_id):
                     logger.debug(f"Got a definitions subscription event for {user_id}")
-                    yield {"cardId": "42"}
+                    yield Card(card_id="42")
 
     # type Subscription {
     #   changedWordModelStats(token: String!): WordModelStats
@@ -529,7 +529,7 @@ class Subscription:
             async for event in subscriber:
                 if clean_broadcaster_string(event.message) == str(user_id):
                     logger.debug(f"Got a word_model_stats subscription event for {user_id}")
-                    yield {"wordId": "42"}
+                    yield WordModelStats(word_id="42")
 
     # type Subscription {
     #   changedWordList(token: String!): WordList
@@ -542,12 +542,11 @@ class Subscription:
             logger.exception(e)
             raise
         logger.debug("Setting up word_list subscription for user %s", user_id)
-
         async with info.context.broadcast.subscribe(channel="word_list") as subscriber:
             async for event in subscriber:
                 if clean_broadcaster_string(event.message) == str(user_id):
                     logger.debug(f"Got a word_list subscription event for {user_id}")
-                    yield {"listId": "42"}
+                    yield WordList(list_id="42", name="tmol", word_ids=["42"])
 
     # type Subscription {
     #   changedDefinition(token: String!): DefinitionSet
@@ -564,7 +563,7 @@ class Subscription:
         async with info.context.broadcast.subscribe(channel="definitions") as subscriber:
             async for event in subscriber:
                 logger.debug(f"Got a definitions subscription event for {event.message}")
-                yield {"wordId": "42"}
+                yield DefinitionSet(word_id="42", graph="四十二", sound=["42"])
 
 
 schema = strawberry.Schema(query=Query, mutation=Mutation, subscription=Subscription)
