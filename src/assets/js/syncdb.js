@@ -359,7 +359,7 @@ function setupGraphQLSubscription(replicationState, query) {
     next: async (data) => {
       console.log('subscription emitted => trigger run()');
       console.dir(data);
-      if (data.errors.length > 0) {
+      if (!!data.errors && data.errors.length > 0) {
         console.error(data.errors);
       }
       await replicationState.run();

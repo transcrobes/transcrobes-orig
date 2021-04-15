@@ -15,7 +15,7 @@ let knownWordIdsCounter;
 let eventQueueTimer;
 
 function stopEventsSender(timerId) {
-  clearTimeout(timerId || eventQueueTimer);
+  clearTimeout((typeof timerId !== 'undefined' && !!timerId) || eventQueueTimer);
 }
 
 function loadDb(callback, message) {
@@ -24,7 +24,7 @@ function loadDb(callback, message) {
     callback({ source: message.source, type: message.type, value: "success" });
     return Promise.resolve(db);
   }
-  clearTimeout(timerId || eventQueueTimer);
+  clearTimeout((typeof timerId !== 'undefined' && !!timerId) || eventQueueTimer);
   chrome.storage.local.get({ username: '', password: '', baseUrl: '', glossing: ''
       }, (items) => {
     console.debug('DB NOT loaded, (re)loading', db)
