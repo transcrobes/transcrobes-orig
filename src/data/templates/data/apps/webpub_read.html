@@ -23,7 +23,6 @@
   <!-- Material header and footer CSS  - uncomment if  custom header an d footer is provided-->
   <link rel="stylesheet" href="{% static 'data/r2d2/material.css' %}" />
   <!-- END Material CSS -->
-  {% comment %} {{ lang_pair|json_script:"langPair" }} {% endcomment %}
 
   <script>
     const cookies = document.cookie.split('; ').reduce((acc, c) => {const [key, val] = c.split('='); acc[key] = val; return acc;}, {});

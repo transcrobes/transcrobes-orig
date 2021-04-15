@@ -62,9 +62,17 @@ function loadDb(callback, message) {
 
 chrome.browserAction.onClicked.addListener(
   function(message, callback) {
-    console.debug('Browser action triggered with message', message);
-    chrome.tabs.executeScript({ file: 'webcomponents-sd-ce.js' });
-    chrome.tabs.executeScript({ file: 'content-bundle.js' });
+    chrome.storage.local.get({
+      username: '', password: '', baseUrl: '', glossing: ''
+    }, (items) => {
+      if (!items.username || !items.password || !items.baseUrl) {
+        alert(`You need an account on a Transcrobes server to Transcrobe a page. \n\nIf you have an account please fill in the options page (right-click on the Transcrobe Me! icon -> Extension Options) with your login information (username, password, server URL).\n\n For information on available servers or how to set one up for yourself, see the Transcrobes site https://transcrob.es`);
+      } else {
+        console.debug('Browser action triggered with message', message);
+        chrome.tabs.executeScript({ file: 'webcomponents-sd-ce.js' });
+        chrome.tabs.executeScript({ file: 'content-bundle.js' });
+      }
+    });
   }
 );
 

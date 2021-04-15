@@ -8,12 +8,12 @@ module.exports = {
   optimization: {
     minimize: false,
     minimizer: [new TerserPlugin({
-        extractComments: false,
-        // extractComments: true,
-        terserOptions: {
-          output: { ascii_only: true },
-        },
-      })],
+      extractComments: false,
+      // extractComments: true,
+      terserOptions: {
+        output: { ascii_only: true },
+      },
+    })],
   },
   entry: {
     background: ["regenerator-runtime/runtime.js", './src/assets/bc/js/background.js', ],
