@@ -1,10 +1,10 @@
 let username = '';  // required, do not delete
-let jwtRefreshToken = '';  // required, do not delete
 let syncURL = '';
 let batchSize = 10000;
 let liveInterval = 60;  //seconds
 let wsEndpointUrl = '';
 let jwtAccessToken = '';
+let jwtRefreshToken = '';  // required, do not delete
 
 let dbPromise = null;
 
@@ -61,7 +61,7 @@ import {
   CONTENT_CONFIG_SCHEMA,
 } from './schemas';
 
-import { addAuthHeader, fetchWithNewToken } from './lib.js';
+import { addAuthHeader, fetchWithNewToken, parseJwt } from './lib.js';
 
 const WORD_MODEL_STATS_CHANGED_QUERY = `
   subscription onChangedWordModelStats($token: String!) {
@@ -494,6 +494,11 @@ async function loadFromExports(config, progressCallback) {
 
 async function getDb(config, progressCallback) {
   console.debug('Loading config to database dbmulti', config);
+
+  if (parseJwt(config.jwtRefreshToken).exp > parseJwt(jwtRefreshToken).exp) {
+    jwtRefreshToken = config.jwtRefreshToken;
+  }
+
   if (!dbPromise || !!config.reinitialise) {
     ({ username, syncURL, batchSize, wsEndpointUrl, jwtAccessToken, jwtRefreshToken } = config);
     dbPromise = loadFromExports(config, progressCallback);

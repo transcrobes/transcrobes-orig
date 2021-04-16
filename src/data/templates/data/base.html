@@ -367,12 +367,11 @@ function updateFromCache(countChecks){
     return;
   }
 
-  // FIXME: hard-coded
-  caches.open('v1').then((currentCache) => {
+  caches.open(window.CACHE_NAME).then((currentCache) => {
     currentCache.match(location.href).then((meInCache) => {
-      console.log('I am in the cache', meInCache);
+      console.debug('I am in the cache', meInCache);
       if (meInCache) {
-        console.log('i was in the cache for run ', countChecks);
+        console.log('I was in the cache for run ', countChecks);
         // I'm in the cache, need to refresh if I can
         meInCache.text().then((text) => {
           const cachedVersion = (new DOMParser()).parseFromString(text, 'text/html')
@@ -385,6 +384,8 @@ function updateFromCache(countChecks){
             // we have a way to get the underlying fetch in the sw to retry
             setTimeout(() => updateFromCache(countChecks + 1), (countChecks < 10 ? 300 : 1000));
           } else {
+            // update the appConfig/tokens
+            document.querySelector("#appConfig").innerText = cachedVersion.querySelector("#appConfig").innerText;
             document.body.innerHTML = cachedVersion.body.innerHTML;
           }
         })

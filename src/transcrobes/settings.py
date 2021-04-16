@@ -55,6 +55,7 @@ CORS_ALLOW_ALL_ORIGINS = True  # TODO: think about restricting this
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.getenv("TRANSCROBES_JWT_ACCESS_TOKEN_LIFETIME_MINS", "10"))),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=int(os.getenv("TRANSCROBES_JWT_REFRESH_TOKEN_LIFETIME_DAYS", "1"))),
+    "ROTATE_REFRESH_TOKENS": os.getenv("TRANSCROBES_JWT_REFRESH_TOKEN_LIFETIME_DAYS", "true").lower() == "true",
 }
 
 MIDDLEWARE = [

@@ -317,7 +317,7 @@ function fetchWithNewToken(url, body = {}, retries, apiUnavailableCallback) {
       console.debug(`The token refresh/get went Ok, I got back`, data);
       if (data.access) {
         accessToken = data.access;
-        if (data.refresh) {
+        if (!!data.refresh) {
           refreshToken = data.refresh;
         }
         langPair = parseJwt(accessToken)['lang_pair'];
