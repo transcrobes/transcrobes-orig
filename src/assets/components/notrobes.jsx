@@ -2,7 +2,7 @@ import React from 'react';
 import '../css/notrobes.css';
 import axios from 'axios';
 import Loader from '../img/loader.gif';
-import { toEnrich, USER_STATS_MODE } from '../js/lib.js';
+import { simpOnly, USER_STATS_MODE } from '../js/lib.js';
 import Word from './Word.jsx';
 import { IconContext } from 'react-icons';
 import { Converter } from 'opencc-js';
@@ -124,6 +124,7 @@ class Notrobes extends React.Component {
             : '';
           console.log(resultNotFoundMsg, res);
           this.setState({
+            // FIXME: need to get the characters here!!!
             word: res.data.definition,
             message: resultNotFoundMsg,
             loading: false
@@ -152,13 +153,13 @@ class Notrobes extends React.Component {
   };
 
   async addOrUpdateCards(definition, grade){
-    console.log(`doing the addOrUpdateCards in notrobes.jsx:`, definition, grade);
+    console.debug(`doing the addOrUpdateCards in notrobes.jsx:`, definition, grade);
     this.state.proxy.sendMessage({
       source: DATA_SOURCE,
       type: "addOrUpdateCards",
       value: { wordId: definition.wordId, grade }
     }, (response) => {
-      console.log(`got response back from addOrUpdateCards in notrobes.jsx:`, response);
+      console.debug(`got response back from addOrUpdateCards in notrobes.jsx:`, response);
       const cards = response;
       this.setState({
         loading: false,
@@ -173,16 +174,16 @@ class Notrobes extends React.Component {
     console.log('the query', query);
     if (!query) {
       this.setState({ query, word: {}, loading: false, message: '' });
-    } else if (query && (!toEnrich(query, 'zh-Hans') || !(query === query.replace(/[\x00-\x7F]/g, "")))) {
-      console.log('the query is not to enrich', query);
+    } else if (query && !simpOnly(query)) {
+      console.debug('the query is not to enrich', query);
       this.setState({ query, word: {}, loading: false,
         message: 'Only simplified characters can be searched for' });
     } else if (query && this.state.converter(query) !== query) {
-      console.log('query contains traditional characters', query);
+      console.debug('query contains traditional characters', query);
       this.setState({ query, word: {}, loading: false,
         message: 'The system does not support traditional characters' });
     } else if (query.length > MAX_ALLOWED_CHARACTERS){
-      console.log('Entered a query of more than 8 characters', query);
+      console.debug('Entered a query of more than 8 characters', query);
       this.setState({ query, word: {}, loading: false,
         message: `The system only handles words of up to ${MAX_ALLOWED_CHARACTERS} characters` });
     } else {
@@ -193,12 +194,11 @@ class Notrobes extends React.Component {
   };
 
   renderSearchResults = () => {
-    const { word } = this.state;
-    if (word && Object.entries(word).length > 0) {
-      console.log(word);
+    if (this.state.word && Object.entries(this.state.word).length > 0) {
+      console.debug(`Rendering results for word ${this.state.word}`, this.state);
       return (
         <div>
-          <Word definition={word} cards={this.state.cards} wordModelStats={this.state.wordModelStats}
+          <Word definition={this.state.word} characters={this.state.characters} cards={this.state.cards} wordModelStats={this.state.wordModelStats}
             lists={this.state.lists} onPractice={this.addOrUpdateCards} />
         </div>
       )

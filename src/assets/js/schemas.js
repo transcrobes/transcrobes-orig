@@ -137,6 +137,20 @@ const WORD_SCHEMA = {
   // required: ['graph', 'sound', 'definition', 'updatedAt']
 };
 
+const CHARACTER_SCHEMA = {
+  version: 0,
+  type: 'object',
+  properties: {
+    graph: {
+      type: 'string',
+      primary: true
+    },
+    structure: {  // from https://github.com/chanind/hanzi-writer
+      type: 'string'
+    },
+  }
+}
+
 const WORD_LIST_SCHEMA = {
   version: 0,
   type: 'object',
@@ -332,12 +346,15 @@ const graphQLGenerationInput = {
 };
 
 export {
+  // RxDB schemata
   CONTENT_CONFIG_SCHEMA,
   EVENT_QUEUE_SCHEMA,
   WORD_SCHEMA,
   WORD_LIST_SCHEMA,
   WORD_MODEL_STATS_SCHEMA,
   CARD_SCHEMA,
+  CHARACTER_SCHEMA,
+
   CARD_ID_SEPARATOR,
   GRADE,
   CARD_TYPES,

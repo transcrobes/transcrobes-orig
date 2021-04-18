@@ -238,11 +238,15 @@ function toEnrich(charstr, fromLanguage) {
   }
 };
 
+function simpOnly(query) {
+  return (toEnrich(query, 'zh-Hans') && (query === query.replace(/[\x00-\x7F]/g, "")))
+}
+
 function parseJwt(token) {
     // TODO: this will apparently not do unicode properly. For the moment we don't care.
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(window.atob(base64));
+    return JSON.parse(atob(base64));
 };
 
 function textNodes(node) {
@@ -466,6 +470,7 @@ export {
   addAuthHeader,
   fetchPlus,
   toEnrich,
+  simpOnly,
   parseJwt,
   onError,
   textNodes,

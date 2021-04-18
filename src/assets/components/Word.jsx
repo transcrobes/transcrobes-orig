@@ -4,22 +4,28 @@ import styled from 'styled-components';
 import PracticerInput from './PracticerInput.jsx';
 import { say } from '../js/lib.js';
 import { CARD_TYPES, cardType } from '../js/schemas.js';
+import DefinitionGraph from './DefinitionGraph.jsx';
 
 const ThinHR = styled.hr` margin: .3rem; `;
 
-function WordInfo({definition}){
+function WordInfo({definition, characters}){
   return (
     <>
       <div className="row">
         <div className="col-sm-2">
           <h6 className="result-heading">Word info</h6>
         </div>
-        <div className="col graph-item" style={{ fontSize: '2em' }}><Graph definition={definition} /></div>
-        <div className="col sound-item" style={{ fontSize: '2em' }}><Sound definition={definition} /></div>
-        <div className="col sound-item" style={{ fontSize: '2em' }}>
-          <button type="button" onClick={() => say(definition.graph)}
-            className="btn btn-primary btn-user btn-block">Say it!</button>
+        <div className="col-6 graph-item" style={{ fontSize: '2em' }}>
+          <DefinitionGraph charWidth="100" charHeight="100" characters={characters} showAnswer={true} />
         </div>
+        <div className="col sound-item" style={{ fontSize: '2em', display: "flex",  }}>
+          <div className="row" style={{ marginLeft: ".5em", display: "flex", alignItems: "center" }}>
+            <Sound definition={definition} />
+            <div><button type="button" onClick={() => say(definition.graph)}
+              style={{ marginLeft: "2em"}} className="btn btn-primary btn-user btn-block">Say it!</button></div>
+          </div>
+        </div>
+        {/* <div className="col sound-item" style={{ fontSize: '2em' }}> </div> */}
       </div>
     </>
   )
@@ -234,12 +240,12 @@ class Word extends React.Component {
   }
 
   render() {
-    const { definition, cards, wordModelStats, lists, onPractice } = this.props;
+    const { definition, cards, wordModelStats, lists, characters, onPractice } = this.props;
     return (
       definition &&
       <div className="word-container">
         <div className="results-container">
-          <WordInfo definition={definition} />
+          <WordInfo definition={definition} characters={characters} />
           <Practicer definition={definition} onPractice={onPractice} />
           <ExistingCards cards={cards} />
           <WordLists lists={lists} />

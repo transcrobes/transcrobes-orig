@@ -56,6 +56,7 @@ export class SRSrobes extends Component {
     this.handlePractice = this.handlePractice.bind(this);
     this.getTodaysCounters = this.getTodaysCounters.bind(this);
     this.submitLookupEvents = this.submitLookupEvents.bind(this);
+    this.getCharacters = this.getCharacters.bind(this);
   };
 
   async componentDidMount() {
@@ -130,7 +131,6 @@ export class SRSrobes extends Component {
       });
     });
   }
-
   submitLookupEvents(lookupEvents, userStatsMode) {
     this.state.proxy.sendMessage({
       source: DATA_SOURCE,
@@ -215,6 +215,13 @@ export class SRSrobes extends Component {
       : [null, ""];
   }
 
+  getCharacters(state, definition) {
+    const graphs = definition.graph.split('');
+    const characters = new Map();
+    graphs.forEach(x => characters.set(x, state.allPotentialCharacters.get(x)));
+    return characters;
+  }
+
   async nextPractice(state) {
     let currentCard; let curNewWordIndex; let cardType; let definition;
     console.debug(`state at start of nexPractice`, state)
@@ -237,9 +244,11 @@ export class SRSrobes extends Component {
       definition = state.existingWords.get(wordId(currentCard))
       console.debug(`revision [currentCard, cardType]`, currentCard, cardType)
     }
+    const characters = this.getCharacters(state, definition);
     return { ...state,
       currentCard,
       definition,
+      characters,
       curNewWordIndex: (curNewWordIndex || state.curNewWordIndex),
       newToday,
       revisionsToday };
@@ -272,8 +281,8 @@ export class SRSrobes extends Component {
           this.state.allNonReviewedWordsMap.get(wordId(practicedCard))),
         curNewWordIndex: !isRxDocument(currentCard) ? this.state.curNewWordIndex + 1 : this.state.curNewWordIndex }
 
-      this.nextPractice(newState).then((nextCard) => {
-        this.setState({...nextCard, showAnswer: false});
+      this.nextPractice(newState).then((nextState) => {
+        this.setState({...nextState, showAnswer: false});
       })
     });
   }
@@ -292,7 +301,10 @@ export class SRSrobes extends Component {
           <div className="d-flex flex-column">
             <VocabRevisor showAnswer={this.state.showAnswer}
               activityConfig={ac}
-              currentCard={this.state.currentCard} definition={this.state.definition} loading={this.state.loading}
+              currentCard={this.state.currentCard}
+              characters={this.state.characters}
+              definition={this.state.definition}
+              loading={this.state.loading}
               onPractice={this.handlePractice}
               onShowAnswer={this.handleShowAnswer} />
           </div>

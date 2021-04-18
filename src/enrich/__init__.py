@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 DEFINITIONS_JSON_CACHE_FILE_PREFIX_REGEX = r"definitions-\d{10}\.\d{1,8}-\d{1,8}-"
 DEFINITIONS_JSON_CACHE_FILE_SUFFIX_REGEX = r"\.json"
 DEFINITIONS_JSON_CACHE_DIR_SUFFIX_REGEX = r"\_json"
+HANZI_JSON_CACHE_FILE_REGEX = r"hanzi-\d{3}\.json"
 
 
 # START Stolen from https://github.com/django/channels/blob/ece488b31b4e20a55e52948f21622da3e38223cb/channels/db.py
@@ -83,6 +84,25 @@ def definitions_json_paths(user) -> dict:
 
 def definitions_path_json(path) -> dict:
     json_path = os.path.join(settings.DEFINITIONS_CACHE_DIR, path)
+    with open(json_path) as fh:
+        return json.load(fh)
+
+
+def hanzi_json_paths(user) -> dict:
+    files = sorted(
+        [
+            reverse("hzexports_json", args=[os.path.basename(f.path)])
+            for f in os.scandir(settings.HANZI_CACHE_DIR)
+            if f.is_file() and re.match(HANZI_JSON_CACHE_FILE_REGEX, f.name)
+        ]
+    )
+    logger.debug("The latest hanzi export files for user %s are %s", user, files)
+
+    return files
+
+
+def hanzi_path_json(path) -> dict:
+    json_path = os.path.join(settings.HANZI_CACHE_DIR, path)
     with open(json_path) as fh:
         return json.load(fh)
 

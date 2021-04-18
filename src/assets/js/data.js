@@ -47,7 +47,7 @@ async function getDefaultWordLists(db) {
 async function getWordDetails(db, graph) {
   const localDefinition = await db.definitions.find().where('graph').eq(graph).exec();
   if (localDefinition.length > 0) {
-    console.debug(`${graph} was found locally, not going to server`, localDefinition);
+    console.debug(`${graph} was found in local db`, localDefinition);
 
     const word = localDefinition.values().next().value;
     const cardIds = ((await db.cards.pouch.allDocs(
@@ -55,10 +55,16 @@ async function getWordDetails(db, graph) {
     ).rows).map(x => x.id);
     const cards = await db.cards.findByIds(cardIds)  // a map is more useful
     const wordModelStats = [...(await db.word_model_stats.findByIds([word.wordId])).values()][0];
+    const characters = await getCharacterDetails(db, graph.split(''));
+    console.debug('Got characters for getWordDetails', characters);
 
-    return { word, cards, wordModelStats, }
+    return { word, cards, wordModelStats, characters }
   }
-  return { word: null, cards: new Map(), wordModelStats: null, }
+  return { word: null, cards: new Map(), wordModelStats: null, characters: new Map() }
+}
+
+async function getCharacterDetails(db, graphs) {
+  return await db.characters.findByIds(graphs);
 }
 
 async function getCardWords(db) {
@@ -152,6 +158,7 @@ async function getSRSReviews(db, activityConfig) {
       existingCards: new Map(),  // Map of all cards reviewed at least once: RxDocument
       existingWords: new Map(),  // Map of all words which have had at least one card reviewed at least once: RxDocument
       potentialWords: [],  // Array of words that can be "new" words today: RxDocument
+      allPotentialCharacters: new Map(),  // Map of all individual characters that are in either possible new words or revisions for today: RxDocument
     }
   }
 
@@ -172,16 +179,19 @@ async function getSRSReviews(db, activityConfig) {
   // TODO: this ordering is a bit arbitrary. If there is more than one list that has duplicates then
   // I don't know which version gets ignored, though it's likely the second. Is this what is wanted?
   const potentialWords = [...allNonReviewedWordsMap.values()]
-      .filter(x => !existingWords.has(x.wordId) && !allKnownWordIds.has(x.wordId));
+      .filter(x => !existingWords.has(x.wordId) && !allKnownWordIds.has(x.wordId) && utils.simpOnly(x.graph));
   if (activityConfig.forceWcpm) {
     potentialWords.sort(sortByWcpm);
   }
+  const allPotentialCharacters = await db.characters.findByIds([...(new Set(potentialWords.concat([...existingWords.values()]).map(x => x.graph ).join('')))]);
+
   return {
     todaysWordIds,  // Set of words reviewed today already: string ids
     allNonReviewedWordsMap,  // Map of words in selected lists not already reviewed today: RxDocument
     existingCards,  // Map of all cards reviewed at least once: RxDocument
     existingWords,  // Map of all words which have had at least one card reviewed at least once: RxDocument
     potentialWords,  // Array of words that can be "new" words today: RxDocument
+    allPotentialCharacters, // Map of all individual characters that are in either possible new words or revisions for today: RxDocument
   };
 }
 
@@ -305,6 +315,7 @@ export {
   // get data from db
   getUserListWords,
   getWordDetails,
+  getCharacterDetails,
   getCardWords,
   getWordFromDBs,
   getDefaultWordLists,

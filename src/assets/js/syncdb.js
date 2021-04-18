@@ -4,12 +4,13 @@ let batchSize = 10000;
 let liveInterval = 60;  //seconds
 let wsEndpointUrl = '';
 let jwtAccessToken = '';
-let jwtRefreshToken = '';  // required, do not delete
-
+let jwtRefreshToken = '';
 let dbPromise = null;
 
-const LOADED_QUERY_ENTRY = '代码库';  // const LOADED_QUERY_ENTRY = '写进';
+const LOADED_DEF_QUERY_ENTRY = '代码库';  // const LOADED_QUERY_ENTRY = '写进';
+const LOADED_CHAR_QUERY_ENTRY = '代';
 const EXPORTS_LIST_PATH = '/enrich/exports.json';
+const HZEXPORTS_LIST_PATH = '/enrich/hzexports.json';
 
 import {
   SubscriptionClient
@@ -59,6 +60,7 @@ import {
   graphQLGenerationInput,
   EVENT_QUEUE_SCHEMA,
   CONTENT_CONFIG_SCHEMA,
+  CHARACTER_SCHEMA,
 } from './schemas';
 
 import { addAuthHeader, fetchWithNewToken, parseJwt } from './lib.js';
@@ -219,6 +221,9 @@ async function createCollections(db) {
       //   1: function (oldDoc) { return oldDoc; },
       // },
     },
+    characters: {
+      schema: CHARACTER_SCHEMA,
+    }
   });
   // add Hooks ???
   // db.cards.preInsert(function(plainData){ }, true);
@@ -250,7 +255,7 @@ function refreshTokenIfRequired(replicationState, e) {
 async function testQueries(db) {
   // This makes sure indexes are loaded into memory. After this everything on definitions
   // will be super fast!
-  return await db.definitions.find().where('graph').eq(LOADED_QUERY_ENTRY).exec();
+  return await db.definitions.find().where('graph').eq(LOADED_DEF_QUERY_ENTRY).exec();
 }
 
 function setupPullOnlyReplication(collection, queryBuilder) {
@@ -380,6 +385,8 @@ async function cacheExports(initialisationCache, progressCallback) {
   };
   // FIXME: this is just plain nasty, I need a proper config manager!!!
   const baseUrl = new URL(syncURL).origin;
+
+  // Add the word definitions database urls
   const exportFilesListURL = new URL(EXPORTS_LIST_PATH, baseUrl);
   console.debug(`Going to try and query ${exportFilesListURL} for the list of urls`)
   fetchInfo = addAuthHeader(fetchInfo);
@@ -390,14 +397,29 @@ async function cacheExports(initialisationCache, progressCallback) {
     console.error(message)
   });
 
+  // Add the hanzi character database urls
+  const hanziExportFilesListURL = new URL(HZEXPORTS_LIST_PATH, baseUrl);
+  console.debug(`Going to try and query ${hanziExportFilesListURL} for the list of hanzi urls`)
+  fetchInfo = addAuthHeader(fetchInfo);
+  data.push(...(await fetch(hanziExportFilesListURL, fetchInfo).then(res => {
+    if (res.ok) { return res.json(); } throw new Error(res.status);
+  }).catch((message) => {
+    progressCallback("There was an error downloading the data file. Please try again in a few minutes and if you get this message again, contact Transcrobes support: ERROR!", false);
+    console.error(message)
+  })));
+
   console.debug('Trying to precache the urls:', data)
-  const definitionBlock = async (url, origin)=> {
+  const entryBlock = async (url, origin)=> {
     const response = await fetch(new URL(url, origin), fetchInfo).then((res) => {
-        if (res.ok) { return res.json(); } throw new Error(res.status);
+        if (res.ok) {
+          progressCallback("Retrieved data file: " + url.split('/').slice(-1)[0], false);
+          return res.json();
+        }
+        throw new Error(res.status);
       })
     return await initialisationCache.put(url, new Blob([JSON.stringify(response)], {type : 'application/json'}));
   }
-  const allBlocks = await Promise.all(data.map(x => definitionBlock(x, baseUrl)));
+  const allBlocks = await Promise.all(data.map(x => entryBlock(x, baseUrl)));
   console.debug("Promise.all result from download and caching of all file blocks", allBlocks);
   return await initialisationCache.list();
 }
@@ -422,7 +444,7 @@ async function loadFromExports(config, progressCallback) {
     fetchInfo = addAuthHeader(fetchInfo);
 
     const initialisationCache = await getFileStorage({name: initialisationCacheName});
-    if (reinitialise && await (await initialisationCache.list()).length > 0) {
+    if (reinitialise && (await initialisationCache.list()).length > 0) {
       console.debug('The initialisation cache existing and we want to reinitialise, deleting')
       await initialisationCache.clear();
     }
@@ -450,9 +472,16 @@ async function loadFromExports(config, progressCallback) {
       const content = JSON.parse(await response.text());
 
       console.debug(`Got content for ${file}`, content);
-      const importResult = await db.definitions.bulkInsert(content);
+      let importResult;
+      if (file.split('/').slice(-1)[0].startsWith('hanzi-')) {
+        importResult = await db.characters.bulkInsert(content);
+        // force immediate index refresh so if we restart, we are already mostly ready
+        await db.characters.find().where('graph').eq(LOADED_CHAR_QUERY_ENTRY).exec();
+      } else {
+        importResult = await db.definitions.bulkInsert(content);
+        await db.definitions.find().where('graph').eq(LOADED_DEF_QUERY_ENTRY).exec();
+      }
       console.debug(`bulkImport for ${file} didn't fail! Now trying to remove`, importResult);
-
       await initialisationCache.remove(file);
       const newList = await initialisationCache.list();
       console.debug("All keys after delete of file", newList);
@@ -462,9 +491,6 @@ async function loadFromExports(config, progressCallback) {
       if (!deleteResult) {
         throw "deleteResult is false, that is unfortunate";
       }
-
-      // force immediate index refresh so if we restart, we are already mostly ready
-      await db.definitions.find().where('graph').eq(LOADED_QUERY_ENTRY).exec();
 
       console.debug(`Index refreshed after ${file}`);
       progressCallback(`Importing file ${i} : initialisation ${((perFilePercent * i) + 13).toFixed(2)}% complete`, false);
@@ -486,7 +512,7 @@ async function loadFromExports(config, progressCallback) {
     setupGraphQLSubscription(wordModelStatsReplicationState, WORD_MODEL_STATS_CHANGED_QUERY);
   }
   return testQueries(db).then(doc => {
-    console.debug(`Queried the db for ${LOADED_QUERY_ENTRY}:`, doc);
+    console.debug(`Queried the db for ${LOADED_DEF_QUERY_ENTRY}:`, doc);
     progressCallback("The indexes have now been generated. The initialisation has finished! : 100% complete", true);
     return db;
   });
@@ -495,7 +521,8 @@ async function loadFromExports(config, progressCallback) {
 async function getDb(config, progressCallback) {
   console.debug('Loading config to database dbmulti', config);
 
-  if (parseJwt(config.jwtRefreshToken).exp > parseJwt(jwtRefreshToken).exp) {
+  // replace the refresh token if we are being given a more recent one and one already exists
+  if (!!jwtRefreshToken && parseJwt(config.jwtRefreshToken).exp > parseJwt(jwtRefreshToken).exp) {
     jwtRefreshToken = config.jwtRefreshToken;
   }
 

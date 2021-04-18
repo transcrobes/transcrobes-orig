@@ -4,6 +4,7 @@ import { CARD_ID_SEPARATOR, CARD_TYPES } from '../js/schemas.js';
 import styled from 'styled-components';
 import { say } from '../js/lib.js';
 import PracticerInput from './PracticerInput.jsx';
+import DefinitionGraph from './DefinitionGraph.jsx';
 
 const CentredFlex = styled.div`
   display: flex;
@@ -11,7 +12,7 @@ const CentredFlex = styled.div`
 `;
 
 const QuestionWrapper = styled.div`
-  display: flex;
+  display: block;
   justify-content: center;
 `;
 const AnswerWrapper = styled.div`
@@ -19,8 +20,8 @@ const AnswerWrapper = styled.div`
   justify-content: center;
 `;
 
+// min-height: 30vh;
 const GraphSoundQuestionStyle = styled.div`
-    min-height: 30vh;
     font-size: 4em;
     padding: .5em;
 `;
@@ -32,10 +33,10 @@ const StyledAnswer = styled.div`
   padding: .5em;
 `;
 
+// min-height: 30vh;
 const StyledQuestion = styled.div`
   display: flex;
   justify-content: center;
-  min-height: 30vh;
   font-size: 2em;
   padding: 1em;
 `;
@@ -69,34 +70,48 @@ function Meaning({ definition, showSynonyms }) {
   return posTrans.concat(synonyms);
 }
 
-function GraphQuestion({ card, definition }) {
+function GraphQuestion({ card, characters }) {
   return (
-    <GraphSoundQuestionStyle> {card && card.front ? card.front : definition.graph } </GraphSoundQuestionStyle>
+    <GraphSoundQuestionStyle> {card && card.front ? card.front :
+      <DefinitionGraph characters={characters} showAnswer={true}></DefinitionGraph> } </GraphSoundQuestionStyle>
   )
 }
 
-function SoundQuestion({ card, definition }) {
+function SoundQuestion({ card, definition, characters, showAnswer }) {
   return (
     <GraphSoundQuestionStyle>
-      <div>{card && card.front ? card.front : definition.sound}</div>
-      <div>
-        <button type="button" onClick={() => say(definition.graph)}
-          className="btn btn-primary btn-user btn-block">Say it!</button>
+      <div className="row" style={{justifyContent: "center", alignItems: "center"}}>
+        <div>{card && card.front ? card.front : definition.sound}</div>
+        <div>
+          <button type="button" onClick={() => say(definition.graph)}
+            className="btn btn-primary btn-user btn-block" style={{marginLeft: "2em"}}>Say it!</button>
+        </div>
+      </div>
+      <div className="row" style={{justifyContent: "center", alignItems: "center"}}>
+        <DefinitionGraph characters={characters} showAnswer={showAnswer}></DefinitionGraph>
       </div>
     </GraphSoundQuestionStyle>
   )
 }
 
-function MeaningQuestion({ card, definition, showSynonyms, showL2LengthHint }) {
-  return (
-    <StyledQuestion> {card && card.front
-      ? card.front
-      : (<MeaningWrapper>
+function MeaningQuestion({ card, definition, showSynonyms, showL2LengthHint, characters, showAnswer }) {
+  return (<>
+    <div className="row" style={{justifyContent: "center", alignItems: "center"}}>
+      <StyledQuestion> {card && card.front
+        ? card.front
+        : (
+          <MeaningWrapper>
             <Meaning showSynonyms={showSynonyms} definition={definition} />
-            { showL2LengthHint && <div key="lenHint">(L2 length: {definition.graph.length})</div>}
-          </MeaningWrapper>)
+            {showL2LengthHint && <div key="lenHint">(L2 length: {definition.graph.length})</div>}
+          </MeaningWrapper>
+        )
       }
-    </StyledQuestion>
+      </StyledQuestion>
+    </div>
+    <div className="row" style={{justifyContent: "center", alignItems: "center"}}>
+      <DefinitionGraph characters={characters} showAnswer={showAnswer}></DefinitionGraph>
+    </div>
+  </>
   )
 }
 
@@ -105,7 +120,11 @@ function GraphAnswer({ card, definition, showSynonyms }) {
     <div>
       {card && card.back ? card.back :
         <>
-          <StyledAnswer> {definition.sound} </StyledAnswer>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <StyledAnswer> {definition.sound} </StyledAnswer>
+            <button type="button" onClick={() => say(definition.graph)}
+              className="btn btn-primary btn-user btn-block" style={{ marginLeft: "2em" }}>Say it!</button>
+          </div>
           <MeaningWrapper><Meaning showSynonyms={showSynonyms} definition={definition} /></MeaningWrapper>
         </>
       }
@@ -117,10 +136,7 @@ function SoundAnswer({ card, definition, showSynonyms }) {
   return (
     <div>
       {card && card.back ? card.back :
-        <>
-          <StyledAnswer> {definition.graph} </StyledAnswer>
-          <MeaningWrapper><Meaning showSynonyms={showSynonyms} definition={definition} /></MeaningWrapper>
-        </>
+        <MeaningWrapper><Meaning showSynonyms={showSynonyms} definition={definition} /></MeaningWrapper>
       }
     </div>
   )
@@ -130,33 +146,36 @@ function MeaningAnswer({ card, definition }) {
   return (
     <div>
       {card && card.back ? card.back :
-        <>
-          <StyledAnswer> {definition.graph} </StyledAnswer>
+        <div style={{ display: "flex", alignItems: "center" }}>
           <StyledAnswer> {definition.sound} </StyledAnswer>
-        </>
+          <button type="button" onClick={() => say(definition.graph)}
+            className="btn btn-primary btn-user btn-block" style={{ marginLeft: "2em" }}>Say it!</button>
+        </div>
       }
     </div>
   )
 }
 
-function getAnswer(card, definition, showSynonyms) {
+function getAnswer(card, definition, characters, showSynonyms) {
   console.debug(`answer is here`, card)
   const cardType = card.cardId.split(CARD_ID_SEPARATOR)[1];
   switch (cardType) {
-    case CARD_TYPES.GRAPH.toString(): return (<GraphAnswer card={card} definition={definition} showSynonyms={showSynonyms} />);
-    case CARD_TYPES.SOUND.toString(): return (<SoundAnswer card={card} definition={definition} showSynonyms={showSynonyms} />);
-    case CARD_TYPES.MEANING.toString(): return (<MeaningAnswer card={card} definition={definition} showSynonyms={showSynonyms} />);
+    case CARD_TYPES.GRAPH.toString(): return (<GraphAnswer card={card} definition={definition} characters={characters} showSynonyms={showSynonyms} />);
+    case CARD_TYPES.SOUND.toString(): return (<SoundAnswer card={card} definition={definition} characters={characters} showSynonyms={showSynonyms} />);
+    case CARD_TYPES.MEANING.toString(): return (<MeaningAnswer card={card} definition={definition} characters={characters} showSynonyms={showSynonyms} />);
   }
 }
 
-function getQuestion(card, definition, showSynonyms, showL2LengthHint) {
-  console.debug(`card is here`, card)
+function getQuestion(card, definition, characters, showSynonyms, showL2LengthHint, showAnswer) {
+  console.debug(`Card to show for a question`, card)
   const cardType = card.cardId.split(CARD_ID_SEPARATOR)[1];
   switch (cardType) {
-    case CARD_TYPES.GRAPH.toString(): return (<GraphQuestion card={card} definition={definition} showSynonyms={showSynonyms} />);
-    case CARD_TYPES.SOUND.toString(): return (<SoundQuestion card={card} definition={definition} showSynonyms={showSynonyms} />);
-    case CARD_TYPES.MEANING.toString(): return (<MeaningQuestion card={card} definition={definition} showSynonyms={showSynonyms}
-      showL2LengthHint={showL2LengthHint} />);
+    case CARD_TYPES.GRAPH.toString(): return (<GraphQuestion card={card} definition={definition} characters={characters} showSynonyms={showSynonyms}
+      showAnswer={showAnswer} />);
+    case CARD_TYPES.SOUND.toString(): return (<SoundQuestion card={card} definition={definition} characters={characters} showSynonyms={showSynonyms}
+      showAnswer={showAnswer} />);
+    case CARD_TYPES.MEANING.toString(): return (<MeaningQuestion card={card} definition={definition} characters={characters} showSynonyms={showSynonyms}
+      showL2LengthHint={showL2LengthHint} showAnswer={showAnswer} />);
   }
 }
 
@@ -165,6 +184,12 @@ export class VocabRevisor extends Component {
     super(props);
     this.handlePractice = this.handlePractice.bind(this);
   }
+  // componentDidUpdate(prevProps) {
+  //   const { showAnswer } = this.props;
+  //   if (showanswer && showAnswer !== prevProps.showAnswer) {
+  //
+  //   }
+  // }
   handlePractice(...args){
     this.props.onPractice(...args);
   }
@@ -172,7 +197,7 @@ export class VocabRevisor extends Component {
   render() {
     console.log(`VocabRevisor this.props`, this.props)
     const showAnswer = this.props.showAnswer;
-    const { currentCard, definition, loading } = this.props;
+    const { currentCard, definition, characters, loading } = this.props;
     const { showSynonyms, showL2LengthHint } = this.props.activityConfig ;
     return (
       <>
@@ -182,16 +207,16 @@ export class VocabRevisor extends Component {
           && (
           <>
             <QuestionWrapper>
-              {getQuestion(currentCard, definition, showSynonyms, showL2LengthHint)}
+              {getQuestion(currentCard, definition, characters, showSynonyms, showL2LengthHint, showAnswer)}
             </QuestionWrapper>
             {!showAnswer &&
               <CentredFlex>
-                <button className="btn btn-large btn-primary" onClick={this.props.onShowAnswer}>Show Answer</button>
+                <button style={{marginTop: "1em"}} className="btn btn-large btn-primary" onClick={this.props.onShowAnswer}>Show Answer</button>
               </CentredFlex>
             }
             {showAnswer &&
               <>
-                <AnswerWrapper>{getAnswer(currentCard, definition, showSynonyms)}</AnswerWrapper>
+                <AnswerWrapper>{getAnswer(currentCard, definition, characters, showSynonyms)}</AnswerWrapper>
                 <PracticerInput practiceObject={currentCard} onPractice={this.handlePractice} />
               </>
             }

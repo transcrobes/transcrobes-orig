@@ -244,6 +244,13 @@ CACHES = {
 }
 
 DEFINITIONS_CACHE_DIR = os.getenv("TRANSCROBES_DEFINITIONS_CACHE_DIR", os.path.join(MEDIA_ROOT, "definitions_json"))
+DEFINITIONS_PER_CACHE_FILE = int(os.getenv("TRANSCROBES_DEFINITIONS_PER_CACHE_FILE", "5000"))
+HANZI_CACHE_DIR = os.getenv("TRANSCROBES_HANZI_CACHE_DIR", os.path.join(MEDIA_ROOT, "hanzi_json"))
+HANZI_PER_CACHE_FILE = int(os.getenv("TRANSCROBES_HANZI_PER_CACHE_FILE", "1000"))
+HANZI_WRITER_DATA_URL = os.getenv(
+    "TRANSCROBES_HANZI_WRITER_DATA_URL",
+    "https://raw.githubusercontent.com/chanind/hanzi-writer-data/master/data/all.json",
+)
 
 # User list import max file size in KB
 IMPORT_MAX_UPLOAD_SIZE_KB = int(os.getenv("TRANSCROBES_IMPORT_MAX_UPLOAD_SIZE_KB", "5120"))

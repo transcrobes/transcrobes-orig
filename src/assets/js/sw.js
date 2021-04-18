@@ -255,6 +255,13 @@ self.addEventListener('message', event => {
         event.source.postMessage({ source: message.source, type: message.type, value: 'Content config saved' });
       });
     });
+  } else if (message.type === "getCharacterDetails") {
+    loadDb(message).then((ldb) => {
+      data.getCharacterDetails(ldb, message.value).then((values) => {
+        console.debug('getCharacterDetails results in sw.js', message, values);
+        event.source.postMessage({ source: message.source, type: message.type, value: values });
+      });
+    });
   } else if (message.type === "getContentConfigFromStore") {
     loadDb(message).then((ldb) => {
       data.getContentConfigFromStore(ldb, message.value).then((values) => {
@@ -286,12 +293,15 @@ self.addEventListener('message', event => {
         for (const [k, v] of values.existingWords) { existingWords.set(k, v.toJSON()); }
         const potentialWords = [];
         for (const pw of values.potentialWords) { potentialWords.push(pw.toJSON()); }
+        const allPotentialCharacters = new Map();
+        for (const [k, v] of values.allPotentialCharacters) { allPotentialCharacters.set(k, v.toJSON()); }
         const sanitised = {
           todaysWordIds: values.todaysWordIds,
           allNonReviewedWordsMap,
           existingCards,
           existingWords,
           potentialWords,
+          allPotentialCharacters,
         }
         event.source.postMessage({ source: message.source, type: message.type, value: sanitised });
       });
@@ -341,6 +351,7 @@ self.addEventListener('message', event => {
         const safe = {
           word: details.word ? details.word.toJSON() : null,
           cards: [...details.cards.values()].map(x => x.toJSON()),
+          characters: [...details.characters.values()].map(x => x.toJSON()),
           wordModelStats: details.wordModelStats ? details.wordModelStats.toJSON() : null,
         }
         console.debug("safe getWordDetails in sw.js", safe);

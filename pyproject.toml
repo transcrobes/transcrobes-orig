@@ -42,6 +42,7 @@ whitenoise = "^5.2.0"
 strawberry-graphql-django = "^0.0.6"
 OpenCC = "1.1.1.post1"
 broadcaster-noteable = {extras = ["kafka"], version = "^0.2.1"}
+brotlipy = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 requests-mock = "^1.8.0"
@@ -59,6 +60,7 @@ vcrpy-unittest = "^0.1.7"
 markdown = "^3.2.2"
 autopep8 = "^1.5.5"
 httpie = "^2.4.0"
+unihan-etl = "^0.11.0"
 
 [tool.coverage.run]
 omit = [
