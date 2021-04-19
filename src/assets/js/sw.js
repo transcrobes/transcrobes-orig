@@ -139,15 +139,15 @@ function loadDb(message, event) {
   if (eventQueueTimer) { clearInterval(eventQueueTimer) };
   // FIXME: there should be a proper way to manage this!!!
   // FIXME: maybe do some validation on the event.data.val?
-  const localBaseUrl = new URL(message.value.syncURL).origin;
+  const { syncURL, langPair, jwt_access, jwt_refresh, username, reinitialise } = message.value.appConfig;
+  const localBaseUrl = new URL(syncURL).origin;
   utils.setBaseUrl(localBaseUrl);
-  utils.setLangPair(message.value.langPair);
-  utils.setAccessToken(message.value.jwt_access);
-  utils.setRefreshToken(message.value.jwt_refresh);
-  utils.setUsername(message.value.username);
+  utils.setLangPair(langPair);
+  utils.setAccessToken(jwt_access);
+  utils.setRefreshToken(jwt_refresh);
+  utils.setUsername(username);
 
-  const dbConfig = createRxDBConfig(message.value.syncURL, message.value.username, message.value.jwt_access,
-    message.value.jwt_refresh, CACHE_VERSION, !!message.value.reinitialise);
+  const dbConfig = createRxDBConfig(syncURL, username, jwt_access, jwt_refresh, CACHE_VERSION, !!reinitialise);
   console.debug(`dbConfig`, dbConfig);
 
   const progressCallback = (progressMessage, isFinished) => {

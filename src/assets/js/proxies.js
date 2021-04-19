@@ -52,6 +52,7 @@ class ServiceWorkerProxy extends AbstractWorkerProxy{
     this.#callbacks[identifier + "-progress"] = progressCallback;
     return navigator.serviceWorker.ready.then(registration => {
       console.debug('Posting message from ServiceWorkerProxy to sw registration', message)
+      message.value.appConfig = this.#config;  // add the appConfig, so the sw can reinit if needed
       registration.active.postMessage(message);
       return message;
     });
@@ -78,7 +79,7 @@ class ServiceWorkerProxy extends AbstractWorkerProxy{
     this.#config.resourceRoot = this.#config.resourceRoot || this.#config.resource_root;
     this.#config.isDbInitialised = localStorage.getItem('isDbInitialised');
 
-    const message = { source: this.DATA_SOURCE, type: "syncDB", value: this.#config };
+    const message = { source: this.DATA_SOURCE, type: "syncDB", value: {} };  // appConfig gets added in postMessage
     return this.sendMessage(message, (response) => {
       console.debug(`Got a response for message in ServiceWorkerProxy init returning to caller`, message, response);
       this.#loaded = true;
