@@ -357,11 +357,8 @@ function fetchPlus(url, body, retries, apiUnavailableCallback, doc, accept_type=
     method: "POST",
     cache: "no-store",
     body: !!body ? JSON.stringify(body) : null,
-    headers: {
-      "Accept": (accept_type === 'json') ? "application/json" : "text/html",
-      "Content-Type": "application/json"
-    },
-  };
+    headers: { "Accept": (accept_type === 'json') ? "application/json" : "text/html",
+      "Content-Type": "application/json" }, };
   options = addAuthHeader(options);
   console.debug(`trying to send to ${url} with options`, options);
 
@@ -369,16 +366,12 @@ function fetchPlus(url, body, retries, apiUnavailableCallback, doc, accept_type=
     .then(res => {
       if (res.ok) {
         return (accept_type === 'json') ? res.json() : res.text();
-      } else {
-        console.log(`failure inside fetch res is ${JSON.stringify(res)}`);
-      }
+      } else { console.warn(`Failure inside fetch res is`, res); }
 
       if (retries > 0 && res.status == 401) {
         return fetchWithNewToken(url, JSON.parse(options.body), retries - 1, apiUnavailableCallback, doc);
       }
-      if (retries > 0) {
-        return fetchPlus(url, JSON.parse(options.body), retries - 1, apiUnavailableCallback, doc)
-      }
+      if (retries > 0) { return fetchPlus(url, JSON.parse(options.body), retries - 1, apiUnavailableCallback, doc) }
 
       if (apiUnavailableCallback) {
         if (res.status == 401)
@@ -388,8 +381,8 @@ function fetchPlus(url, body, retries, apiUnavailableCallback, doc, accept_type=
       }
       throw new Error(res.status)
     }).catch(error => {
-      let errorMessage = `${url}: ${JSON.stringify(options)}: ${error.message}`
-      console.log(errorMessage);
+      console.error('Fetch failed hard', url, options, error);
+      throw new Error(error);
     });
 }
 

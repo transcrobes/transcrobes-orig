@@ -63,7 +63,7 @@ import {
   CHARACTER_SCHEMA,
 } from './schemas';
 
-import { addAuthHeader, fetchWithNewToken, parseJwt } from './lib.js';
+import { fetchWithNewToken, fetchPlus, parseJwt } from './lib.js';
 
 const WORD_MODEL_STATS_CHANGED_QUERY = `
   subscription onChangedWordModelStats($token: String!) {
@@ -378,45 +378,45 @@ function setupGraphQLSubscription(replicationState, query) {
 }
 
 async function cacheExports(initialisationCache, progressCallback) {
-  let fetchInfo = {
-    method: "GET",
-    cache: "no-store",
-    headers: { "Accept": "application/json", "Content-Type": "application/json" },
-  };
   // FIXME: this is just plain nasty, I need a proper config manager!!!
   const baseUrl = new URL(syncURL).origin;
+  const RETRIES = 3;
 
   // Add the word definitions database urls
   const exportFilesListURL = new URL(EXPORTS_LIST_PATH, baseUrl);
   console.debug(`Going to try and query ${exportFilesListURL} for the list of urls`)
-  fetchInfo = addAuthHeader(fetchInfo);
-  const data = await fetch(exportFilesListURL, fetchInfo).then(res => {
-    if (res.ok) { return res.json(); } throw new Error(res.status);
-  }).catch((message) => {
-    progressCallback("There was an error downloading the data file. Please try again in a few minutes and if you get this message again, contact Transcrobes support: ERROR!", false);
-    console.error(message)
-  });
-
+  let data;
+  try {
+    data = await fetchPlus(exportFilesListURL, {}, RETRIES);
+  } catch (error) {
+    progressCallback("There was an error downloading the data files. Please try again in a few minutes and if you get this message again, contact Transcrobes support: ERROR!", false);
+    console.error(error);
+    throw new Error(error);
+  };
   // Add the hanzi character database urls
   const hanziExportFilesListURL = new URL(HZEXPORTS_LIST_PATH, baseUrl);
   console.debug(`Going to try and query ${hanziExportFilesListURL} for the list of hanzi urls`)
-  fetchInfo = addAuthHeader(fetchInfo);
-  data.push(...(await fetch(hanziExportFilesListURL, fetchInfo).then(res => {
-    if (res.ok) { return res.json(); } throw new Error(res.status);
-  }).catch((message) => {
-    progressCallback("There was an error downloading the data file. Please try again in a few minutes and if you get this message again, contact Transcrobes support: ERROR!", false);
-    console.error(message)
-  })));
+  let hanziList;
+  try {
+    hanziList = await fetchPlus(hanziExportFilesListURL, {}, RETRIES);
+  } catch (error) {
+    progressCallback("There was an error downloading the data files. Please try again in a few minutes and if you get this message again, contact Transcrobes support: ERROR!", false);
+    console.error(error);
+    throw new Error(error);
+  }
+  data.push(...hanziList);
 
   console.debug('Trying to precache the urls:', data)
   const entryBlock = async (url, origin)=> {
-    const response = await fetch(new URL(url, origin), fetchInfo).then((res) => {
-        if (res.ok) {
-          progressCallback("Retrieved data file: " + url.split('/').slice(-1)[0], false);
-          return res.json();
-        }
-        throw new Error(res.status);
-      })
+    let response;
+    try {
+      response = await fetchPlus(new URL(url, origin), {}, RETRIES);
+    } catch (error) {
+      progressCallback("There was an error downloading the data files. Please try again in a few minutes and if you get this message again, contact Transcrobes support: ERROR!", false);
+      console.error(message);
+      throw new Error(message);
+    };
+    progressCallback("Retrieved data file: " + url.split('/').slice(-1)[0], false);
     return await initialisationCache.put(url, new Blob([JSON.stringify(response)], {type : 'application/json'}));
   }
   const allBlocks = await Promise.all(data.map(x => entryBlock(x, baseUrl)));
@@ -436,13 +436,6 @@ async function loadFromExports(config, progressCallback) {
   const justCreated = await createCollections(db);
   progressCallback("Structure created, fetching the data from the server : 3% complete", false);
   if (justCreated || reinitialise) {
-    let fetchInfo = {
-      method: "GET",
-      cache: "no-store",
-      headers: { "Accept": "application/json", "Content-Type": "application/json" },
-    };
-    fetchInfo = addAuthHeader(fetchInfo);
-
     const initialisationCache = await getFileStorage({name: initialisationCacheName});
     if (reinitialise && (await initialisationCache.list()).length > 0) {
       console.debug('The initialisation cache existing and we want to reinitialise, deleting')

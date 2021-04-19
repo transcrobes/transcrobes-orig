@@ -52,6 +52,9 @@ class ServiceWorkerProxy extends AbstractWorkerProxy{
     this.#callbacks[identifier + "-progress"] = progressCallback;
     return navigator.serviceWorker.ready.then(registration => {
       console.debug('Posting message from ServiceWorkerProxy to sw registration', message)
+      if (typeof message.value !== 'object' || message.value === null) {
+        message.value = { payload: message.value };
+      }
       message.value.appConfig = this.#config;  // add the appConfig, so the sw can reinit if needed
       registration.active.postMessage(message);
       return message;

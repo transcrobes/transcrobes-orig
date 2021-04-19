@@ -85,7 +85,7 @@ def load_definitions_cache(request):
     return do_response(Response(outdata))
 
 
-@api_view(["GET", "OPTIONS"])
+@api_view(["GET", "POST", "OPTIONS"])
 def definitions_export_json(request, resource_path):
     # FIXME: this can raise if the file doesn't exist
     # FIXME: better perms checking for providers
@@ -99,7 +99,7 @@ def definitions_export_json(request, resource_path):
     )
 
 
-@api_view(["GET", "OPTIONS"])
+@api_view(["GET", "POST", "OPTIONS"])
 def definitions_export_urls(request):
     inmem_file = definitions_json_paths(request.user)
     if inmem_file:
@@ -111,7 +111,7 @@ def definitions_export_urls(request):
     )
 
 
-@api_view(["GET", "OPTIONS"])
+@api_view(["GET", "POST", "OPTIONS"])
 def hanzi_export_json(request, resource_path):
     # FIXME: this can raise if the file doesn't exist
     # FIXME: better perms checking for providers
@@ -125,7 +125,7 @@ def hanzi_export_json(request, resource_path):
     )
 
 
-@api_view(["GET", "OPTIONS"])
+@api_view(["GET", "POST", "OPTIONS"])
 def hanzi_export_urls(request):
     inmem_file = hanzi_json_paths(request.user)
     if inmem_file:
