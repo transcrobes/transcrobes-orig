@@ -170,6 +170,37 @@ function loadDb(message, event) {
   });
 }
 
+function getLocalCardWords(message){
+    if (knownCardWordGraphs || allCardWordGraphs || knownWordIdsCounter) {
+      return Promise.resolve([knownCardWordGraphs, allCardWordGraphs, knownWordIdsCounter])
+    } else {
+      return loadDb(message).then((ldb) => {
+        return data.getCardWords(ldb).then((values) => {
+          console.debug('Loaded user card words from sw.js', values);
+          // convert to arrays or Set()s get silently purged in chrome extensions, so
+          // need to mirror here for the same return types... Because JS is sooooooo awesome!
+          knownCardWordGraphs = values[0]
+          allCardWordGraphs = values[1]
+          knownWordIdsCounter = values[2]
+          return Promise.resolve(values);
+        });
+      });
+    }
+}
+
+function addToLocalKnown(message, wordInfo, grade) {
+  getLocalCardWords(message).then(() => {
+    allCardWordGraphs.add(wordInfo.graph)
+    if (grade > GRADE.UNKNOWN) {
+      console.debug("Adding to known words", wordInfo);
+      knownCardWordGraphs.add(wordInfo.graph)
+      knownWordIdsCounter[wordInfo.wordId] = (knownWordIdsCounter[wordInfo.wordId] ? knownWordIdsCounter[wordInfo.wordId] + 1 : 1)
+    } else {
+      console.debug("NOT adding to known words", wordInfo);
+    }
+  })
+}
+
 self.addEventListener('message', event => {
   const message = event.data;
   console.debug(`The client sent me a message:`, message);
@@ -195,29 +226,12 @@ self.addEventListener('message', event => {
       });
     });
   } else if (message.type === "getCardWords") {
-    if (knownCardWordGraphs || allCardWordGraphs || knownWordIdsCounter) {
-      console.debug('Returning pre-loaded user card words in sw.js');
+    getLocalCardWords(message).then((values) => {
       event.source.postMessage({
-        source: message.source,
-        type: message.type,
-        value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs), knownWordIdsCounter]
+        source: message.source, type: message.type,
+        value: [Array.from(values[0]), Array.from(values[1]), values[2]]
       });
-    } else {
-      loadDb(message).then((ldb) => {
-        data.getCardWords(ldb).then((values) => {
-          console.debug('Loaded user card words from sw.js', values);
-          // convert to arrays or Set()s get silently purged in chrome extensions, so
-          // need to mirror here for the same return types... Because JS is sooooooo awesome!
-          knownCardWordGraphs = values[0]
-          allCardWordGraphs = values[1]
-          knownWordIdsCounter = values[2]
-          event.source.postMessage({
-            source: message.source, type: message.type,
-            value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs), knownWordIdsCounter]
-          });
-        });
-      });
-    }
+    });
   } else if (message.type === "submitLookupEvents") {
     loadDb(message).then((ldb) => {
       data.submitLookupEvents(ldb, message.value.lookupEvents, message.value.userStatsMode).then((values) => {
@@ -325,14 +339,7 @@ self.addEventListener('message', event => {
     const { wordInfo, grade } = practiceDetails;
     loadDb(message).then((ldb) => {
       data.practiceCardsForWord(ldb, practiceDetails).then((values) => {
-        allCardWordGraphs.add(wordInfo.graph)
-        if (grade > GRADE.UNKNOWN) {
-          console.debug("Adding to known words", wordInfo);
-          knownCardWordGraphs.add(wordInfo.graph)
-          knownWordIdsCounter[wordInfo.wordId] = (knownWordIdsCounter[wordInfo.wordId] ? knownWordIdsCounter[wordInfo.wordId] + 1 : 1)
-        } else {
-          console.debug("NOT adding to known words", wordInfo);
-        }
+        addToLocalKnown(message, wordInfo, grade)
         console.debug("Practiced in sw.js", message, values);
         event.source.postMessage({ source: message.source, type: message.type, value: 'Cards Practiced' });
       });
