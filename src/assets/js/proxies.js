@@ -24,7 +24,7 @@ class ServiceWorkerProxy extends AbstractWorkerProxy{
       console.log(`The service worker client sent a message:`, message);
       const identifier = `${message.source}-${message.type}`;
       if (identifier in this.#callbacks){
-        console.log(`doing the callback from sw in proxies.js message:`, message);
+        console.log(`doing the callback from sw in proxies.js message:`, message, this.#callbacks[identifier]);
         return this.#callbacks[identifier](message.value)
       } else {
         console.warn('Service Worker proxy received unknown event:', event)
@@ -52,10 +52,7 @@ class ServiceWorkerProxy extends AbstractWorkerProxy{
     this.#callbacks[identifier + "-progress"] = progressCallback;
     return navigator.serviceWorker.ready.then(registration => {
       console.debug('Posting message from ServiceWorkerProxy to sw registration', message)
-      if (typeof message.value !== 'object' || message.value === null) {
-        message.value = { payload: message.value };
-      }
-      message.value.appConfig = this.#config;  // add the appConfig, so the sw can reinit if needed
+      message.appConfig = this.#config;  // add the appConfig, so the sw can reinit if needed
       registration.active.postMessage(message);
       return message;
     });

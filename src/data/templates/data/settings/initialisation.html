@@ -37,6 +37,7 @@
                   <div class="text-center" style="font-size: 2em; color:black;" id="initialisationMessages"></div>
                   <div class="text-center" style="font-size: 2em; color:black;" id="initialisationStarted"></div>
                   <div class="text-center" style="font-size: 2em; color:black;" id="lastUpdated"></div>
+                  <div class="text-center" style="display: none" id="heartbeat"></div>
                   <div id="homeButton" class="hidden" style="display:flex; justify-content: center; padding-bottom: 2em">
                     <a style="width: 90%; font-size: 1.5em;" href="{% url 'home' %}" class="btn btn-primary btn-user btn-block"><i class="fas fa-arrow-left"></i> Get started with Transcrobes!</a>
                   </div>
@@ -108,7 +109,10 @@ function startInitialisation(reinitialise=false){
             if (!document.querySelector("#initialisationStarted").innerHTML) {
               document.querySelector("#initialisationStarted").innerHTML = `Initialisation started at: ${datetime}`
             };
-            document.querySelector("#lastUpdated").innerHTML = `Last updated at: ${datetime}`;
+            // document.querySelector("#lastUpdated").innerHTML = `Last updated at: ${datetime}`;
+            // Actually the heartbeat is only to try (does it work?) to get the page to stay alive on mobile
+            // and if it has crashed then we definitely don't want to give the user the false impression it is working
+            document.querySelector("#heartbeat").innerHTML = datetime.toString();
             setTimeout(progressUpdate, 10000);
           });
         }

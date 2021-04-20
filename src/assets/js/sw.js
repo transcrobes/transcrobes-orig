@@ -130,7 +130,7 @@ function loadDb(message, event) {
   if (!!db) {
     console.debug('DB loaded, using that', db)
     if (!!event) {
-      event.source.postMessage({ source: message.source, type: message.type, value: "success" });
+      event.source.postMessage({ source: message.source, type: message.type, value: "loadDb success" });
     }
     return Promise.resolve(db);
   }
@@ -139,7 +139,7 @@ function loadDb(message, event) {
   if (eventQueueTimer) { clearInterval(eventQueueTimer) };
   // FIXME: there should be a proper way to manage this!!!
   // FIXME: maybe do some validation on the event.data.val?
-  const { syncURL, langPair, jwt_access, jwt_refresh, username, reinitialise } = message.value.appConfig;
+  const { syncURL, langPair, jwt_access, jwt_refresh, username, reinitialise } = message.appConfig;
   const localBaseUrl = new URL(syncURL).origin;
   utils.setBaseUrl(localBaseUrl);
   utils.setLangPair(langPair);
@@ -164,7 +164,7 @@ function loadDb(message, event) {
     }
     console.debug('got the db in getDb in sw.js, replying with ok');
     if (!!event) {
-      event.source.postMessage({ source: message.source, type: message.type, value: "success" });
+      event.source.postMessage({ source: message.source, type: message.type, value: "loadDb success" });
     }
     return Promise.resolve(db);
   });
@@ -185,12 +185,12 @@ self.addEventListener('message', event => {
   if (message.type == "syncDB") {
     loadDb(message, event);
   } else if (message.type === "heartbeat") {
-    console.debug('got a heartbeat request in sw.js, replying with datetime');
+    console.debug('Got a heartbeat request in sw.js, replying with datetime');
     event.source.postMessage({source: message.source, type: message.type, value: dayjs().format()});
   } else if (message.type === "getWordFromDBs") {
     loadDb(message).then((ldb) => {
       data.getWordFromDBs(ldb, message.value).then((values) => {
-        console.debug('back from data.getWordFromDBs', values)
+        console.debug('Back from data.getWordFromDBs', values)
         event.source.postMessage({ source: message.source, type: message.type, value: (values ? values.toJSON() : null) });
       });
     });
@@ -213,8 +213,7 @@ self.addEventListener('message', event => {
           knownWordIdsCounter = values[2]
           event.source.postMessage({
             source: message.source, type: message.type,
-            value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs),
-              knownWordIdsCounter]
+            value: [Array.from(knownCardWordGraphs), Array.from(allCardWordGraphs), knownWordIdsCounter]
           });
         });
       });
