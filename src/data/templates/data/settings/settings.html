@@ -63,6 +63,10 @@
       </div>
       <div class="card-body">
         <div><a href="{% url 'initialisation' %}">Reinitialise storage (takes 20+ mins)</a></div>
+        <div>
+          <button style="width: 200px; margin-top: .5em" class="btn btn-primary btn-user btn-block" onclick="emptyCaches()">Refresh code caches</button>
+          <span style="margin-left: 1em; color: green" id="refreshMessage"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -72,4 +76,15 @@
 
 
 <!-- /.container-fluid -->
+{% endblock %}
+
+{% block extrajs %}
+<script>
+function emptyCaches(){
+  const version = "v1";  // FIXME: horrible, nasty hardcoding!!!
+  caches.delete(version).then(() => {
+    document.querySelector("#refreshMessage").innerText = "Caches emptied";
+  });
+}
+</script>
 {% endblock %}

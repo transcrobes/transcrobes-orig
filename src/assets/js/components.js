@@ -91,7 +91,7 @@ function createSVG(template, elClass, elAttrs, elParent){
 }
 
 async function vocabCountersFromETF(model, glossing) {
-  return getUserCardWords().then((userCardWords) => {
+  return getUserCardWords().then((uCardWords) => {
     const counter = {};
     // FIXME: reduce will be faster
     for (const sentence of model.s){
@@ -99,7 +99,7 @@ async function vocabCountersFromETF(model, glossing) {
         // it needs to have a pos for us to be interested, though maybe "bg" would be better
         if (token['np'] || utils.toSimplePos(token['pos'])) {
           const lemma = token.l || token.lemma;
-          const lookedUp = glossing > utils.USER_STATS_MODE.NO_GLOSS && !userCardWords.known.has(lemma)
+          const lookedUp = glossing > utils.USER_STATS_MODE.NO_GLOSS && !uCardWords.known.has(lemma)
           counter[lemma] = counter[lemma]
             ? [counter[lemma][0] + 1, lookedUp ? counter[lemma][1] + 1 : 0]
             : [1, lookedUp ? 1 : 0];
@@ -216,6 +216,10 @@ function cleanupAfterCardsUpdate(doc, grade, wordInfo) {
         wordEl.classList.remove('tcrobe-gloss');
       }
     }
+    // we MUST set userCardWords to null after a potential modification. the worker also has a cache but one that is up-to-date
+    // so next time we need this an updated version will get re-pulled from the worker
+    console.debug('Setting userCardWords for a refresh after word update');
+    userCardWords = null;
   };
   // This will remove addition after an add, but what if you chose wrong and want to update?
   // the only option left will be to set to "known", which is not necessarily true

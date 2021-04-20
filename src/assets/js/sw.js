@@ -327,8 +327,11 @@ self.addEventListener('message', event => {
       data.practiceCardsForWord(ldb, practiceDetails).then((values) => {
         allCardWordGraphs.add(wordInfo.graph)
         if (grade > GRADE.UNKNOWN) {
+          console.debug("Adding to known words", wordInfo);
           knownCardWordGraphs.add(wordInfo.graph)
           knownWordIdsCounter[wordInfo.wordId] = (knownWordIdsCounter[wordInfo.wordId] ? knownWordIdsCounter[wordInfo.wordId] + 1 : 1)
+        } else {
+          console.debug("NOT adding to known words", wordInfo);
         }
         console.debug("Practiced in sw.js", message, values);
         event.source.postMessage({ source: message.source, type: message.type, value: 'Cards Practiced' });

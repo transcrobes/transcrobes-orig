@@ -868,10 +868,16 @@ class Goal(DetailedModel):
             sql = """
                 SELECT COUNT(NULLIF(uw.is_known, FALSE)), COUNT(0)
                 FROM data_userlistword uwl
-                    INNER JOIN data_userword uw ON uw.word_id = uwl.word_id
+                    INNER JOIN data_userword uw ON uw.word_id = uwl.word_id and uw.user_id = %s
                 WHERE uwl.user_list_id = %s"""
             with connection.cursor() as cur:
-                cur.execute(sql, (self.user_list.id,))
+                cur.execute(
+                    sql,
+                    (
+                        self.user.id,
+                        self.user_list.id,
+                    ),
+                )
                 known_words, all_words = cur.fetchone()
 
         chidlins = self.children.active()
