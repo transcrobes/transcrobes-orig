@@ -106,7 +106,7 @@ function Synonyms({ definition }) {
       <ThinHR />
       <div className="row">
         <div className="col-md-2">
-          <h6 className="result-heading">Synonyms</h6>
+          <h6 className="result-heading">Related Words</h6>
         </div>
         {definition.synonyms.length > 0 &&
           <div className="col synonym-items">
@@ -129,7 +129,7 @@ function WordModelStats({ wordModelStats }) {
       <ThinHR />
       <div className="row">
         <div className="col-md-2">
-          <h6 className="result-heading">Personal word stats</h6>
+          <h6 className="result-heading">Personal Word Stats</h6>
         </div>
         {wordModelStats &&
           (<div className="col meta-item">
@@ -179,7 +179,7 @@ function ProviderTranslations({ definition }) {
       <ThinHR />
       <div className="row">
         <div className="col">
-          <h6 className="result-heading">Entry definitions</h6>
+          <h6 className="result-heading">Entry Definitions</h6>
         </div>
       </div>
       {definition.providerTranslations.length &&
@@ -205,7 +205,6 @@ function ProviderTranslations({ definition }) {
   )
 }
 
-function Graph({definition}) { return ( <div className="graph-item">{definition.graph}</div>) }
 function Sound({definition}) { return ( <div className="sound-item">{definition.sound}</div>) }
 
 function WordMetadata({definition}){

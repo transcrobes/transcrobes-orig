@@ -210,7 +210,7 @@ class Notrobes extends React.Component {
     return (
       <div className="container">
         {/* Heading */}
-        <h2 className="heading">Add/edit your Transcrobes Cards</h2>
+        <h2 className="heading">Notrobes: Vocabulary search, discover words</h2>
         {/* Search Input */}
         <div>
           <label className="search-label" htmlFor="search-input">

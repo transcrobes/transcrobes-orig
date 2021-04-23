@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>D2 Reader</title>
+  <title>Boocrobes</title>
   <meta charset="utf-8" />
   <meta name="author" content="" />
   <meta name="description" content="A viewer application for files." />
@@ -29,13 +29,12 @@
     const csrftoken = cookies["csrftoken"];
     // global user settings variables from the DB - there is obviously a better
     // way to do this but I am old and incompetent...
-    var glossing = {{ glossing }};  // int
-    var segmentation = "{{ segment }}" == "true";
-    // var defaultReadingMode = "{{ reading_mode }}";
-    // var defaultFontSizePercent = {{ font_size_percent }};  // int
-    // var langPair = JSON.parse(document.getElementById('langPair').textContent);
+    window.segmentation = "{{ segment }}" == "true";
+    window.glossing = {{ glossing }};  // int
+    window.defaultReadingMode = "{{ reading_mode }}";  // FIXME: used???
+    window.defaultFontSizePercent = {{ font_size_percent }};  // int    // FIXME: used???
     // FIXME: ugly and broken
-    var langPair = "{{ app_config.lang_pair }}";
+    window.langPair = "{{ app_config.lang_pair }}";
 
     var iframeHeight = 42;
 

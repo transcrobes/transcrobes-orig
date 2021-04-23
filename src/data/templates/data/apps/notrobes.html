@@ -2,17 +2,12 @@
 {% extends 'data/base.html' %}
 {% load static %}
 
-{% block title %}Vocabulary Review: add/edit your Transcrobes reviews{% endblock %}
+{% block title %}Notrobes: Vocabulary search, discover words{% endblock %}
 
 {% block content %}
 <div id="root"></div>
 {% endblock %}
 
 {% block extrajs %}
-<script>
-  // window.accessToken = "{{ jwt_access }}";
-  // window.refreshToken = "{{ jwt_refresh }}";
-  // window.username = "{{ user.get_username }}";
-</script>
 <script src="{% static 'notrobes-bundle.js' %}"></script>
 {% endblock %}

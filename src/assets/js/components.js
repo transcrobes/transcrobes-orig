@@ -395,7 +395,7 @@ function updateWordForEntry(entry, glossing, entryPadding, tokenData, doc) {
 
   getUserCardWords().then((uCardWords) => {
     if (uCardWords == null) {console.debug('uCardWords is null in updateWordForEntry', entry)}
-    if (!(uCardWords.known.has(lemma))) {
+    if (!(uCardWords.known.has(lemma)) && glossing > utils.USER_STATS_MODE.NO_GLOSS) {
       let gloss = (token['bg']['nt'] || token['bg']).split(",")[0].split(";")[0];  // Default L1, context-aware, "best guess" gloss
 
       if (glossing == utils.USER_STATS_MODE.L2_SIMPLIFIED) {
@@ -415,12 +415,13 @@ function updateWordForEntry(entry, glossing, entryPadding, tokenData, doc) {
                 innerGloss = userSynonyms[0];
               }
             }
-            return innerGloss;
-          }) || gloss;
+            return innerGloss || gloss;
+          });
         }
       } else if (glossing == utils.USER_STATS_MODE.TRANSLITERATION) {
         gloss = (token['p'] || token['pinyin']).join("");
       }
+      // console.debug('i go there with', gloss)
       word.dataset.tcrobeGloss = gloss;
       word.classList.add('tcrobe-gloss');
     } else {
@@ -666,7 +667,6 @@ class EnrichedTextFragment extends HTMLParsedElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     this.ensureStyle();
-
     let sentences = null;
     if (name === 'data-model') {
       sentences = JSON.parse(newValue)['s'];
