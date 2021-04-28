@@ -267,14 +267,12 @@ export class SRSrobes extends Component {
   async handlePractice(practiceObject, grade){
     const { currentCard } = this.state;
     const { badReviewWaitSecs } = this.state.activityConfig;
-
     this.setState({ loading: true });
 
     if (grade < GRADE.HARD) {  // we consider it a lookup, otherwise we wouldn't have needed to look it up
       const lookupEvent = { target_word: this.state.definition.graph, target_sentence: "", };
       this.submitLookupEvents([lookupEvent], USER_STATS_MODE.L1);
     }
-
     if (practiceObject != currentCard) { throw 'Sanity check, this shouldnt happen!'; }
     console.debug('Practicing card', isRxDocument(currentCard) ? currentCard.toJSON() : currentCard, grade);
 
@@ -283,13 +281,19 @@ export class SRSrobes extends Component {
       type: "practiceCard",
       value: { currentCard, grade, badReviewWaitSecs },
     }, (response) => {
-      const practicedCard = response
-      const newState = { ...{ ...this.state },
+      const practicedCard = response;
+      let newExisting = this.state.existingWords;
+      if (!newExisting.has(wordId(practicedCard))) {
+        newExisting = (new Map(this.state.existingWords)).set(wordId(practicedCard),
+          this.state.allNonReviewedWordsMap.get(wordId(practicedCard)))
+        console.debug('We need to add a definition to existing reviews for a new card', practicedCard, newExisting);
+      }
+      const newState = {
+        ...{ ...this.state },
         existingCards: (new Map(this.state.existingCards)).set(practicedCard.cardId, practicedCard),
-        existingWords: (new Map(this.state.existingWords)).set(wordId(practicedCard),
-          this.state.allNonReviewedWordsMap.get(wordId(practicedCard))),
-        curNewWordIndex: !isRxDocument(currentCard) ? this.state.curNewWordIndex + 1 : this.state.curNewWordIndex }
-
+        existingWords: newExisting,
+        curNewWordIndex: !isRxDocument(currentCard) ? this.state.curNewWordIndex + 1 : this.state.curNewWordIndex
+      }
       this.nextPractice(newState).then((nextState) => {
         this.setState({...nextState, showAnswer: false, loading: false });
       })
