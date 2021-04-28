@@ -184,12 +184,6 @@ export class VocabRevisor extends Component {
     super(props);
     this.handlePractice = this.handlePractice.bind(this);
   }
-  // componentDidUpdate(prevProps) {
-  //   const { showAnswer } = this.props;
-  //   if (showanswer && showAnswer !== prevProps.showAnswer) {
-  //
-  //   }
-  // }
   handlePractice(...args){
     this.props.onPractice(...args);
   }

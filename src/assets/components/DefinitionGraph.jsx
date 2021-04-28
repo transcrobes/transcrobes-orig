@@ -6,14 +6,14 @@ export default class DefinitionGraph extends Component {
     super(props);
     this.state = {
       animate: false,
-      toAnimate: [...props.characters.values()].map(x => 0)
+      toAnimate: props.characters.map(x => 0)
     };
     this.onChildAnimateFinished = this.onChildAnimateFinished.bind(this);
   }
 
   draw(){
     console.debug('Starting the animation from the start');
-    let toAnimate = [...this.props.characters.values()].map(x => 0);
+    let toAnimate = this.props.characters.map(x => 0);
     toAnimate[0] = 1;
     this.setState({toAnimate});
   }
@@ -31,7 +31,7 @@ export default class DefinitionGraph extends Component {
     console.debug('Rendering DefinitionGraph with chars', characters);
     return (
       <div className="row" style={{alignItems: "center", justifyContent: "center"}}>
-        { [...characters.values()].filter(x => !!x).map((character, index) => {
+        { characters.filter(x => !!x).map((character, index) => {
             return (
               <CharacterGraph width={this.props.charWidth} height={this.props.charHeight}
               animate={this.state.toAnimate[index]} index={index} key={character.graph} character={character}

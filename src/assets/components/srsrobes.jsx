@@ -199,16 +199,26 @@ export class SRSrobes extends Component {
       .map(x => [wordId(x), state.existingWords.get(wordId(x))]));
     console.debug(`todaysReviewedWords`, todaysReviewedWords);
     const potentialTypes = state.activityConfig.activeCardTypes.filter(x => x.selected).map(x => x.value.toString())
-    console.debug(`types to choose from `, potentialTypes);
+    console.debug(`Types to choose from `, potentialTypes);
 
-    const candidates = [...state.existingCards.values()].filter(x => {
-      return x.dueDate < dayjs().unix()  // or maybe? dayjs.unix(state.activityConfig.todayStarts).add(1, 'day').unix()
-        && (todaysReviewedCards.has(x.cardId) || !(todaysReviewedWords.has(wordId(x)))
-        && potentialTypes.includes(cardType(x))
-        && !x.known)
-    }).sort((a, b) => a.dueDate - b.dueDate );
+    // re-revise today's failed reviews
+    let candidates = [...todaysReviewedCards.values()]
+      .filter(x => x.dueDate < dayjs().unix())
+      .sort((a, b) => a.dueDate - b.dueDate );
 
-    console.debug(`candidates`, candidates);
+    console.debug(`Today's failed reviews ready to re-revise`, candidates);
+
+    // or if nothing is ready, get a new review that is due
+    if (candidates.length < 1) {
+      candidates = [...state.existingCards.values()].filter(x => {
+        return x.dueDate < dayjs().unix()  // or maybe? dayjs.unix(state.activityConfig.todayStarts).add(1, 'day').unix()
+          && !todaysReviewedWords.has(wordId(x))
+          && potentialTypes.includes(cardType(x))
+          && !x.known
+      }).sort((a, b) => a.dueDate - b.dueDate );
+      console.debug(`There were no ready failed reviews for today, so the "new" reviews are`, candidates);
+    }
+
     const candidate = getRandomNext(candidates);
     return candidate
       ? [candidate, cardType(candidate)]
@@ -216,21 +226,18 @@ export class SRSrobes extends Component {
   }
 
   getCharacters(state, definition) {
-    const graphs = definition.graph.split('');
-    const characters = new Map();
-    graphs.forEach(x => characters.set(x, state.allPotentialCharacters.get(x)));
-    return characters;
+    return definition.graph.split('').map(x => state.allPotentialCharacters.get(x));
   }
 
   async nextPractice(state) {
     let currentCard; let curNewWordIndex; let cardType; let definition;
-    console.debug(`state at start of nexPractice`, state)
+    console.debug(`State at start of nextPractice`, state)
 
     const [newToday, revisionsToday] = this.getTodaysCounters(state);
     let getNew = true;
     if (newToday >= state.activityConfig.maxNew) {getNew = false }
     if ((newToday / revisionsToday) > (state.activityConfig.maxNew / state.activityConfig.maxRevisions)) {
-      getNew = false
+      getNew = false;
     }
     console.debug(`Found ${newToday} new done, ${revisionsToday} revisions done, meaning getNew is ${getNew}`);
     if (getNew) {
@@ -238,11 +245,11 @@ export class SRSrobes extends Component {
         state.potentialWords, state.activityConfig.activeCardTypes)
       currentCard = { cardId: state.potentialWords[curNewWordIndex].wordId + CARD_ID_SEPARATOR + cardType };
       definition = state.potentialWords[curNewWordIndex];
-      console.debug(`new card [curNewWordIndex, cardType]`, curNewWordIndex, cardType)
+      console.debug(`New card [curNewWordIndex, cardType]`, curNewWordIndex, cardType);
     } else {
       [currentCard, cardType] = await this.newRevisionFromState(state);
-      definition = state.existingWords.get(wordId(currentCard))
-      console.debug(`revision [currentCard, cardType]`, currentCard, cardType)
+      definition = state.existingWords.get(wordId(currentCard));
+      console.debug(`Revision [currentCard, cardType]`, currentCard, cardType, definition, state.existingWords);
     }
     const characters = this.getCharacters(state, definition);
     return { ...state,
@@ -260,6 +267,8 @@ export class SRSrobes extends Component {
   async handlePractice(practiceObject, grade){
     const { currentCard } = this.state;
     const { badReviewWaitSecs } = this.state.activityConfig;
+
+    this.setState({ loading: true });
 
     if (grade < GRADE.HARD) {  // we consider it a lookup, otherwise we wouldn't have needed to look it up
       const lookupEvent = { target_word: this.state.definition.graph, target_sentence: "", };
@@ -282,7 +291,7 @@ export class SRSrobes extends Component {
         curNewWordIndex: !isRxDocument(currentCard) ? this.state.curNewWordIndex + 1 : this.state.curNewWordIndex }
 
       this.nextPractice(newState).then((nextState) => {
-        this.setState({...nextState, showAnswer: false});
+        this.setState({...nextState, showAnswer: false, loading: false });
       })
     });
   }

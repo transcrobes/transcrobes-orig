@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Transcrobes"
-version = "0.1.0"
+version = "0.1.1-rc1"
 description = "Learn a language doing stuff you love"
 authors = ["Anton Melser <anton@transcrob.es>"]
 license = "AGPL-3.0-or-later"

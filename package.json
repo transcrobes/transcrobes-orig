@@ -1,6 +1,6 @@
 {
   "name": "transcrobes",
-  "version": "0.1.0",
+  "version": "0.1.1-rc1",
   "description": "Transcrobes is the central project for the Transcrobes project (https://transcrob.es) and houses the central API for interacting with the system.",
   "main": "index.js",
   "directories": {
