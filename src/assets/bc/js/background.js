@@ -47,6 +47,7 @@ function loadDb(callback, message) {
         CACHE_NAME, recreate);
       return getDb(dbConfig, progressCallback).then((dbHandle) => {
         db = dbHandle;
+        window.transcrobesDb = db;
         console.debug('db object after getDb is', dbHandle)
         if (!eventQueueTimer) {
           eventQueueTimer = setInterval(() => data.sendUserEvents(db), utils.EVENT_QUEUE_PROCESS_FREQ);

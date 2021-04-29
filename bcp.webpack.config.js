@@ -6,10 +6,9 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   optimization: {
-    minimize: false,
+    minimize: true,
     minimizer: [new TerserPlugin({
       extractComments: false,
-      // extractComments: true,
       terserOptions: {
         output: { ascii_only: true },
       },
@@ -24,9 +23,6 @@ module.exports = {
     filename: '[name]-bundle.js',  // output bundle file name
     path: path.resolve(__dirname, './build/bc/'),
   },
-  // devtool: 'source-map',
-  // devtool: 'inline-source-map',
-  // devtool: 'cheap-module-source-map',
   module: {
     rules: [
       {

@@ -382,7 +382,7 @@ function populatePopup(event, doc) {
   return popup
 }
 
-function updateWordForEntry(entry, glossing, entryPadding, tokenData, doc) {
+function updateWordForEntry(entry, glossing, entryPadding, tokenData, doc, glossNumberNouns=false) {
   if (entryPadding) {
     // FIXME: this should be the class but how do i make it variable? with css variables?
     entry.style.paddingLeft = `${SEGMENTED_BASE_PADDING * utils.fontSize / 100}px`; // should this be padding or margin?
@@ -395,7 +395,12 @@ function updateWordForEntry(entry, glossing, entryPadding, tokenData, doc) {
 
   getUserCardWords().then((uCardWords) => {
     if (uCardWords == null) {console.debug('uCardWords is null in updateWordForEntry', entry)}
-    if (!(uCardWords.known.has(lemma)) && glossing > utils.USER_STATS_MODE.NO_GLOSS) {
+
+    const needsGloss = glossing > utils.USER_STATS_MODE.NO_GLOSS
+      && !uCardWords.known.has(lemma)
+      && (token["pos"] !== "NT" || glossNumberNouns);
+
+    if (needsGloss) {
       let gloss = (token['bg']['nt'] || token['bg']).split(",")[0].split(";")[0];  // Default L1, context-aware, "best guess" gloss
 
       if (glossing == utils.USER_STATS_MODE.L2_SIMPLIFIED) {
@@ -627,7 +632,7 @@ class EnrichedTextFragment extends HTMLParsedElement {
           const entry = doCreateElement(doc, 'span', 'tcrobe-entry', null, null);
           entry.dataset.tcrobeEntry = JSON.stringify(token);
           if (updateWordCallback) {
-            updateWordCallback(entry, utils.glossing, utils.segmentation, token, doc);
+            updateWordCallback(entry, utils.glossing, utils.segmentation, token, doc, utils.glossNumberNouns);
           }
           sent.appendChild(entry);
         } else {

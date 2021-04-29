@@ -73,6 +73,7 @@ let themeName = 'dark';
 let eventSource = 'lib.js';
 var parseModels = {};
 var l1Models = {};
+var glossNumberNouns = false;
 var onScreenDelayIsConsideredRead = ONSCREEN_DELAY_IS_CONSIDERED_READ;
 
 function setAccessToken(value) { accessToken = value; }
@@ -82,6 +83,7 @@ function setLangPair(value) { langPair = value; }
 function setPassword(value) { password = value; }
 function setBaseUrl(value) { baseUrl = (new URL(value)).origin + '/'; }
 function setGlossing(value) { glossing = value; }
+function setGlossNumberNouns(value) { glossNumberNouns = value; }
 function setOnScreenDelayIsConsideredRead(value) { onScreenDelayIsConsideredRead = value; }
 function setFontSize(value) { fontSize = value; }
 function setSegmentation(value) { segmentation = value; }
@@ -444,6 +446,7 @@ export {
   themeName,
   parseModels,
   l1Models,
+  glossNumberNouns,
 
   // property setters
   setAccessToken,
@@ -453,6 +456,7 @@ export {
   setLangPair,
   setBaseUrl,
   setGlossing,
+  setGlossNumberNouns,
   setFontSize,
   setSegmentation,
   setOnScreenDelayIsConsideredRead,
