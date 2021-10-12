@@ -1,3 +1,10 @@
+
+# Rewrite
+Initially written with a nasty combination of `django`, vanilla JS and a few isolated JS `react` objects, stability and performance was poor, with no real future. The decision was therefore made to convert the entire frontend to a single `typescript` PWA and the backend to `fastapi` and `sqlalchemy`, in order to be able to manage async in a sane way (`django` may have usable db async at some point but that is likely very far off still).
+
+The result, and all future development, can be found [here](https://github.com/transcrobes/transcrobes) (where this repo was originally housed).
+
+
 # Transcrobes
 
 Transcrobes is the central project for the Transcrobes project (https://transcrob.es) and houses the central API for interacting with the system, as well as most of the modules for interacting with the API (movie player, ebook reader, spaced repetition system, web browser extension, etc.)
